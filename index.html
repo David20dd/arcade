@@ -22,7 +22,7 @@
   <link rel="stylesheet" href="./arcade-tailwind-v4.1.10.css" />
   <script src="./firebase-config.js" defer></script>
 
-  <link rel="stylesheet" href="./arcade-theme-v8.css?v=8.7.0" />
+  <link rel="stylesheet" href="./arcade-theme-v8.css?v=8.8.0" />
 </head>
 
 <body class="antialiased boot-active">
@@ -82,7 +82,7 @@
       <div>
         <div class="mb-7 inline-flex items-center gap-3 rounded-full border border-fuchsia-300/20 bg-fuchsia-300/5 px-4 py-2 text-xs font-bold tracking-[0.22em] text-fuchsia-200">
           <span class="size-1.5 animate-pulse rounded-full bg-fuchsia-300 shadow-[0_0_12px_rgba(255,60,247,.8)]"></span>
-          MODO INMERSIVO · GESTURE CONTROL
+          MODO OPTIMIZADO · GAMEPAD READY
         </div>
 
         <h1 class="font-display max-w-4xl text-4xl font-black leading-[1.02] tracking-[-0.03em] text-white sm:text-6xl lg:text-7xl">
@@ -201,9 +201,9 @@
         </div>
       </div>
 
-      <div class="grid gap-6 lg:grid-cols-3">
+      <div class="catalog-game-grid grid gap-6">
         <article
-          class="arcade-card glass-panel rounded-[1.7rem] border border-white/10 p-3"
+          class="arcade-card glass-panel rounded-[1.7rem] border border-white/10 p-3 transition-all duration-300 ease-out hover:scale-[1.03] hover:shadow-[0_0_25px_rgba(0,255,255,0.6)]"
           style="--card-accent:#42f5ff;--card-accent-rgb:66,245,255"
         >
           <div class="game-art aspect-[16/10] rounded-[1.25rem] border border-cyan-300/15">
@@ -246,7 +246,7 @@
         </article>
 
         <article
-          class="arcade-card glass-panel rounded-[1.7rem] border border-white/10 p-3"
+          class="arcade-card glass-panel rounded-[1.7rem] border border-white/10 p-3 transition-all duration-300 ease-out hover:scale-[1.03] hover:shadow-[0_0_25px_rgba(0,255,255,0.6)]"
           style="--card-accent:#ffbd3c;--card-accent-rgb:255,189,60"
         >
           <div class="game-art aspect-[16/10] rounded-[1.25rem] border border-amber-300/15">
@@ -292,7 +292,7 @@
         </article>
 
         <article
-          class="arcade-card glass-panel rounded-[1.7rem] border border-white/10 p-3"
+          class="arcade-card glass-panel rounded-[1.7rem] border border-white/10 p-3 transition-all duration-300 ease-out hover:scale-[1.03] hover:shadow-[0_0_25px_rgba(0,255,255,0.6)]"
           style="--card-accent:#00ff7f;--card-accent-rgb:0,255,127"
         >
           <div class="game-art aspect-[16/10] rounded-[1.25rem] border border-fuchsia-300/15">
@@ -335,6 +335,53 @@
             </button>
           </div>
         </article>
+
+        <article
+          class="arcade-card glass-panel rounded-[1.7rem] border border-white/10 p-3 transition-all duration-300 ease-out hover:scale-[1.03] hover:shadow-[0_0_25px_rgba(0,255,255,0.6)]"
+          style="--card-accent:#00ffff;--card-accent-rgb:0,255,255"
+        >
+          <div class="game-art aspect-[16/10] rounded-[1.25rem] border border-cyan-300/15">
+            <svg class="h-full w-full" viewBox="0 0 640 400" fill="none" role="img" aria-label="Ilustración de TRON Lightcycles">
+              <defs>
+                <filter id="tronGlow"><feGaussianBlur stdDeviation="6" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+                <linearGradient id="tronGridFade" x1="0" y1="0" x2="0" y2="1"><stop stop-color="#7055ff" stop-opacity=".62"/><stop offset="1" stop-color="#00ffff" stop-opacity=".04"/></linearGradient>
+              </defs>
+              <rect width="640" height="400" fill="#03030a"/>
+              <g stroke="url(#tronGridFade)" stroke-width="2" opacity=".58">
+                <path d="M0 330H640M0 294H640M0 258H640M0 222H640M0 186H640"/>
+                <path d="M320 140 40 400M320 140 120 400M320 140 200 400M320 140 280 400M320 140 360 400M320 140 440 400M320 140 520 400M320 140 600 400"/>
+              </g>
+              <g filter="url(#tronGlow)" stroke-linecap="square" stroke-linejoin="miter">
+                <path d="M80 312H285V248H360" stroke="#00ffff" stroke-width="10"/>
+                <path d="M560 276H436V196H344" stroke="#ffa500" stroke-width="10"/>
+                <path d="m350 235 22 13-22 13-13-13 13-13Z" fill="#00ffff" stroke="#f8f7ff" stroke-width="2"/>
+                <path d="m354 183-22 13 22 13 13-13-13-13Z" fill="#ffa500" stroke="#fff1d6" stroke-width="2"/>
+              </g>
+              <circle cx="320" cy="140" r="5" fill="#ff3cf7" filter="url(#tronGlow)"/>
+            </svg>
+          </div>
+
+          <div class="p-4 sm:p-5">
+            <div class="flex items-start justify-between gap-4">
+              <div>
+                <p class="font-display text-[10px] font-bold tracking-[0.22em] text-cyan-300/70">TERMINAL 04</p>
+                <h3 class="card-glitch-title font-display mt-2 text-xl font-black text-white" data-glitch-text="TRON LIGHTCYCLES">TRON LIGHTCYCLES</h3>
+              </div>
+              <span class="rounded-full border px-3 py-1 text-[10px] font-bold tracking-[0.14em]" style="border-color:rgba(255,165,0,.28);background:rgba(255,165,0,.06);color:#ffd08a">GRID DUEL</span>
+            </div>
+            <p class="mt-4 min-h-14 text-sm font-medium leading-relaxed text-white/50">
+              Combate de motos de luz sobre una rejilla infinita: gira a 90°, encierra a la CPU y evita todas las estelas.
+            </p>
+            <div class="high-score-strip" aria-label="Récord local de TRON Lightcycles">
+              <span class="font-display text-[9px] font-bold tracking-[0.18em] text-white/38">LOCAL HIGH SCORE</span>
+              <span class="high-score-value" data-high-score="tron">000000</span>
+            </div>
+            <button type="button" data-open-game="tron" class="play-button font-display mt-6 flex w-full items-center justify-between rounded-xl px-4 py-3 text-xs font-bold tracking-[0.18em]">
+              INICIAR TERMINAL
+              <span aria-hidden="true">↗</span>
+            </button>
+          </div>
+        </article>
       </div>
     </section>
 
@@ -357,7 +404,7 @@
   </main>
 
   <footer class="relative z-10 mx-auto flex max-w-7xl flex-col gap-4 px-5 py-9 text-xs font-semibold tracking-[0.13em] text-white/35 sm:flex-row sm:items-center sm:justify-between sm:px-8 lg:px-10">
-    <p>NEON NEXUS / ARCADE CORE v8.7</p>
+    <p>NEON NEXUS / ARCADE CORE v9.0</p>
     <p>CANVAS 800×600 · KEYBOARD · TOUCH · GAMEPAD · TURBO 1.5X</p>
   </footer>
 
@@ -458,6 +505,7 @@
               <li class="flex gap-2"><span class="text-lime-300">✓</span><span>Loop requestAnimationFrame</span></li>
               <li class="flex gap-2"><span class="text-lime-300">✓</span><span>Alien Invaders completo</span></li>
               <li class="flex gap-2"><span class="text-lime-300">✓</span><span>Neon Pac-Man completo</span></li>
+              <li class="flex gap-2"><span class="text-lime-300">✓</span><span>TRON Lightcycles completo</span></li>
               <li class="flex gap-2"><span class="text-lime-300">✓</span><span>Récords con localStorage</span></li>
               <li class="flex gap-2"><span class="text-lime-300">✓</span><span>Audio Web API por juego</span></li>
               <li class="flex gap-2"><span class="text-lime-300">✓</span><span>Canvas lógico fijo 800×600</span></li>
@@ -472,7 +520,7 @@
 
   <div id="toast" class="toast fixed bottom-5 left-1/2 z-[120] rounded-full border border-white/12 bg-[#0b0614]/92 px-4 py-2 text-xs font-bold tracking-[0.12em] text-white/75 shadow-2xl backdrop-blur-xl" role="status" aria-live="polite"></div>
 
-  <script src="./arcade-app-v8.js?v=8.7.0" defer></script>
+  <script src="./arcade-app-v8.js?v=9.0.0" defer></script>
 
 </body>
 </html>

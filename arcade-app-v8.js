@@ -53,6 +53,20 @@ const GAME_CATALOG = Object.freeze({
     canvasWidth: 800,
     canvasHeight: 600,
     playable: true
+  },
+  "tron": {
+    id: "tron",
+    title: "TRON LIGHTCYCLES",
+    genre: "NEON GRID DUEL",
+    accent: "#00ffff",
+    accentRgb: "0, 255, 255",
+    secondary: "#ffa500",
+    symbol: "LIGHT GRID",
+    hint: "La moto avanza automáticamente. Usa las flechas o el D-Pad para girar exactamente 90 grados.",
+    controls: "FLECHAS / STICK / D-PAD: GIRAR 90° / A, SPACE O START: INICIAR",
+    canvasWidth: 800,
+    canvasHeight: 600,
+    playable: true
   }
 });
 
@@ -61,6 +75,7 @@ class HighScoreStore {
   constructor(storageKey = "neonNexus.highScores.v1") {
     this.storageKey = storageKey;
     this.asteroidsStorageKey = "arcade_asteroids_highscore";
+    this.tronStorageKey = "arcade_tron_highscore";
     this.scores = this.load();
     this.listeners = new Set();
     this.save();
@@ -74,6 +89,10 @@ class HighScoreStore {
       if (Number.isFinite(asteroidsScore) && asteroidsScore > Number(scores.asteroids || 0)) {
         scores.asteroids = Math.floor(asteroidsScore);
       }
+      const tronScore = Number(window.localStorage.getItem("arcade_tron_highscore"));
+      if (Number.isFinite(tronScore) && tronScore > Number(scores.tron || 0)) {
+        scores.tron = Math.floor(tronScore);
+      }
       return scores;
     } catch (error) {
       return {};
@@ -84,6 +103,7 @@ class HighScoreStore {
     try {
       window.localStorage.setItem(this.storageKey, JSON.stringify(this.scores));
       window.localStorage.setItem(this.asteroidsStorageKey, String(Math.max(0, Math.floor(Number(this.scores.asteroids) || 0))));
+      window.localStorage.setItem(this.tronStorageKey, String(Math.max(0, Math.floor(Number(this.scores.tron) || 0))));
     } catch (error) {
       // The in-memory score still works when storage is unavailable.
     }
@@ -218,6 +238,7 @@ class RetroAudio {
     if (value.includes("pac")) return "pac-man";
     if (value.includes("invader") || value.includes("alien")) return "space-invaders";
     if (value.includes("asteroid")) return "asteroids";
+    if (value.includes("tron") || value.includes("lightcycle")) return "tron";
     return value;
   }
 
@@ -983,32 +1004,23 @@ class RetroAudio {
 }
 
 class BackgroundParticleField {
-  constructor(canvas, particleCount = 92) {
+  constructor(canvas, particleCount = 88) {
     this.canvas = canvas;
     this.ctx = canvas?.getContext("2d", { alpha: true });
-    this.particleCount = Math.max(80, Math.min(100, Math.floor(particleCount)));
+    this.particleCount = Math.max(72, Math.min(96, Math.floor(particleCount)));
     this.width = 1;
     this.height = 1;
     this.dpr = 1;
     this.particles = [];
-    this.pointer = { x: -10000, y: -10000, active: false, lastMove: 0 };
-    this.pointerTrail = [];
     this.animationId = null;
     this.lastTimestamp = performance.now();
     this.running = false;
     this.resizeTimer = null;
     this.handleResize = this.handleResize.bind(this);
-    this.handleMouseMove = this.handleMouseMove.bind(this);
-    this.handleTouchMove = this.handleTouchMove.bind(this);
-    this.handlePointerLeave = this.handlePointerLeave.bind(this);
     this.loop = this.loop.bind(this);
     if (!this.canvas || !this.ctx) return;
     this.resize();
     window.addEventListener("resize", this.handleResize, { passive: true });
-    window.addEventListener("mousemove", this.handleMouseMove, { passive: true });
-    window.addEventListener("mouseleave", this.handlePointerLeave, { passive: true });
-    window.addEventListener("touchmove", this.handleTouchMove, { passive: true });
-    window.addEventListener("touchend", this.handlePointerLeave, { passive: true });
     document.addEventListener("visibilitychange", () => {
       if (document.hidden) this.stop();
       else this.start();
@@ -1017,16 +1029,18 @@ class BackgroundParticleField {
 
   createParticle(index) {
     const cyan = index % 2 === 0;
+    const angle = Math.random() * Math.PI * 2;
+    const speed = 5 + Math.random() * 14;
     return {
       x: Math.random() * this.width,
       y: Math.random() * this.height,
       previousX: 0,
       previousY: 0,
-      vx: (Math.random() - 0.5) * 18,
-      vy: (Math.random() - 0.5) * 18,
-      radius: 0.7 + Math.random() * 1.8,
+      vx: Math.cos(angle) * speed,
+      vy: Math.sin(angle) * speed,
+      radius: 0.65 + Math.random() * 1.55,
       phase: Math.random() * Math.PI * 2,
-      drift: 0.35 + Math.random() * 0.85,
+      drift: 0.28 + Math.random() * 0.62,
       color: cyan ? "0,255,255" : "255,0,127"
     };
   }
@@ -1035,7 +1049,7 @@ class BackgroundParticleField {
     if (!this.canvas || !this.ctx) return;
     this.width = Math.max(1, window.innerWidth);
     this.height = Math.max(1, window.innerHeight);
-    this.dpr = Math.min(1.5, Math.max(1, window.devicePixelRatio || 1));
+    this.dpr = Math.min(1.35, Math.max(1, window.devicePixelRatio || 1));
     this.canvas.width = Math.round(this.width * this.dpr);
     this.canvas.height = Math.round(this.height * this.dpr);
     this.canvas.style.width = `${this.width}px`;
@@ -1062,32 +1076,6 @@ class BackgroundParticleField {
     this.resizeTimer = window.setTimeout(() => this.resize(), 100);
   }
 
-  setPointer(x, y) {
-    const now = performance.now();
-    const moved = Math.hypot(x - this.pointer.x, y - this.pointer.y);
-    this.pointer.x = x;
-    this.pointer.y = y;
-    this.pointer.active = true;
-    this.pointer.lastMove = now;
-    if (moved > 3 || this.pointerTrail.length === 0) {
-      this.pointerTrail.push({ x, y, life: 1, radius: 4 + Math.min(14, moved * 0.12) });
-      if (this.pointerTrail.length > 18) this.pointerTrail.splice(0, this.pointerTrail.length - 18);
-    }
-  }
-
-  handleMouseMove(event) {
-    this.setPointer(event.clientX, event.clientY);
-  }
-
-  handleTouchMove(event) {
-    const touch = event.touches?.[0];
-    if (touch) this.setPointer(touch.clientX, touch.clientY);
-  }
-
-  handlePointerLeave() {
-    this.pointer.active = false;
-  }
-
   start() {
     if (this.running || !this.ctx || document.hidden) return;
     this.running = true;
@@ -1103,267 +1091,55 @@ class BackgroundParticleField {
 
   loop(timestamp) {
     if (!this.running) return;
-    const dt = Math.min(0.033, Math.max(0.001, (timestamp - this.lastTimestamp) / 1000));
+    const deltaTime = Math.min(0.033, Math.max(0.001, (timestamp - this.lastTimestamp) / 1000));
     this.lastTimestamp = timestamp;
-    this.updateAndDraw(dt, timestamp / 1000);
+    this.updateAndDraw(deltaTime, timestamp / 1000);
     this.animationId = requestAnimationFrame(this.loop);
   }
 
-  updateAndDraw(dt, time) {
+  updateAndDraw(deltaTime, time) {
     const ctx = this.ctx;
     ctx.setTransform(this.dpr, 0, 0, this.dpr, 0, 0);
     ctx.globalCompositeOperation = "source-over";
-    ctx.fillStyle = "rgba(5, 2, 10, 0.18)";
+    ctx.fillStyle = "rgba(5, 2, 10, 0.2)";
     ctx.fillRect(0, 0, this.width, this.height);
-
-    const pointerActive = this.pointer.active && performance.now() - this.pointer.lastMove < 1300;
-    const repelRadius = 145;
-    const drag = Math.pow(0.986, dt * 60);
-
     ctx.globalCompositeOperation = "lighter";
+    const drag = Math.pow(0.992, deltaTime * 60);
+
     for (const particle of this.particles) {
       particle.previousX = particle.x;
       particle.previousY = particle.y;
-
-      particle.vx += Math.cos(time * particle.drift + particle.phase) * 1.8 * dt;
-      particle.vy += Math.sin(time * particle.drift * 0.83 + particle.phase) * 1.8 * dt;
-
-      if (pointerActive) {
-        const dx = particle.x - this.pointer.x;
-        const dy = particle.y - this.pointer.y;
-        const distance = Math.hypot(dx, dy);
-        if (distance > 0.001 && distance < repelRadius) {
-          const force = (1 - distance / repelRadius) ** 2 * 330;
-          particle.vx += (dx / distance) * force * dt;
-          particle.vy += (dy / distance) * force * dt;
-        }
-      }
-
+      particle.vx += Math.cos(time * particle.drift + particle.phase) * 0.9 * deltaTime;
+      particle.vy += Math.sin(time * particle.drift * 0.81 + particle.phase) * 0.9 * deltaTime;
       particle.vx *= drag;
       particle.vy *= drag;
-      const speed = Math.hypot(particle.vx, particle.vy);
-      if (speed > 115) {
-        particle.vx = particle.vx / speed * 115;
-        particle.vy = particle.vy / speed * 115;
-      }
+      particle.x += particle.vx * deltaTime;
+      particle.y += particle.vy * deltaTime;
 
-      particle.x += particle.vx * dt;
-      particle.y += particle.vy * dt;
-      const margin = 12;
+      const margin = 10;
       if (particle.x < -margin) { particle.x = this.width + margin; particle.previousX = particle.x; }
       if (particle.x > this.width + margin) { particle.x = -margin; particle.previousX = particle.x; }
       if (particle.y < -margin) { particle.y = this.height + margin; particle.previousY = particle.y; }
       if (particle.y > this.height + margin) { particle.y = -margin; particle.previousY = particle.y; }
 
-      const velocityGlow = Math.min(1, speed / 80);
+      const speedGlow = Math.min(1, Math.hypot(particle.vx, particle.vy) / 36);
       ctx.beginPath();
       ctx.moveTo(particle.previousX, particle.previousY);
       ctx.lineTo(particle.x, particle.y);
-      ctx.strokeStyle = `rgba(${particle.color},${0.10 + velocityGlow * 0.28})`;
-      ctx.lineWidth = particle.radius * (0.75 + velocityGlow);
+      ctx.strokeStyle = `rgba(${particle.color},${0.08 + speedGlow * 0.18})`;
+      ctx.lineWidth = particle.radius;
       ctx.stroke();
 
       ctx.beginPath();
-      ctx.arc(particle.x, particle.y, particle.radius + velocityGlow * 0.8, 0, Math.PI * 2);
-      ctx.fillStyle = `rgba(${particle.color},${0.38 + velocityGlow * 0.42})`;
+      ctx.arc(particle.x, particle.y, particle.radius + speedGlow * 0.45, 0, Math.PI * 2);
+      ctx.fillStyle = `rgba(${particle.color},${0.32 + speedGlow * 0.34})`;
       ctx.shadowColor = `rgb(${particle.color})`;
-      ctx.shadowBlur = 8 + velocityGlow * 10;
+      ctx.shadowBlur = 6 + speedGlow * 6;
       ctx.fill();
     }
 
     ctx.shadowBlur = 0;
-    for (let index = this.pointerTrail.length - 1; index >= 0; index -= 1) {
-      const point = this.pointerTrail[index];
-      point.life -= dt * 1.8;
-      point.radius += dt * 25;
-      if (point.life <= 0) {
-        this.pointerTrail.splice(index, 1);
-        continue;
-      }
-      const gradient = ctx.createRadialGradient(point.x, point.y, 0, point.x, point.y, point.radius * 3.2);
-      gradient.addColorStop(0, `rgba(255,255,255,${point.life * 0.16})`);
-      gradient.addColorStop(0.2, `rgba(0,255,255,${point.life * 0.12})`);
-      gradient.addColorStop(0.55, `rgba(255,0,127,${point.life * 0.075})`);
-      gradient.addColorStop(1, "rgba(5,2,10,0)");
-      ctx.fillStyle = gradient;
-      ctx.beginPath();
-      ctx.arc(point.x, point.y, point.radius * 3.2, 0, Math.PI * 2);
-      ctx.fill();
-    }
     ctx.globalCompositeOperation = "source-over";
-  }
-}
-
-class NeonCursorController {
-  constructor() {
-    this.touchDevice = "ontouchstart" in window || Number(navigator.maxTouchPoints || 0) > 0;
-    this.finePointer = window.matchMedia?.("(hover: hover) and (pointer: fine)")?.matches ?? false;
-    this.reducedMotion = window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches ?? false;
-    this.enabled = !this.touchDevice && this.finePointer;
-    this.target = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
-    this.corePosition = { ...this.target };
-    this.ringPosition = { ...this.target };
-    this.visible = false;
-    this.hoveringInteractive = false;
-    this.animationId = null;
-    this.lastTimestamp = performance.now();
-    this.handlePointerMove = this.handlePointerMove.bind(this);
-    this.handlePointerDown = this.handlePointerDown.bind(this);
-    this.handlePointerUp = this.handlePointerUp.bind(this);
-    this.handlePointerLeave = this.handlePointerLeave.bind(this);
-    this.loop = this.loop.bind(this);
-    if (!this.enabled) return;
-    this.inject();
-    this.bind();
-    this.animationId = requestAnimationFrame(this.loop);
-  }
-
-  inject() {
-    this.ring = document.createElement("div");
-    this.ring.className = "neon-cursor neon-cursor-ring";
-    this.ring.setAttribute("aria-hidden", "true");
-    this.core = document.createElement("div");
-    this.core.className = "neon-cursor neon-cursor-crosshair";
-    this.core.setAttribute("aria-hidden", "true");
-    this.core.innerHTML = '<span class="cursor-line cursor-line-x"></span><span class="cursor-line cursor-line-y"></span><span class="cursor-dot"></span>';
-    document.body.append(this.ring, this.core);
-    document.documentElement.classList.add("neon-custom-cursor");
-  }
-
-  bind() {
-    window.addEventListener("pointermove", this.handlePointerMove, { passive: true });
-    window.addEventListener("pointerdown", this.handlePointerDown, { passive: true });
-    window.addEventListener("pointerup", this.handlePointerUp, { passive: true });
-    document.documentElement.addEventListener("mouseleave", this.handlePointerLeave, { passive: true });
-    window.addEventListener("blur", this.handlePointerLeave, { passive: true });
-  }
-
-  handlePointerMove(event) {
-    if (event.pointerType && event.pointerType !== "mouse" && event.pointerType !== "pen") return;
-    this.target.x = event.clientX;
-    this.target.y = event.clientY;
-    this.visible = true;
-    this.hoveringInteractive = Boolean(event.target instanceof Element && event.target.closest(
-      "a, button, input, textarea, select, [role='button'], [data-open-game], [data-close-modal], .arcade-card, .modal-panel"
-    ));
-    this.applyStateClasses();
-  }
-
-  handlePointerDown(event) {
-    if (event.pointerType && event.pointerType !== "mouse" && event.pointerType !== "pen") return;
-    this.ring?.classList.add("is-pressed");
-    this.core?.classList.add("is-pressed");
-  }
-
-  handlePointerUp() {
-    this.ring?.classList.remove("is-pressed");
-    this.core?.classList.remove("is-pressed");
-  }
-
-  handlePointerLeave() {
-    this.visible = false;
-    this.applyStateClasses();
-  }
-
-  applyStateClasses() {
-    for (const element of [this.ring, this.core]) {
-      if (!element) continue;
-      element.classList.toggle("is-visible", this.visible);
-      element.classList.toggle("is-interactive", this.hoveringInteractive);
-    }
-  }
-
-  loop(timestamp) {
-    const dt = Math.min(0.05, Math.max(0.001, (timestamp - this.lastTimestamp) / 1000));
-    this.lastTimestamp = timestamp;
-    const coreEase = this.reducedMotion ? 1 : 1 - Math.exp(-dt * 32);
-    const ringEase = this.reducedMotion ? 1 : 1 - Math.exp(-dt * 13);
-    this.corePosition.x += (this.target.x - this.corePosition.x) * coreEase;
-    this.corePosition.y += (this.target.y - this.corePosition.y) * coreEase;
-    this.ringPosition.x += (this.target.x - this.ringPosition.x) * ringEase;
-    this.ringPosition.y += (this.target.y - this.ringPosition.y) * ringEase;
-    this.core.style.transform = `translate3d(${this.corePosition.x}px, ${this.corePosition.y}px, 0)`;
-    this.ring.style.transform = `translate3d(${this.ringPosition.x}px, ${this.ringPosition.y}px, 0)`;
-    this.animationId = requestAnimationFrame(this.loop);
-  }
-}
-
-class HolographicTiltController {
-  constructor(cards) {
-    this.cards = Array.from(cards || []);
-    this.touchDevice = "ontouchstart" in window || Number(navigator.maxTouchPoints || 0) > 0;
-    this.finePointer = window.matchMedia?.("(hover: hover) and (pointer: fine)")?.matches ?? false;
-    this.reducedMotion = window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches ?? false;
-    this.enabled = !this.touchDevice && this.finePointer && !this.reducedMotion;
-    this.states = new Map();
-    this.animationId = null;
-    this.lastTimestamp = performance.now();
-    this.loop = this.loop.bind(this);
-    for (const card of this.cards) this.prepareCard(card);
-    if (this.enabled) this.animationId = requestAnimationFrame(this.loop);
-  }
-
-  prepareCard(card) {
-    const glow = document.createElement("span");
-    glow.className = "card-tilt-glow";
-    glow.setAttribute("aria-hidden", "true");
-    card.appendChild(glow);
-    const state = {
-      card,
-      currentX: 0,
-      currentY: 0,
-      currentGlowX: 50,
-      currentGlowY: 50,
-      targetX: 0,
-      targetY: 0,
-      targetGlowX: 50,
-      targetGlowY: 50,
-      active: false
-    };
-    this.states.set(card, state);
-    if (!this.enabled) return;
-    card.addEventListener("pointerenter", () => {
-      state.active = true;
-      card.classList.add("is-tilting");
-    }, { passive: true });
-    card.addEventListener("pointermove", (event) => this.updateTarget(event, state), { passive: true });
-    card.addEventListener("pointerleave", () => {
-      state.active = false;
-      state.targetX = 0;
-      state.targetY = 0;
-      state.targetGlowX = 50;
-      state.targetGlowY = 50;
-      card.classList.remove("is-tilting");
-    }, { passive: true });
-  }
-
-  updateTarget(event, state) {
-    if (event.pointerType && event.pointerType !== "mouse" && event.pointerType !== "pen") return;
-    const rect = state.card.getBoundingClientRect();
-    if (rect.width <= 0 || rect.height <= 0) return;
-    const normalizedX = Math.max(0, Math.min(1, (event.clientX - rect.left) / rect.width));
-    const normalizedY = Math.max(0, Math.min(1, (event.clientY - rect.top) / rect.height));
-    state.targetX = (0.5 - normalizedY) * 11;
-    state.targetY = (normalizedX - 0.5) * 14;
-    state.targetGlowX = normalizedX * 100;
-    state.targetGlowY = normalizedY * 100;
-  }
-
-  loop(timestamp) {
-    const dt = Math.min(0.05, Math.max(0.001, (timestamp - this.lastTimestamp) / 1000));
-    this.lastTimestamp = timestamp;
-    const ease = 1 - Math.exp(-dt * 13);
-    for (const state of this.states.values()) {
-      state.currentX += (state.targetX - state.currentX) * ease;
-      state.currentY += (state.targetY - state.currentY) * ease;
-      state.currentGlowX += (state.targetGlowX - state.currentGlowX) * ease;
-      state.currentGlowY += (state.targetGlowY - state.currentGlowY) * ease;
-      state.card.style.setProperty("--tilt-x", `${state.currentX.toFixed(3)}deg`);
-      state.card.style.setProperty("--tilt-y", `${state.currentY.toFixed(3)}deg`);
-      state.card.style.setProperty("--tilt-glow-x", `${state.currentGlowX.toFixed(2)}%`);
-      state.card.style.setProperty("--tilt-glow-y", `${state.currentGlowY.toFixed(2)}%`);
-    }
-    this.animationId = requestAnimationFrame(this.loop);
   }
 }
 
@@ -1388,7 +1164,7 @@ class BootSequenceController {
       return;
     }
     this.lines = [
-      { at: 90, text: "BOOTING ARCADE CORE v8.7...", state: "ok" },
+      { at: 90, text: "BOOTING ARCADE CORE v8.8...", state: "ok" },
       { at: 390, text: "VERIFYING INPUT MATRIX... OK", state: "ok" },
       { at: 700, text: "CONNECTING TO SEED-SERVER... LINKED", state: "ok" },
       { at: 1030, text: "LOADING RENDER MOTORS... 800x600", state: "ok" },
@@ -2045,16 +1821,17 @@ class TouchArcadeControls {
     this.activeGameId = String(gameId || "space-invaders");
     this.releaseAll();
     if (!this.root) return;
-    const isPacman = this.activeGameId === "pac-man";
+    const isDirectionalSwipe = this.activeGameId === "pac-man" || this.activeGameId === "tron";
     this.root.dataset.game = this.activeGameId;
-    this.leftLabel.textContent = isPacman ? "SWIPE ANYWHERE" : this.activeGameId === "asteroids" ? "DRAG: TURN / THRUST" : "DRAG: MOVE";
-    this.rightLabel.textContent = isPacman ? "4-WAY SWIPE" : "TAP: AUTO FIRE";
-    this.autoFireIndicator.hidden = isPacman;
+    this.leftLabel.textContent = isDirectionalSwipe ? "SWIPE ANYWHERE" : this.activeGameId === "asteroids" ? "DRAG: TURN / THRUST" : "DRAG: MOVE";
+    this.rightLabel.textContent = isDirectionalSwipe ? "4-WAY SWIPE" : "TAP: AUTO FIRE";
+    this.autoFireIndicator.hidden = isDirectionalSwipe;
   }
 
   getControlDescription(gameId = this.activeGameId) {
     if (!this.isTouchDevice) return "";
     if (gameId === "pac-man") return "DESLIZA EN CUALQUIER DIRECCIÓN SOBRE EL JUEGO PARA MOVER A PAC-MAN";
+    if (gameId === "tron") return "DESLIZA EN CUALQUIER DIRECCIÓN PARA GIRAR LA MOTO DE LUZ EXACTAMENTE 90°";
     if (gameId === "asteroids") return "MITAD IZQUIERDA: ARRASTRA PARA GIRAR Y ACELERAR · MITAD DERECHA: TOCA PARA AUTO FIRE";
     return "MITAD IZQUIERDA: ARRASTRA PARA MOVER · MITAD DERECHA: TOCA PARA AUTO FIRE";
   }
@@ -2100,7 +1877,7 @@ class TouchArcadeControls {
       const localX = touch.clientX - rect.left;
       const localY = touch.clientY - rect.top;
       const gameId = this.activeGameId || this.getGameId();
-      const zone = gameId === "pac-man" ? "swipe" : localX < rect.width / 2 ? "move" : "fire";
+      const zone = gameId === "pac-man" || gameId === "tron" ? "swipe" : localX < rect.width / 2 ? "move" : "fire";
       const data = {
         id: touch.identifier,
         gameId,
@@ -2220,7 +1997,7 @@ class TouchArcadeControls {
   }
 
   toggleAutoFire() {
-    if (this.activeGameId === "pac-man") return;
+    if (this.activeGameId === "pac-man" || this.activeGameId === "tron") return;
     this.autoFire = !this.autoFire;
     this.input.setVirtualKey("Space", this.autoFire, "gesture-auto-fire");
     if (this.root) this.root.classList.toggle("is-auto-fire", this.autoFire);
@@ -5929,6 +5706,650 @@ class NeonAsteroidsGame {
   }
 }
 
+const TRON_DIRECTIONS = Object.freeze({
+  UP: Object.freeze({ name: "UP", dx: 0, dy: -1, code: "ArrowUp" }),
+  DOWN: Object.freeze({ name: "DOWN", dx: 0, dy: 1, code: "ArrowDown" }),
+  LEFT: Object.freeze({ name: "LEFT", dx: -1, dy: 0, code: "ArrowLeft" }),
+  RIGHT: Object.freeze({ name: "RIGHT", dx: 1, dy: 0, code: "ArrowRight" })
+});
+
+const TRON_DIRECTION_LIST = Object.freeze(Object.values(TRON_DIRECTIONS));
+
+class NeonTronGame {
+  constructor(engine) {
+    this.engine = engine;
+    this.ctx = engine.ctx;
+    this.input = engine.input;
+    this.width = 800;
+    this.height = 600;
+    this.cellSize = 10;
+    this.columns = this.width / this.cellSize;
+    this.rows = this.height / this.cellSize;
+    this.minColumn = 2;
+    this.maxColumn = this.columns - 3;
+    this.minRow = 8;
+    this.maxRow = this.rows - 4;
+    this.state = GAME_STATES.MENU;
+    this.score = 0;
+    this.lives = 3;
+    this.level = 1;
+    this.round = 1;
+    this.elapsed = 0;
+    this.moveAccumulator = 0;
+    this.roundPause = 0;
+    this.roundActive = false;
+    this.needsRoundReset = false;
+    this.roundMessage = "";
+    this.roundMessageTimer = 0;
+    this.damageFlash = 0;
+    this.screenShake = 0;
+    this.occupancy = new Uint8Array(this.columns * this.rows);
+    this.playerTrail = [];
+    this.cpuTrail = [];
+    this.particles = [];
+    this.player = this.createBike(14, 32, TRON_DIRECTIONS.RIGHT, "#00ffff", 1);
+    this.cpu = this.createBike(65, 27, TRON_DIRECTIONS.LEFT, "#ffa500", 2);
+  }
+
+  createBike(column, row, direction, color, trailValue) {
+    return {
+      column,
+      row,
+      direction,
+      queuedDirection: direction,
+      color,
+      trailValue,
+      alive: true
+    };
+  }
+
+  get speedCellsPerSecond() {
+    return Math.min(21, 11.5 + (this.level - 1) * 0.85);
+  }
+
+  gridIndex(column, row) {
+    return row * this.columns + column;
+  }
+
+  isInsideArena(column, row) {
+    return column >= this.minColumn && column <= this.maxColumn && row >= this.minRow && row <= this.maxRow;
+  }
+
+  isOccupied(column, row) {
+    return !this.isInsideArena(column, row) || this.occupancy[this.gridIndex(column, row)] !== 0;
+  }
+
+  markCell(bike) {
+    const index = this.gridIndex(bike.column, bike.row);
+    this.occupancy[index] = bike.trailValue;
+    const trail = bike.trailValue === 1 ? this.playerTrail : this.cpuTrail;
+    trail.push({ column: bike.column, row: bike.row });
+  }
+
+  start() {
+    this.state = GAME_STATES.PLAYING;
+    this.score = 0;
+    this.lives = 3;
+    this.level = 1;
+    this.round = 1;
+    this.elapsed = 0;
+    this.damageFlash = 0;
+    this.screenShake = 0;
+    this.particles.splice(0, this.particles.length);
+    this.beginRound(1.1, "ROUND 01");
+    this.engine.onGameStart();
+  }
+
+  resetToMenu() {
+    this.state = GAME_STATES.MENU;
+    this.score = 0;
+    this.lives = 3;
+    this.level = 1;
+    this.round = 1;
+    this.elapsed = 0;
+    this.moveAccumulator = 0;
+    this.roundPause = 0;
+    this.roundActive = false;
+    this.needsRoundReset = false;
+    this.roundMessage = "";
+    this.roundMessageTimer = 0;
+    this.damageFlash = 0;
+    this.screenShake = 0;
+    this.occupancy.fill(0);
+    this.playerTrail.splice(0, this.playerTrail.length);
+    this.cpuTrail.splice(0, this.cpuTrail.length);
+    this.particles.splice(0, this.particles.length);
+    this.player = this.createBike(14, 32, TRON_DIRECTIONS.RIGHT, "#00ffff", 1);
+    this.cpu = this.createBike(65, 27, TRON_DIRECTIONS.LEFT, "#ffa500", 2);
+  }
+
+  handlePrimaryAction() {
+    if (this.state === GAME_STATES.MENU || this.state === GAME_STATES.GAME_OVER) {
+      this.start();
+    } else {
+      this.endGame(true);
+    }
+  }
+
+  endGame(manual = false) {
+    if (this.state !== GAME_STATES.PLAYING) return;
+    this.state = GAME_STATES.GAME_OVER;
+    this.roundActive = false;
+    this.needsRoundReset = false;
+    this.spawnExplosion(this.player.column, this.player.row, "#00ffff", 15);
+    this.screenShake = 14;
+    this.engine.audio.playSynthSound("explosion", { intensity: 1.1 });
+    if (manual) {
+      this.engine.showCanvasMessage("GRID LINK ABORTED", {
+        y: this.height * 0.35,
+        color: "#ffa500",
+        size: 14,
+        duration: 1.5,
+        blink: 8,
+        fixed: true
+      });
+    }
+    this.engine.onGameOver(this.score);
+  }
+
+  beginRound(delay = 0, message = "") {
+    this.occupancy.fill(0);
+    this.playerTrail.splice(0, this.playerTrail.length);
+    this.cpuTrail.splice(0, this.cpuTrail.length);
+    const playerRow = 32 + ((this.round - 1) % 3) - 1;
+    const cpuRow = 27 - ((this.round - 1) % 3) + 1;
+    this.player = this.createBike(14, playerRow, TRON_DIRECTIONS.RIGHT, "#00ffff", 1);
+    this.cpu = this.createBike(65, cpuRow, TRON_DIRECTIONS.LEFT, "#ffa500", 2);
+    this.markCell(this.player);
+    this.markCell(this.cpu);
+    this.moveAccumulator = 0;
+    this.roundPause = Math.max(0, delay);
+    this.roundActive = delay <= 0;
+    this.needsRoundReset = false;
+    this.roundMessage = message;
+    this.roundMessageTimer = message ? Math.max(0.8, delay) : 0;
+  }
+
+  requestDirection(direction) {
+    if (!direction || this.isOpposite(direction, this.player.direction)) return;
+    this.player.queuedDirection = direction;
+  }
+
+  isOpposite(first, second) {
+    return first.dx + second.dx === 0 && first.dy + second.dy === 0;
+  }
+
+  updateInput() {
+    if (this.input.wasPressed("ArrowUp")) this.requestDirection(TRON_DIRECTIONS.UP);
+    if (this.input.wasPressed("ArrowDown")) this.requestDirection(TRON_DIRECTIONS.DOWN);
+    if (this.input.wasPressed("ArrowLeft")) this.requestDirection(TRON_DIRECTIONS.LEFT);
+    if (this.input.wasPressed("ArrowRight")) this.requestDirection(TRON_DIRECTIONS.RIGHT);
+  }
+
+  update(deltaTime) {
+    this.elapsed += deltaTime;
+    this.damageFlash = Math.max(0, this.damageFlash - deltaTime * 2.8);
+    this.screenShake = Math.max(0, this.screenShake - deltaTime * 38);
+    this.roundMessageTimer = Math.max(0, this.roundMessageTimer - deltaTime);
+    this.updateParticles(deltaTime);
+
+    if (this.state === GAME_STATES.MENU) {
+      if (this.input.wasPressed("Space") || this.input.wasPressed("Enter")) this.start();
+      return;
+    }
+
+    if (this.state === GAME_STATES.GAME_OVER) {
+      if (this.input.wasPressed("Space") || this.input.wasPressed("Enter")) this.start();
+      return;
+    }
+
+    this.updateInput();
+
+    if (this.roundPause > 0) {
+      this.roundPause = Math.max(0, this.roundPause - deltaTime);
+      if (this.roundPause <= 0) {
+        if (this.needsRoundReset) this.beginRound(0);
+        this.roundActive = true;
+      }
+      return;
+    }
+
+    if (!this.roundActive) return;
+    this.moveAccumulator += deltaTime * this.speedCellsPerSecond;
+    let safetySteps = 0;
+    while (this.moveAccumulator >= 1 && safetySteps < 5 && this.state === GAME_STATES.PLAYING && this.roundActive) {
+      this.moveAccumulator -= 1;
+      this.advanceGridStep();
+      safetySteps += 1;
+    }
+  }
+
+  predictPosition(bike, direction, distance = 1) {
+    return {
+      column: bike.column + direction.dx * distance,
+      row: bike.row + direction.dy * distance
+    };
+  }
+
+  isPathBlocked(bike, direction, lookAhead = 3) {
+    for (let step = 1; step <= lookAhead; step += 1) {
+      const point = this.predictPosition(bike, direction, step);
+      if (this.isOccupied(point.column, point.row)) return true;
+    }
+    return false;
+  }
+
+  getCpuDirections(lookAhead) {
+    return TRON_DIRECTION_LIST.filter((direction) => {
+      if (this.isOpposite(direction, this.cpu.direction)) return false;
+      return !this.isPathBlocked(this.cpu, direction, lookAhead);
+    });
+  }
+
+  chooseCpuDirection() {
+    const forwardBlocked = this.isPathBlocked(this.cpu, this.cpu.direction, 3);
+    const spontaneousTurn = Math.random() < Math.min(0.075, 0.012 + this.level * 0.0025);
+    if (!forwardBlocked && !spontaneousTurn) return;
+
+    let candidates = this.getCpuDirections(3);
+    if (candidates.length === 0) candidates = this.getCpuDirections(1);
+    if (candidates.length === 0) return;
+
+    const scored = candidates.map((direction) => {
+      let clearance = 0;
+      for (let step = 1; step <= 8; step += 1) {
+        const point = this.predictPosition(this.cpu, direction, step);
+        if (this.isOccupied(point.column, point.row)) break;
+        clearance += 1;
+      }
+      const centerColumn = (this.minColumn + this.maxColumn) / 2;
+      const centerRow = (this.minRow + this.maxRow) / 2;
+      const projected = this.predictPosition(this.cpu, direction, 4);
+      const centerBias = 1 / (1 + Math.hypot(projected.column - centerColumn, projected.row - centerRow));
+      return { direction, score: clearance + centerBias * 3 + Math.random() * 2.2 };
+    });
+    scored.sort((a, b) => b.score - a.score);
+    this.cpu.direction = scored[0].direction;
+    this.cpu.queuedDirection = scored[0].direction;
+  }
+
+  advanceGridStep() {
+    if (!this.isOpposite(this.player.queuedDirection, this.player.direction)) {
+      this.player.direction = this.player.queuedDirection;
+    }
+    this.chooseCpuDirection();
+
+    const nextPlayer = this.predictPosition(this.player, this.player.direction, 1);
+    const nextCpu = this.predictPosition(this.cpu, this.cpu.direction, 1);
+    let playerCrashed = this.isOccupied(nextPlayer.column, nextPlayer.row);
+    let cpuCrashed = this.isOccupied(nextCpu.column, nextCpu.row);
+
+    const sameDestination = nextPlayer.column === nextCpu.column && nextPlayer.row === nextCpu.row;
+    const crossedHeads = nextPlayer.column === this.cpu.column
+      && nextPlayer.row === this.cpu.row
+      && nextCpu.column === this.player.column
+      && nextCpu.row === this.player.row;
+    if (sameDestination || crossedHeads) {
+      playerCrashed = true;
+      cpuCrashed = true;
+    }
+
+    if (playerCrashed) {
+      this.handlePlayerCrash();
+      return;
+    }
+    if (cpuCrashed) {
+      this.handleCpuCrash();
+      return;
+    }
+
+    this.player.column = nextPlayer.column;
+    this.player.row = nextPlayer.row;
+    this.cpu.column = nextCpu.column;
+    this.cpu.row = nextCpu.row;
+    this.markCell(this.player);
+    this.markCell(this.cpu);
+  }
+
+  scheduleRoundReset(message) {
+    this.roundActive = false;
+    this.needsRoundReset = true;
+    this.roundPause = 1.45;
+    this.roundMessage = message;
+    this.roundMessageTimer = 1.35;
+    this.moveAccumulator = 0;
+  }
+
+  handlePlayerCrash() {
+    this.player.alive = false;
+    this.lives -= 1;
+    this.damageFlash = 0.82;
+    this.screenShake = 15;
+    this.spawnExplosion(this.player.column, this.player.row, "#00ffff", 15);
+    this.engine.audio.playSynthSound("explosion", { intensity: 1.15 });
+    this.engine.haptics.damage();
+    this.engine.showCanvasMessage(this.lives > 0 ? "LIGHTCYCLE DESTROYED" : "GRID TERMINATED", {
+      y: this.height * 0.43,
+      color: "#ff416d",
+      size: this.lives > 0 ? 15 : 19,
+      duration: 1.45,
+      blink: 10,
+      fixed: true
+    });
+
+    if (this.lives <= 0) {
+      this.endGame(false);
+      return;
+    }
+    this.round += 1;
+    this.scheduleRoundReset(`LIFE ${this.lives}`);
+  }
+
+  handleCpuCrash() {
+    this.cpu.alive = false;
+    this.score += 1000;
+    this.level += 1;
+    this.round += 1;
+    this.screenShake = 9;
+    this.spawnExplosion(this.cpu.column, this.cpu.row, "#ffa500", 14);
+    this.engine.audio.playSynthSound("explosion", { intensity: 0.78 });
+    this.engine.showCanvasMessage("+1000 GRID VICTORY", {
+      y: this.height * 0.42,
+      color: "#00ffff",
+      size: 16,
+      duration: 1.45,
+      blink: 8,
+      fixed: true
+    });
+    this.scheduleRoundReset(`LEVEL ${String(this.level).padStart(2, "0")}`);
+  }
+
+  spawnExplosion(column, row, color, explicitCount = null) {
+    const x = column * this.cellSize + this.cellSize / 2;
+    const y = row * this.cellSize + this.cellSize / 2;
+    const count = explicitCount ?? (10 + Math.floor(Math.random() * 6));
+    for (let index = 0; index < count; index += 1) {
+      const angle = Math.random() * Math.PI * 2;
+      const speed = 75 + Math.random() * 215;
+      const life = 0.45 + Math.random() * 0.55;
+      this.particles.push({
+        x,
+        y,
+        vx: Math.cos(angle) * speed,
+        vy: Math.sin(angle) * speed,
+        life,
+        maxLife: life,
+        radius: 1.6 + Math.random() * 3.4,
+        color,
+        drag: 0.92 + Math.random() * 0.045
+      });
+    }
+  }
+
+  updateParticles(deltaTime) {
+    for (let index = this.particles.length - 1; index >= 0; index -= 1) {
+      const particle = this.particles[index];
+      particle.life -= deltaTime;
+      particle.x += particle.vx * deltaTime;
+      particle.y += particle.vy * deltaTime;
+      particle.vx *= Math.pow(particle.drag, deltaTime * 60);
+      particle.vy *= Math.pow(particle.drag, deltaTime * 60);
+      if (particle.life <= 0) this.particles.splice(index, 1);
+    }
+  }
+
+  draw() {
+    const ctx = this.ctx;
+    const shakeX = this.screenShake > 0 ? (Math.random() - 0.5) * this.screenShake : 0;
+    const shakeY = this.screenShake > 0 ? (Math.random() - 0.5) * this.screenShake : 0;
+    ctx.save();
+    ctx.translate(shakeX, shakeY);
+
+    if (this.state === GAME_STATES.MENU) {
+      this.drawMenu(ctx);
+    } else {
+      this.drawArena(ctx);
+      this.drawTrails(ctx);
+      this.drawBike(ctx, this.player);
+      this.drawBike(ctx, this.cpu);
+      this.drawParticles(ctx);
+      this.drawHud(ctx);
+      if (this.roundMessageTimer > 0) this.drawRoundMessage(ctx);
+      if (this.state === GAME_STATES.GAME_OVER) this.drawGameOverPanel(ctx);
+      if (this.damageFlash > 0) {
+        ctx.globalAlpha = this.damageFlash * 0.22;
+        ctx.fillStyle = "#ff174f";
+        ctx.fillRect(0, 0, this.width, this.height);
+      }
+    }
+    ctx.restore();
+  }
+
+  drawMenu(ctx) {
+    this.drawArena(ctx);
+    const time = performance.now() * 0.001;
+    ctx.save();
+    ctx.textAlign = "center";
+    ctx.fillStyle = "#00ffff";
+    ctx.shadowColor = "#00ffff";
+    ctx.shadowBlur = 24;
+    ctx.font = '900 40px "Orbitron", sans-serif';
+    ctx.fillText("TRON LIGHTCYCLES", this.width / 2, 202);
+    ctx.shadowBlur = 0;
+    ctx.fillStyle = "rgba(248,247,255,.58)";
+    ctx.font = '700 15px "Rajdhani", sans-serif';
+    ctx.fillText("90° GRID COMBAT · PERMANENT LIGHT TRAILS", this.width / 2, 242);
+
+    const demoY = 322;
+    const demoOffset = (time * 58) % 230;
+    ctx.lineWidth = 7;
+    ctx.lineCap = "square";
+    ctx.strokeStyle = "#00ffff";
+    ctx.shadowColor = "#00ffff";
+    ctx.shadowBlur = 16;
+    ctx.beginPath();
+    ctx.moveTo(165, demoY);
+    ctx.lineTo(165 + demoOffset, demoY);
+    ctx.stroke();
+    ctx.strokeStyle = "#ffa500";
+    ctx.shadowColor = "#ffa500";
+    ctx.beginPath();
+    ctx.moveTo(635, demoY + 52);
+    ctx.lineTo(635 - demoOffset, demoY + 52);
+    ctx.stroke();
+
+    ctx.fillStyle = "#00ffff";
+    ctx.shadowColor = "#00ffff";
+    ctx.fillRect(158 + demoOffset, demoY - 6, 16, 12);
+    ctx.fillStyle = "#ffa500";
+    ctx.shadowColor = "#ffa500";
+    ctx.fillRect(627 - demoOffset, demoY + 46, 16, 12);
+    ctx.shadowBlur = 0;
+    ctx.globalAlpha = 0.58 + Math.sin(time * 5) * 0.25;
+    ctx.fillStyle = "#ff3cf7";
+    ctx.font = '800 12px "Press Start 2P", monospace';
+    ctx.fillText("PRESS SPACE OR ENTER", this.width / 2, 456);
+    ctx.restore();
+  }
+
+  drawArena(ctx) {
+    ctx.save();
+    const top = this.minRow * this.cellSize;
+    const left = this.minColumn * this.cellSize;
+    const arenaWidth = (this.maxColumn - this.minColumn + 1) * this.cellSize;
+    const arenaHeight = (this.maxRow - this.minRow + 1) * this.cellSize;
+    ctx.fillStyle = "rgba(3,6,14,.72)";
+    ctx.fillRect(left, top, arenaWidth, arenaHeight);
+
+    ctx.strokeStyle = "rgba(0,255,255,.10)";
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    for (let column = this.minColumn; column <= this.maxColumn + 1; column += 2) {
+      const x = column * this.cellSize;
+      ctx.moveTo(x, top);
+      ctx.lineTo(x, top + arenaHeight);
+    }
+    for (let row = this.minRow; row <= this.maxRow + 1; row += 2) {
+      const y = row * this.cellSize;
+      ctx.moveTo(left, y);
+      ctx.lineTo(left + arenaWidth, y);
+    }
+    ctx.stroke();
+
+    ctx.strokeStyle = "#7055ff";
+    ctx.shadowColor = "#7055ff";
+    ctx.shadowBlur = 18;
+    ctx.lineWidth = 3;
+    ctx.strokeRect(left - 2, top - 2, arenaWidth + 4, arenaHeight + 4);
+    ctx.shadowBlur = 0;
+    ctx.restore();
+  }
+
+  drawTrailPath(ctx, trail, color) {
+    if (trail.length === 0) return;
+    ctx.strokeStyle = color;
+    ctx.shadowColor = color;
+    ctx.shadowBlur = 13;
+    ctx.lineWidth = 6;
+    ctx.lineCap = "square";
+    ctx.lineJoin = "miter";
+    ctx.beginPath();
+    const first = trail[0];
+    ctx.moveTo(first.column * this.cellSize + this.cellSize / 2, first.row * this.cellSize + this.cellSize / 2);
+    for (let index = 1; index < trail.length; index += 1) {
+      const point = trail[index];
+      ctx.lineTo(point.column * this.cellSize + this.cellSize / 2, point.row * this.cellSize + this.cellSize / 2);
+    }
+    ctx.stroke();
+  }
+
+  drawTrails(ctx) {
+    ctx.save();
+    this.drawTrailPath(ctx, this.playerTrail, "#00ffff");
+    this.drawTrailPath(ctx, this.cpuTrail, "#ffa500");
+    ctx.restore();
+  }
+
+  drawBike(ctx, bike) {
+    if (!bike.alive) return;
+    const x = bike.column * this.cellSize + this.cellSize / 2;
+    const y = bike.row * this.cellSize + this.cellSize / 2;
+    const angle = Math.atan2(bike.direction.dy, bike.direction.dx);
+    ctx.save();
+    ctx.translate(x, y);
+    ctx.rotate(angle);
+    ctx.fillStyle = bike.color;
+    ctx.shadowColor = bike.color;
+    ctx.shadowBlur = 18;
+    ctx.fillRect(-7, -4, 14, 8);
+    ctx.fillStyle = "#f8f7ff";
+    ctx.fillRect(2, -2, 6, 4);
+    ctx.strokeStyle = bike.color;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(-7, -6);
+    ctx.lineTo(5, -6);
+    ctx.lineTo(9, 0);
+    ctx.lineTo(5, 6);
+    ctx.lineTo(-7, 6);
+    ctx.stroke();
+    ctx.restore();
+  }
+
+  drawParticles(ctx) {
+    ctx.save();
+    for (const particle of this.particles) {
+      const alpha = Math.max(0, particle.life / particle.maxLife);
+      ctx.globalAlpha = alpha;
+      ctx.fillStyle = particle.color;
+      ctx.shadowColor = particle.color;
+      ctx.shadowBlur = 10;
+      ctx.beginPath();
+      ctx.arc(particle.x, particle.y, particle.radius * (0.45 + alpha * 0.55), 0, Math.PI * 2);
+      ctx.fill();
+    }
+    ctx.restore();
+  }
+
+  drawHud(ctx) {
+    ctx.save();
+    ctx.textBaseline = "top";
+    ctx.fillStyle = "rgba(248,247,255,.43)";
+    ctx.font = '700 10px "Orbitron", sans-serif';
+    ctx.fillText("SCORE", 28, 20);
+    ctx.textAlign = "center";
+    ctx.fillText("LEVEL", this.width / 2, 20);
+    ctx.textAlign = "right";
+    ctx.fillText("LIVES", this.width - 28, 20);
+
+    ctx.textAlign = "left";
+    ctx.fillStyle = "#00ffff";
+    ctx.shadowColor = "#00ffff";
+    ctx.shadowBlur = 9;
+    ctx.font = '900 20px "Orbitron", sans-serif';
+    ctx.fillText(String(this.score).padStart(6, "0"), 28, 39);
+    ctx.textAlign = "center";
+    ctx.fillStyle = "#ffa500";
+    ctx.shadowColor = "#ffa500";
+    ctx.fillText(String(this.level).padStart(2, "0"), this.width / 2, 39);
+    ctx.textAlign = "right";
+    ctx.fillStyle = "#00ff7f";
+    ctx.shadowColor = "#00ff7f";
+    ctx.fillText(String(this.lives), this.width - 28, 39);
+    ctx.shadowBlur = 0;
+    ctx.textAlign = "left";
+    ctx.fillStyle = "rgba(248,247,255,.34)";
+    ctx.font = '700 10px "Rajdhani", sans-serif';
+    ctx.fillText(`GRID SPEED ${this.speedCellsPerSecond.toFixed(1)} CPS`, 28, this.height - 27);
+    ctx.textAlign = "right";
+    ctx.fillText(`ROUND ${String(this.round).padStart(2, "0")}`, this.width - 28, this.height - 27);
+    ctx.restore();
+  }
+
+  drawRoundMessage(ctx) {
+    const alpha = Math.min(1, this.roundMessageTimer * 2.2) * (0.6 + Math.abs(Math.sin(this.elapsed * 9)) * 0.4);
+    ctx.save();
+    ctx.globalAlpha = alpha;
+    ctx.textAlign = "center";
+    ctx.fillStyle = "#f8f7ff";
+    ctx.shadowColor = "#00ffff";
+    ctx.shadowBlur = 16;
+    ctx.font = '800 15px "Press Start 2P", monospace';
+    ctx.fillText(this.roundMessage, this.width / 2, this.height * 0.52);
+    ctx.restore();
+  }
+
+  drawGameOverPanel(ctx) {
+    ctx.save();
+    ctx.fillStyle = "rgba(2,1,8,.62)";
+    ctx.fillRect(0, 0, this.width, this.height);
+    ctx.textAlign = "center";
+    ctx.fillStyle = "#ff416d";
+    ctx.shadowColor = "#ff416d";
+    ctx.shadowBlur = 18;
+    ctx.font = '900 30px "Orbitron", sans-serif';
+    ctx.fillText("GRID GAME OVER", this.width / 2, this.height * 0.47);
+    ctx.shadowBlur = 0;
+    ctx.fillStyle = "rgba(248,247,255,.6)";
+    ctx.font = '700 14px "Rajdhani", sans-serif';
+    ctx.fillText(`FINAL SCORE ${String(this.score).padStart(6, "0")} · LEVEL ${this.level}`, this.width / 2, this.height * 0.56);
+    ctx.fillStyle = "#00ffff";
+    ctx.font = '700 10px "Press Start 2P", monospace';
+    ctx.fillText("SPACE TO RESTART", this.width / 2, this.height * 0.65);
+    ctx.restore();
+  }
+
+  getTelemetry() {
+    return {
+      state: this.state === GAME_STATES.GAME_OVER ? "GAME OVER" : this.state,
+      score: String(this.score).padStart(6, "0"),
+      primaryMetric: `${Math.max(0, this.lives)} / 3`,
+      secondaryMetric: `LV ${String(this.level).padStart(2, "0")}`,
+      primaryButton: this.state === GAME_STATES.PLAYING ? "ABORT GRID" : this.state === GAME_STATES.GAME_OVER ? "RETRY GRID" : "START GRID"
+    };
+  }
+}
+
 class PlaceholderGame {
   constructor(engine, config) {
     this.engine = engine;
@@ -6037,7 +6458,8 @@ class CRTVisualController {
 const SCORE_INTEGRITY_RULES = Object.freeze({
   "space-invaders": Object.freeze({ maxFrameDelta: 60000, baseAllowance: 10000, maxPerSecond: 42000, absoluteMaximum: 50000000 }),
   "pac-man": Object.freeze({ maxFrameDelta: 40000, baseAllowance: 10000, maxPerSecond: 36000, absoluteMaximum: 50000000 }),
-  asteroids: Object.freeze({ maxFrameDelta: 50000, baseAllowance: 10000, maxPerSecond: 40000, absoluteMaximum: 50000000 })
+  asteroids: Object.freeze({ maxFrameDelta: 50000, baseAllowance: 10000, maxPerSecond: 40000, absoluteMaximum: 50000000 }),
+  tron: Object.freeze({ maxFrameDelta: 5000, baseAllowance: 3000, maxPerSecond: 6000, absoluteMaximum: 50000000 })
 });
 
 class ScoreIntegrityGuard {
@@ -6249,6 +6671,8 @@ class ArcadeEngine {
       this.module = new NeonPacmanGame(this);
     } else if (gameConfig.id === "asteroids") {
       this.module = new NeonAsteroidsGame(this);
+    } else if (gameConfig.id === "tron") {
+      this.module = new NeonTronGame(this);
     } else {
       this.module = new PlaceholderGame(this, gameConfig);
     }
@@ -6697,13 +7121,11 @@ const ui = {
   modalTitle
 };
 
-const backgroundParticles = new BackgroundParticleField(document.getElementById("bg-particles"), 92);
+const backgroundParticles = new BackgroundParticleField(document.getElementById("bg-particles"), 88);
 backgroundParticles.start();
 const input = new InputManager();
 const engine = new ArcadeEngine(canvas, input, ui);
 const bootSequence = new BootSequenceController(document.getElementById("bootSequence"), engine.audio);
-const neonCursor = new NeonCursorController();
-const holographicTilt = new HolographicTiltController(document.querySelectorAll(".arcade-card"));
 const crtVisuals = new CRTVisualController(document.getElementById("canvasFrame"));
 const touchControls = new TouchArcadeControls(input, modal, canvas, {
   getGameId: () => engine.activeGame.id,
@@ -6721,8 +7143,9 @@ function calculatePilotRank() {
   const invaders = engine.scoreStore.get("space-invaders");
   const pacman = engine.scoreStore.get("pac-man");
   const asteroids = engine.scoreStore.get("asteroids");
-  const total = invaders + pacman + asteroids;
-  const peak = Math.max(invaders, pacman, asteroids);
+  const tron = engine.scoreStore.get("tron");
+  const total = invaders + pacman + asteroids + tron;
+  const peak = Math.max(invaders, pacman, asteroids, tron);
   if (total >= 100000 || peak >= 60000) return "LEGEND";
   if (total >= 40000 || peak >= 25000) return "ELITE";
   if (total >= 15000 || peak >= 9000) return "VETERAN";
@@ -6877,6 +7300,10 @@ window.setInterval(updateClock, 1000);
 
 
 async function initializeGlobalLeaderboardLayer() {
+  const runtimeArcadeConfig = globalThis.__NEON_ARCADE_CONFIG__ || {};
+  const runtimeFirebaseConfig = runtimeArcadeConfig.firebase;
+  const appCheckSiteKey = String(runtimeArcadeConfig.recaptchaEnterpriseSiteKey || "").trim();
+
   const [firebaseAppSdk, firebaseAuthSdk, firebaseFirestoreSdk, firebaseAppCheckSdk] = await Promise.all([
     import("https://www.gstatic.com/firebasejs/12.17.0/firebase-app.js"),
     import("https://www.gstatic.com/firebasejs/12.17.0/firebase-auth.js"),
@@ -6905,9 +7332,6 @@ async function initializeGlobalLeaderboardLayer() {
     serverTimestamp
   } = firebaseFirestoreSdk;
 
-const runtimeArcadeConfig = globalThis.__NEON_ARCADE_CONFIG__ || {};
-const runtimeFirebaseConfig = runtimeArcadeConfig.firebase;
-const appCheckSiteKey = String(runtimeArcadeConfig.recaptchaEnterpriseSiteKey || "").trim();
 const firebaseConfig = Object.freeze(runtimeFirebaseConfig || {
   apiKey: "AIzaSyBtYxqH238gnZLi0N6NYM61SEYbUMGkG-I",
   authDomain: "neon-arcade-d53be.firebaseapp.com",
@@ -6926,18 +7350,21 @@ try {
 const COLLECTION_NAME = "arcade_leaderboard";
 const GLOBAL_CACHE_KEY = "neonNexus.globalLeaderboardCache.v1";
 const PLAYER_INITIALS_KEY = "neonNexus.playerInitials.v1";
-const VALID_GAMES = Object.freeze(["invaders", "pacman", "asteroids"]);
+const VALID_GAMES = Object.freeze(["invaders", "pacman", "asteroids", "tron"]);
 const GAME_ALIASES = Object.freeze({
   "space-invaders": "invaders",
   invaders: "invaders",
   "pac-man": "pacman",
   pacman: "pacman",
-  asteroids: "asteroids"
+  asteroids: "asteroids",
+  tron: "tron",
+  lightcycles: "tron"
 });
 const GAME_META = Object.freeze({
   invaders: { title: "ALIEN INVADERS", accent: "#42f5ff", rgb: "66,245,255" },
   pacman: { title: "PAC-MAN NEÓN", accent: "#ffbd3c", rgb: "255,189,60" },
-  asteroids: { title: "ASTEROIDS NEÓN", accent: "#00ff7f", rgb: "0,255,127" }
+  asteroids: { title: "ASTEROIDS NEÓN", accent: "#00ff7f", rgb: "0,255,127" },
+  tron: { title: "TRON LIGHTCYCLES", accent: "#00ffff", rgb: "0,255,255" }
 });
 
 function normalizeGame(game) {
@@ -7013,7 +7440,7 @@ class GlobalLeaderboardService {
   }
 
   readCache() {
-    const initial = { invaders: [], pacman: [], asteroids: [] };
+    const initial = { invaders: [], pacman: [], asteroids: [], tron: [] };
     try {
       const parsed = JSON.parse(window.localStorage.getItem(GLOBAL_CACHE_KEY) || "{}");
       for (const game of VALID_GAMES) {
@@ -7093,7 +7520,7 @@ class GlobalLeaderboardService {
   }
 
   injectScoreboards() {
-    const buttons = Array.from(document.querySelectorAll("[data-open-game]"));
+    const buttons = Array.from(document.querySelectorAll("#catalog [data-open-game]"));
     if (buttons.length === 0) return;
     const catalogGrid = buttons[0].closest("#catalog .grid");
     if (catalogGrid) catalogGrid.classList.add("global-leaderboard-layout");

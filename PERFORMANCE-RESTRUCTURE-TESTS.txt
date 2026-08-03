@@ -1,0 +1,29 @@
+NEON ARCADE v8.8 — VALIDATION RESULTS
+
+PASS  JavaScript syntax: node --check
+PASS  HTML duplicate IDs: none
+PASS  Global mousemove listeners: none
+PASS  Global pointermove listeners: none
+PASS  Custom cursor controller: removed
+PASS  Card tilt controller: removed
+PASS  cursor:none rules: removed
+PASS  Native pointer/default cursors: present
+PASS  CSS card hover scale: 1.03
+PASS  CSS cyan hover glow: 25px / 0.6 alpha
+PASS  Three catalog cards carry optimized transition classes
+PASS  Gamepad events: connected/disconnected
+PASS  Gamepad polling: navigator.getGamepads()
+PASS  Stick/D-Pad directions: verified with simulated gamepad
+PASS  Primary gamepad button -> Space: verified
+PASS  Gamepad release state: verified
+PASS  Achievement persistence: verified
+PASS  Duplicate achievement unlock: blocked
+PASS  Achievement reward sound call: verified
+PASS  Invaders achievement hook: present
+PASS  Pac-Man achievement hook: present
+PASS  Turbo multiplier: exact 1.5x
+PASS  Turbo delta-time application: present
+PASS  Turbo audio tempo synchronization: present
+PASS  Firebase App Check initialization order: corrected
+
+NOTE  Full URL navigation in headless Chromium is blocked by the execution environment's administrator policy. Syntax, DOM structure, CSS structure and isolated Gamepad/Achievement behavior were validated locally.

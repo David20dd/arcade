@@ -2,7 +2,7 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
     function validGame(game) {
-      return game == 'invaders' || game == 'pacman' || game == 'asteroids';
+      return game == 'invaders' || game == 'pacman' || game == 'asteroids' || game == 'tron';
     }
 
     function validUsername(username) {
