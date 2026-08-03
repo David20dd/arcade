@@ -351,6 +351,7 @@ class RetroAudio {
       if (normalizedAction === "player_laser") return this.genericLaser(detail);
     }
 
+    if (normalizedAction === "boot" || normalizedAction === "boot_sequence" || normalizedAction === "system_ready") return this.bootChime(detail);
     if (normalizedAction === "power_up" || normalizedAction === "powerup" || normalizedAction === "upgraded") return this.powerUpUpgrade(detail);
     if (normalizedAction === "laser" || normalizedAction === "player_laser") return this.genericLaser(detail);
     if (normalizedAction === "explosion") return this.genericExplosion(detail);
@@ -401,6 +402,46 @@ class RetroAudio {
       nodes.push(oscillator, gain);
     });
     this.trackTransient(nodes, start + 0.64);
+    return true;
+  }
+
+  bootChime(detail = {}) {
+    if (!this.canPlay("global:boot-sequence", 1.8)) return false;
+    const context = this.context;
+    const start = context.currentTime + 0.018;
+    const output = context.createGain();
+    const filter = context.createBiquadFilter();
+    filter.type = "highpass";
+    filter.frequency.setValueAtTime(420, start);
+    filter.frequency.exponentialRampToValueAtTime(1250, start + 0.48);
+    filter.Q.value = 0.72;
+    output.gain.setValueAtTime(0.0001, start);
+    output.gain.exponentialRampToValueAtTime(0.42, start + 0.018);
+    output.gain.setValueAtTime(0.34, start + 0.31);
+    output.gain.exponentialRampToValueAtTime(0.0001, start + 0.66);
+    filter.connect(output);
+    output.connect(this.masterGain);
+
+    const notes = [659.25, 987.77, 1318.51, 1760];
+    const nodes = [filter, output];
+    notes.forEach((frequency, index) => {
+      const noteStart = start + index * 0.105;
+      const oscillator = context.createOscillator();
+      const gain = context.createGain();
+      oscillator.type = index < 2 ? "triangle" : "sine";
+      oscillator.frequency.setValueAtTime(frequency, noteStart);
+      oscillator.frequency.exponentialRampToValueAtTime(frequency * 1.045, noteStart + 0.085);
+      gain.gain.setValueAtTime(0.0001, noteStart);
+      gain.gain.exponentialRampToValueAtTime(index === 3 ? 0.24 : 0.18, noteStart + 0.008);
+      gain.gain.exponentialRampToValueAtTime(0.0001, noteStart + (index === 3 ? 0.24 : 0.095));
+      oscillator.connect(gain);
+      gain.connect(filter);
+      oscillator.start(noteStart);
+      oscillator.stop(noteStart + (index === 3 ? 0.26 : 0.11));
+      nodes.push(oscillator, gain);
+    });
+
+    this.trackTransient(nodes, start + 0.72);
     return true;
   }
 
@@ -1090,6 +1131,278 @@ class BackgroundParticleField {
       ctx.fill();
     }
     ctx.globalCompositeOperation = "source-over";
+  }
+}
+
+class NeonCursorController {
+  constructor() {
+    this.touchDevice = "ontouchstart" in window || Number(navigator.maxTouchPoints || 0) > 0;
+    this.finePointer = window.matchMedia?.("(hover: hover) and (pointer: fine)")?.matches ?? false;
+    this.reducedMotion = window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches ?? false;
+    this.enabled = !this.touchDevice && this.finePointer;
+    this.target = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
+    this.corePosition = { ...this.target };
+    this.ringPosition = { ...this.target };
+    this.visible = false;
+    this.hoveringInteractive = false;
+    this.animationId = null;
+    this.lastTimestamp = performance.now();
+    this.handlePointerMove = this.handlePointerMove.bind(this);
+    this.handlePointerDown = this.handlePointerDown.bind(this);
+    this.handlePointerUp = this.handlePointerUp.bind(this);
+    this.handlePointerLeave = this.handlePointerLeave.bind(this);
+    this.loop = this.loop.bind(this);
+    if (!this.enabled) return;
+    this.inject();
+    this.bind();
+    this.animationId = requestAnimationFrame(this.loop);
+  }
+
+  inject() {
+    this.ring = document.createElement("div");
+    this.ring.className = "neon-cursor neon-cursor-ring";
+    this.ring.setAttribute("aria-hidden", "true");
+    this.core = document.createElement("div");
+    this.core.className = "neon-cursor neon-cursor-crosshair";
+    this.core.setAttribute("aria-hidden", "true");
+    this.core.innerHTML = '<span class="cursor-line cursor-line-x"></span><span class="cursor-line cursor-line-y"></span><span class="cursor-dot"></span>';
+    document.body.append(this.ring, this.core);
+    document.documentElement.classList.add("neon-custom-cursor");
+  }
+
+  bind() {
+    window.addEventListener("pointermove", this.handlePointerMove, { passive: true });
+    window.addEventListener("pointerdown", this.handlePointerDown, { passive: true });
+    window.addEventListener("pointerup", this.handlePointerUp, { passive: true });
+    document.documentElement.addEventListener("mouseleave", this.handlePointerLeave, { passive: true });
+    window.addEventListener("blur", this.handlePointerLeave, { passive: true });
+  }
+
+  handlePointerMove(event) {
+    if (event.pointerType && event.pointerType !== "mouse" && event.pointerType !== "pen") return;
+    this.target.x = event.clientX;
+    this.target.y = event.clientY;
+    this.visible = true;
+    this.hoveringInteractive = Boolean(event.target instanceof Element && event.target.closest(
+      "a, button, input, textarea, select, [role='button'], [data-open-game], [data-close-modal], .arcade-card, .modal-panel"
+    ));
+    this.applyStateClasses();
+  }
+
+  handlePointerDown(event) {
+    if (event.pointerType && event.pointerType !== "mouse" && event.pointerType !== "pen") return;
+    this.ring?.classList.add("is-pressed");
+    this.core?.classList.add("is-pressed");
+  }
+
+  handlePointerUp() {
+    this.ring?.classList.remove("is-pressed");
+    this.core?.classList.remove("is-pressed");
+  }
+
+  handlePointerLeave() {
+    this.visible = false;
+    this.applyStateClasses();
+  }
+
+  applyStateClasses() {
+    for (const element of [this.ring, this.core]) {
+      if (!element) continue;
+      element.classList.toggle("is-visible", this.visible);
+      element.classList.toggle("is-interactive", this.hoveringInteractive);
+    }
+  }
+
+  loop(timestamp) {
+    const dt = Math.min(0.05, Math.max(0.001, (timestamp - this.lastTimestamp) / 1000));
+    this.lastTimestamp = timestamp;
+    const coreEase = this.reducedMotion ? 1 : 1 - Math.exp(-dt * 32);
+    const ringEase = this.reducedMotion ? 1 : 1 - Math.exp(-dt * 13);
+    this.corePosition.x += (this.target.x - this.corePosition.x) * coreEase;
+    this.corePosition.y += (this.target.y - this.corePosition.y) * coreEase;
+    this.ringPosition.x += (this.target.x - this.ringPosition.x) * ringEase;
+    this.ringPosition.y += (this.target.y - this.ringPosition.y) * ringEase;
+    this.core.style.transform = `translate3d(${this.corePosition.x}px, ${this.corePosition.y}px, 0)`;
+    this.ring.style.transform = `translate3d(${this.ringPosition.x}px, ${this.ringPosition.y}px, 0)`;
+    this.animationId = requestAnimationFrame(this.loop);
+  }
+}
+
+class HolographicTiltController {
+  constructor(cards) {
+    this.cards = Array.from(cards || []);
+    this.touchDevice = "ontouchstart" in window || Number(navigator.maxTouchPoints || 0) > 0;
+    this.finePointer = window.matchMedia?.("(hover: hover) and (pointer: fine)")?.matches ?? false;
+    this.reducedMotion = window.matchMedia?.("(prefers-reduced-motion: reduce)")?.matches ?? false;
+    this.enabled = !this.touchDevice && this.finePointer && !this.reducedMotion;
+    this.states = new Map();
+    this.animationId = null;
+    this.lastTimestamp = performance.now();
+    this.loop = this.loop.bind(this);
+    for (const card of this.cards) this.prepareCard(card);
+    if (this.enabled) this.animationId = requestAnimationFrame(this.loop);
+  }
+
+  prepareCard(card) {
+    const glow = document.createElement("span");
+    glow.className = "card-tilt-glow";
+    glow.setAttribute("aria-hidden", "true");
+    card.appendChild(glow);
+    const state = {
+      card,
+      currentX: 0,
+      currentY: 0,
+      currentGlowX: 50,
+      currentGlowY: 50,
+      targetX: 0,
+      targetY: 0,
+      targetGlowX: 50,
+      targetGlowY: 50,
+      active: false
+    };
+    this.states.set(card, state);
+    if (!this.enabled) return;
+    card.addEventListener("pointerenter", () => {
+      state.active = true;
+      card.classList.add("is-tilting");
+    }, { passive: true });
+    card.addEventListener("pointermove", (event) => this.updateTarget(event, state), { passive: true });
+    card.addEventListener("pointerleave", () => {
+      state.active = false;
+      state.targetX = 0;
+      state.targetY = 0;
+      state.targetGlowX = 50;
+      state.targetGlowY = 50;
+      card.classList.remove("is-tilting");
+    }, { passive: true });
+  }
+
+  updateTarget(event, state) {
+    if (event.pointerType && event.pointerType !== "mouse" && event.pointerType !== "pen") return;
+    const rect = state.card.getBoundingClientRect();
+    if (rect.width <= 0 || rect.height <= 0) return;
+    const normalizedX = Math.max(0, Math.min(1, (event.clientX - rect.left) / rect.width));
+    const normalizedY = Math.max(0, Math.min(1, (event.clientY - rect.top) / rect.height));
+    state.targetX = (0.5 - normalizedY) * 11;
+    state.targetY = (normalizedX - 0.5) * 14;
+    state.targetGlowX = normalizedX * 100;
+    state.targetGlowY = normalizedY * 100;
+  }
+
+  loop(timestamp) {
+    const dt = Math.min(0.05, Math.max(0.001, (timestamp - this.lastTimestamp) / 1000));
+    this.lastTimestamp = timestamp;
+    const ease = 1 - Math.exp(-dt * 13);
+    for (const state of this.states.values()) {
+      state.currentX += (state.targetX - state.currentX) * ease;
+      state.currentY += (state.targetY - state.currentY) * ease;
+      state.currentGlowX += (state.targetGlowX - state.currentGlowX) * ease;
+      state.currentGlowY += (state.targetGlowY - state.currentGlowY) * ease;
+      state.card.style.setProperty("--tilt-x", `${state.currentX.toFixed(3)}deg`);
+      state.card.style.setProperty("--tilt-y", `${state.currentY.toFixed(3)}deg`);
+      state.card.style.setProperty("--tilt-glow-x", `${state.currentGlowX.toFixed(2)}%`);
+      state.card.style.setProperty("--tilt-glow-y", `${state.currentGlowY.toFixed(2)}%`);
+    }
+    this.animationId = requestAnimationFrame(this.loop);
+  }
+}
+
+class BootSequenceController {
+  constructor(root, audio) {
+    this.root = root;
+    this.audio = audio;
+    this.linesElement = root?.querySelector("#bootLines");
+    this.progressElement = root?.querySelector("#bootProgress");
+    this.counterElement = root?.querySelector("#bootCounter");
+    this.statusElement = root?.querySelector("#bootStatusText");
+    this.duration = 2500;
+    this.startTime = performance.now();
+    this.animationId = null;
+    this.timeouts = [];
+    this.userActivatedAudio = false;
+    this.audioPlayed = false;
+    this.handleUserActivation = this.handleUserActivation.bind(this);
+    this.animate = this.animate.bind(this);
+    if (!this.root) {
+      document.body.classList.remove("boot-active");
+      return;
+    }
+    this.lines = [
+      { at: 90, text: "BOOTING ARCADE CORE v8.6...", state: "ok" },
+      { at: 390, text: "VERIFYING INPUT MATRIX... OK", state: "ok" },
+      { at: 700, text: "CONNECTING TO SEED-SERVER... LINKED", state: "ok" },
+      { at: 1030, text: "LOADING RENDER MOTORS... 800x600", state: "ok" },
+      { at: 1380, text: "CALIBRATING PHOSPHOR GRID... STABLE", state: "ok" },
+      { at: 1730, text: "MOUNTING GLOBAL LEADERBOARD... READY", state: "ok" },
+      { at: 2070, text: "ARCADE BUS ONLINE // PILOT AUTHORIZED", state: "ready" }
+    ];
+    document.body.setAttribute("aria-busy", "true");
+    document.addEventListener("pointerdown", this.handleUserActivation, { capture: true, passive: true });
+    document.addEventListener("keydown", this.handleUserActivation, { capture: true });
+    this.scheduleLines();
+    this.animationId = requestAnimationFrame(this.animate);
+    this.timeouts.push(window.setTimeout(() => this.finish(), this.duration));
+  }
+
+  handleUserActivation() {
+    this.userActivatedAudio = true;
+    this.audio?.unlock();
+  }
+
+  scheduleLines() {
+    for (const line of this.lines) {
+      this.timeouts.push(window.setTimeout(() => {
+        if (!this.linesElement || !this.root?.isConnected) return;
+        const row = document.createElement("p");
+        row.className = `boot-line boot-line-${line.state}`;
+        row.textContent = `> ${line.text}`;
+        this.linesElement.appendChild(row);
+        while (this.linesElement.children.length > 6) this.linesElement.firstElementChild?.remove();
+        this.linesElement.scrollTop = this.linesElement.scrollHeight;
+      }, line.at));
+    }
+  }
+
+  animate(timestamp) {
+    if (!this.root?.isConnected) return;
+    const progress = Math.max(0, Math.min(1, (timestamp - this.startTime) / this.duration));
+    if (this.progressElement) this.progressElement.style.transform = `scaleX(${progress})`;
+    if (this.counterElement) this.counterElement.textContent = `${String(Math.floor(progress * 100)).padStart(3, "0")}%`;
+    if (this.statusElement) {
+      this.statusElement.textContent = progress > 0.86
+        ? "CORE SYNCHRONIZED — OPENING PORTAL"
+        : progress > 0.52
+          ? "CALIBRATING HOLOGRAPHIC INTERFACE..."
+          : "INITIALIZING ARCADE BUS...";
+    }
+    if (progress < 1) this.animationId = requestAnimationFrame(this.animate);
+  }
+
+  playCompletionSound() {
+    if (this.audioPlayed) return;
+    this.audioPlayed = true;
+    this.audio?.playSynthSound("boot_sequence");
+  }
+
+  finish() {
+    if (!this.root?.isConnected) return;
+    if (this.animationId !== null) cancelAnimationFrame(this.animationId);
+    if (this.progressElement) this.progressElement.style.transform = "scaleX(1)";
+    if (this.counterElement) this.counterElement.textContent = "100%";
+    if (this.statusElement) this.statusElement.textContent = "NEON NEXUS ONLINE";
+    if (this.userActivatedAudio) {
+      this.playCompletionSound();
+    } else {
+      const deferredAudio = () => this.playCompletionSound();
+      document.addEventListener("pointerdown", deferredAudio, { once: true, capture: true });
+      document.addEventListener("keydown", deferredAudio, { once: true, capture: true });
+    }
+    this.root.classList.add("is-complete");
+    document.body.classList.remove("boot-active");
+    document.body.removeAttribute("aria-busy");
+    document.removeEventListener("pointerdown", this.handleUserActivation, { capture: true });
+    document.removeEventListener("keydown", this.handleUserActivation, { capture: true });
+    window.setTimeout(() => this.root?.remove(), 620);
   }
 }
 
@@ -6006,6 +6319,9 @@ const backgroundParticles = new BackgroundParticleField(document.getElementById(
 backgroundParticles.start();
 const input = new InputManager();
 const engine = new ArcadeEngine(canvas, input, ui);
+const bootSequence = new BootSequenceController(document.getElementById("bootSequence"), engine.audio);
+const neonCursor = new NeonCursorController();
+const holographicTilt = new HolographicTiltController(document.querySelectorAll(".arcade-card"));
 const crtVisuals = new CRTVisualController(document.getElementById("canvasFrame"));
 const touchControls = new TouchArcadeControls(input, modal, canvas, {
   getGameId: () => engine.activeGame.id,

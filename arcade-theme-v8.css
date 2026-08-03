@@ -904,3 +904,358 @@ body.orientation-locked { overflow:hidden !important; }
     border-radius: 14px;
   }
 }
+
+/* Holographic UI layer v8.6 */
+html.neon-custom-cursor,
+html.neon-custom-cursor body,
+html.neon-custom-cursor body * {
+  cursor: none !important;
+}
+
+.neon-cursor {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 32000;
+  pointer-events: none;
+  opacity: 0;
+  transform-origin: 0 0;
+  will-change: transform, opacity;
+  transition: opacity 140ms ease, filter 160ms ease;
+}
+
+.neon-cursor.is-visible { opacity: 1; }
+
+.neon-cursor-ring {
+  width: 34px;
+  height: 34px;
+  margin: -17px 0 0 -17px;
+  border: 1px solid rgba(0, 255, 255, 0.78);
+  border-radius: 50%;
+  box-shadow: 0 0 11px rgba(0,255,255,.48), inset 0 0 9px rgba(0,255,255,.14);
+  transition: width 180ms ease, height 180ms ease, margin 180ms ease, border-color 180ms ease, border-radius 180ms ease, box-shadow 180ms ease;
+}
+
+.neon-cursor-ring::before,
+.neon-cursor-ring::after {
+  position: absolute;
+  content: "";
+  background: rgba(0,255,255,.74);
+  box-shadow: 0 0 7px rgba(0,255,255,.75);
+  transition: background 180ms ease, box-shadow 180ms ease;
+}
+
+.neon-cursor-ring::before { top: 50%; left: -5px; width: 44px; height: 1px; transform: translateY(-50%); }
+.neon-cursor-ring::after { top: -5px; left: 50%; width: 1px; height: 44px; transform: translateX(-50%); }
+
+.neon-cursor-crosshair {
+  width: 10px;
+  height: 10px;
+  margin: -5px 0 0 -5px;
+  filter: drop-shadow(0 0 5px rgba(0,255,255,.92));
+}
+
+.cursor-line,
+.cursor-dot { position: absolute; display: block; background: #00ffff; transition: background 160ms ease, transform 160ms ease; }
+.cursor-line-x { top: 4.5px; left: 0; width: 10px; height: 1px; }
+.cursor-line-y { top: 0; left: 4.5px; width: 1px; height: 10px; }
+.cursor-dot { top: 3px; left: 3px; width: 4px; height: 4px; border-radius: 50%; box-shadow: 0 0 8px #00ffff; }
+
+.neon-cursor-ring.is-interactive {
+  width: 52px;
+  height: 52px;
+  margin: -26px 0 0 -26px;
+  border-color: rgba(255,0,127,.92);
+  border-radius: 14px;
+  box-shadow: 0 0 18px rgba(255,0,127,.68), inset 0 0 14px rgba(255,0,127,.18);
+}
+.neon-cursor-ring.is-interactive::before,
+.neon-cursor-ring.is-interactive::after { background:#ff007f; box-shadow:0 0 8px rgba(255,0,127,.85); }
+.neon-cursor-crosshair.is-interactive { filter:drop-shadow(0 0 7px rgba(255,0,127,1)); }
+.neon-cursor-crosshair.is-interactive .cursor-line,
+.neon-cursor-crosshair.is-interactive .cursor-dot { background:#ff007f; }
+.neon-cursor-crosshair.is-interactive .cursor-dot { box-shadow:0 0 10px #ff007f; }
+.neon-cursor-ring.is-pressed { width:42px; height:42px; margin:-21px 0 0 -21px; }
+.neon-cursor-crosshair.is-pressed .cursor-line-x { transform:scaleX(.72); }
+.neon-cursor-crosshair.is-pressed .cursor-line-y { transform:scaleY(.72); }
+
+.arcade-card {
+  --tilt-x: 0deg;
+  --tilt-y: 0deg;
+  --tilt-glow-x: 50%;
+  --tilt-glow-y: 50%;
+  transform-style: preserve-3d;
+  transform: perspective(1000px) rotateX(var(--tilt-x)) rotateY(var(--tilt-y)) translateY(0) scale(1);
+  transition: border-color 260ms ease, box-shadow 260ms ease;
+  will-change: transform;
+}
+
+.arcade-card > *:not(.card-tilt-glow) {
+  position: relative;
+  z-index: 2;
+  transform: translateZ(18px);
+}
+
+.card-tilt-glow {
+  position: absolute;
+  inset: -2px;
+  z-index: 1;
+  overflow: hidden;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: .22;
+  background:
+    radial-gradient(circle at var(--tilt-glow-x) var(--tilt-glow-y), rgba(255,255,255,.25) 0, rgba(var(--card-accent-rgb),.16) 15%, transparent 43%),
+    linear-gradient(120deg, transparent 18%, rgba(0,255,255,.07) 42%, rgba(255,0,127,.08) 58%, transparent 82%);
+  mix-blend-mode: screen;
+  filter: saturate(1.25);
+  transition: opacity 220ms ease;
+}
+
+.arcade-card:hover,
+.arcade-card:focus-within,
+.arcade-card.is-tilting {
+  z-index: 3;
+  transform: perspective(1000px) rotateX(var(--tilt-x)) rotateY(var(--tilt-y)) translateY(-9px) scale(1.018);
+}
+
+.arcade-card:hover .card-tilt-glow,
+.arcade-card:focus-within .card-tilt-glow,
+.arcade-card.is-tilting .card-tilt-glow { opacity:.9; }
+
+.arcade-card.is-pressed {
+  transform: perspective(1000px) rotateX(var(--tilt-x)) rotateY(var(--tilt-y)) translateY(-4px) scale(1.006);
+}
+
+.page-grid {
+  position: fixed;
+  top: 43vh;
+  right: -28vw;
+  bottom: -48vh;
+  left: -28vw;
+  z-index: 1;
+  overflow: hidden;
+  pointer-events: none;
+  background: none;
+  opacity: .62;
+  mask-image: linear-gradient(to bottom, transparent 0, rgba(0,0,0,.92) 16%, black 74%, transparent 100%);
+  transform: perspective(720px) rotateX(67deg) translateZ(-56px);
+  transform-origin: 50% 0;
+}
+
+.page-grid::before {
+  position: absolute;
+  inset: -96px 0;
+  content: "";
+  background-image:
+    linear-gradient(rgba(0,255,255,.15) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,0,127,.12) 1px, transparent 1px);
+  background-size: 64px 48px;
+  filter: drop-shadow(0 0 5px rgba(0,255,255,.2));
+  animation: vectorGridStream 2.6s linear infinite;
+  will-change: transform;
+}
+
+.page-grid::after {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  height: 3px;
+  content: "";
+  background: linear-gradient(90deg, transparent, rgba(255,0,127,.5), rgba(0,255,255,.82), rgba(255,0,127,.5), transparent);
+  box-shadow: 0 0 22px rgba(0,255,255,.42), 0 0 38px rgba(255,0,127,.18);
+}
+
+.boot-active { overflow:hidden !important; }
+
+.boot-sequence {
+  --boot-accent: #00ffff;
+  position: fixed;
+  inset: 0;
+  z-index: 30000;
+  display: grid;
+  place-items: center;
+  padding: 22px;
+  color: #cfffff;
+  background:
+    repeating-linear-gradient(to bottom, transparent 0 3px, rgba(0,255,255,.025) 4px),
+    radial-gradient(circle at 50% 45%, rgba(0,255,255,.08), rgba(5,2,10,.97) 47%, #010103 88%);
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 540ms ease, visibility 540ms ease, filter 540ms ease;
+}
+
+.boot-sequence.is-complete {
+  opacity: 0;
+  visibility: hidden;
+  filter: brightness(1.8) blur(7px);
+  pointer-events: none;
+}
+
+.boot-sequence-grid {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  opacity: .42;
+}
+
+.boot-sequence-grid::before {
+  position: absolute;
+  inset: 52% -40% -65%;
+  content: "";
+  background-image:
+    linear-gradient(rgba(0,255,255,.16) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0,255,255,.13) 1px, transparent 1px);
+  background-size: 58px 42px;
+  transform: perspective(560px) rotateX(66deg);
+  transform-origin: 50% 0;
+  animation: vectorGridStream 1.8s linear infinite;
+}
+
+.boot-terminal {
+  position: relative;
+  width: min(760px, 94vw);
+  min-height: 340px;
+  overflow: hidden;
+  padding: 64px clamp(20px,5vw,46px) 34px;
+  border: 1px solid rgba(0,255,255,.46);
+  border-radius: 20px;
+  background: rgba(2,7,12,.84);
+  box-shadow: 0 0 46px rgba(0,255,255,.14), inset 0 0 42px rgba(255,0,127,.045);
+  backdrop-filter: blur(12px);
+}
+
+.boot-terminal::before {
+  position: absolute;
+  inset: 0;
+  content: "";
+  pointer-events: none;
+  background: linear-gradient(105deg, transparent 0 42%, rgba(255,255,255,.035) 50%, transparent 58%);
+  transform: translateX(-120%);
+  animation: bootSheen 1.55s ease-in-out infinite;
+}
+
+.boot-terminal-header {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 12px;
+  min-height: 46px;
+  padding: 0 18px;
+  border-bottom: 1px solid rgba(0,255,255,.2);
+  color: rgba(205,255,255,.68);
+  font-family: "Press Start 2P", monospace;
+  font-size: clamp(6px,1.3vw,9px);
+  letter-spacing: .08em;
+  background: rgba(0,255,255,.035);
+}
+
+.boot-terminal-led {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #00ff7f;
+  box-shadow: 0 0 12px #00ff7f;
+  animation: bootLed 700ms steps(2,end) infinite;
+}
+
+.boot-lines {
+  display: flex;
+  min-height: 190px;
+  max-height: 190px;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: 13px;
+  overflow: hidden;
+  font-family: "Press Start 2P", monospace;
+  font-size: clamp(7px,1.55vw,11px);
+  line-height: 1.55;
+  letter-spacing: .045em;
+}
+
+.boot-line {
+  margin: 0;
+  color: rgba(177,255,241,.72);
+  opacity: 0;
+  transform: translateX(-9px);
+  animation: bootLineReveal 240ms steps(4,end) forwards;
+  text-shadow: 0 0 9px rgba(0,255,255,.3);
+}
+.boot-line-ok::after { content:"  [OK]"; color:#00ff7f; text-shadow:0 0 8px #00ff7f; }
+.boot-line-ready { color:#fff; text-shadow:2px 0 #00ffff,-2px 0 #ff007f,0 0 13px rgba(255,255,255,.25); }
+
+.boot-progress-track {
+  height: 7px;
+  margin-top: 28px;
+  overflow: hidden;
+  border: 1px solid rgba(0,255,255,.28);
+  border-radius: 999px;
+  background: rgba(0,255,255,.035);
+}
+
+.boot-progress-bar {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg,#00ffff,#8b5cff 56%,#ff007f);
+  box-shadow: 0 0 18px rgba(0,255,255,.65);
+  transform: scaleX(0);
+  transform-origin: left center;
+  will-change: transform;
+}
+
+.boot-status-text {
+  margin: 17px 0 0;
+  color: rgba(208,255,255,.58);
+  font-family: "Orbitron", sans-serif;
+  font-size: clamp(9px,1.7vw,12px);
+  font-weight: 800;
+  letter-spacing: .16em;
+  text-align: center;
+  animation: bootStatusFlicker 920ms steps(2,end) infinite;
+}
+
+@keyframes vectorGridStream { from{transform:translate3d(0,-48px,0)} to{transform:translate3d(0,0,0)} }
+@keyframes bootLineReveal { 0%{opacity:0;transform:translateX(-9px);clip-path:inset(0 100% 0 0)} 100%{opacity:1;transform:translateX(0);clip-path:inset(0 0 0 0)} }
+@keyframes bootLed { 0%,49%{opacity:.55} 50%,100%{opacity:1} }
+@keyframes bootSheen { 0%,28%{transform:translateX(-130%)} 72%,100%{transform:translateX(130%)} }
+@keyframes bootStatusFlicker { 0%,92%,100%{opacity:.72} 93%{opacity:.38} 96%{opacity:1} }
+
+@media (hover: none), (pointer: coarse) {
+  .neon-cursor { display:none !important; }
+  .arcade-card,
+  .arcade-card:hover,
+  .arcade-card:focus-within,
+  .arcade-card.is-tilting {
+    transform:none;
+  }
+  .arcade-card.is-pressed { transform:translateY(-4px) scale(1.008); }
+  .arcade-card > *:not(.card-tilt-glow) { transform:none; }
+  .card-tilt-glow { display:none; }
+}
+
+@media (max-width: 640px) {
+  .boot-terminal { min-height:300px; padding:58px 18px 26px; }
+  .boot-lines { min-height:168px; max-height:168px; gap:10px; }
+  .page-grid { top:52vh; right:-62vw; bottom:-46vh; left:-62vw; opacity:.46; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .page-grid::before,
+  .boot-sequence-grid::before,
+  .boot-terminal::before,
+  .boot-terminal-led,
+  .boot-status-text { animation:none !important; }
+  .arcade-card,
+  .arcade-card:hover,
+  .arcade-card:focus-within,
+  .arcade-card.is-tilting { transform:none; }
+  .arcade-card > *:not(.card-tilt-glow) { transform:none; }
+}
+

@@ -22,10 +22,25 @@
   <link rel="stylesheet" href="./arcade-tailwind-v4.1.10.css" />
   <script src="./firebase-config.js" defer></script>
 
-  <link rel="stylesheet" href="./arcade-theme-v8.css?v=8.5.0" />
+  <link rel="stylesheet" href="./arcade-theme-v8.css?v=8.6.0" />
 </head>
 
-<body class="antialiased">
+<body class="antialiased boot-active">
+  <div id="bootSequence" class="boot-sequence" role="status" aria-live="polite" aria-label="Inicializando Neon Nexus">
+    <div class="boot-sequence-grid" aria-hidden="true"></div>
+    <section class="boot-terminal" aria-describedby="bootStatusText">
+      <div class="boot-terminal-header">
+        <span class="boot-terminal-led"></span>
+        <span>NEON NEXUS BIOS // SECURE START</span>
+        <span id="bootCounter">000%</span>
+      </div>
+      <div id="bootLines" class="boot-lines" aria-hidden="true"></div>
+      <div class="boot-progress-track" aria-hidden="true">
+        <span id="bootProgress" class="boot-progress-bar"></span>
+      </div>
+      <p id="bootStatusText" class="boot-status-text">INITIALIZING ARCADE BUS...</p>
+    </section>
+  </div>
   <canvas id="bg-particles" aria-hidden="true"></canvas>
   <div class="page-grid" aria-hidden="true"></div>
   <div class="page-orb -left-40 top-8 bg-cyan-400" aria-hidden="true"></div>
@@ -327,7 +342,7 @@
   </main>
 
   <footer class="relative z-10 mx-auto flex max-w-7xl flex-col gap-4 px-5 py-9 text-xs font-semibold tracking-[0.13em] text-white/35 sm:flex-row sm:items-center sm:justify-between sm:px-8 lg:px-10">
-    <p>NEON NEXUS / ARCADE CORE v5.0</p>
+    <p>NEON NEXUS / ARCADE CORE v8.6</p>
     <p>CANVAS 800×600 · KEYBOARD · TOUCH · RESPONSIVE UI</p>
   </footer>
 
@@ -442,7 +457,7 @@
 
   <div id="toast" class="toast fixed bottom-5 left-1/2 z-[120] rounded-full border border-white/12 bg-[#0b0614]/92 px-4 py-2 text-xs font-bold tracking-[0.12em] text-white/75 shadow-2xl backdrop-blur-xl" role="status" aria-live="polite"></div>
 
-  <script src="./arcade-app-v8.js?v=8.5.0" defer></script>
+  <script src="./arcade-app-v8.js?v=8.6.0" defer></script>
 
 </body>
 </html>
