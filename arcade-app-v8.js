@@ -351,6 +351,7 @@ class RetroAudio {
       if (normalizedAction === "player_laser") return this.genericLaser(detail);
     }
 
+    if (normalizedAction === "power_up" || normalizedAction === "powerup" || normalizedAction === "upgraded") return this.powerUpUpgrade(detail);
     if (normalizedAction === "laser" || normalizedAction === "player_laser") return this.genericLaser(detail);
     if (normalizedAction === "explosion") return this.genericExplosion(detail);
     if (normalizedAction === "game_over") return this.gameOver(detail);
@@ -359,6 +360,48 @@ class RetroAudio {
 
   playSynthSound(action, detail = {}) {
     return this.playArcadeSound("global", action, detail);
+  }
+
+  powerUpUpgrade(detail = {}) {
+    const type = String(detail.type || "generic");
+    if (!this.canPlay(`global:power-up:${type}`, 0.08)) return false;
+    const context = this.context;
+    const start = context.currentTime + 0.01;
+    const palette = type === "shield"
+      ? [196, 293.66, 440, 659.25]
+      : type === "spreadShot"
+        ? [246.94, 369.99, 554.37, 830.61]
+        : [220, 329.63, 493.88, 987.77];
+    const bus = context.createGain();
+    const filter = context.createBiquadFilter();
+    filter.type = "bandpass";
+    filter.frequency.setValueAtTime(900, start);
+    filter.frequency.exponentialRampToValueAtTime(2600, start + 0.42);
+    filter.Q.value = 0.85;
+    bus.gain.setValueAtTime(0.0001, start);
+    bus.gain.exponentialRampToValueAtTime(0.5, start + 0.025);
+    bus.gain.exponentialRampToValueAtTime(0.0001, start + 0.56);
+    filter.connect(bus);
+    bus.connect(this.masterGain);
+    const nodes = [filter, bus];
+    palette.forEach((frequency, index) => {
+      const noteStart = start + index * 0.09;
+      const oscillator = context.createOscillator();
+      const gain = context.createGain();
+      oscillator.type = index % 2 === 0 ? "triangle" : "sine";
+      oscillator.frequency.setValueAtTime(frequency, noteStart);
+      oscillator.frequency.exponentialRampToValueAtTime(frequency * 1.08, noteStart + 0.08);
+      gain.gain.setValueAtTime(0.0001, noteStart);
+      gain.gain.exponentialRampToValueAtTime(0.28, noteStart + 0.012);
+      gain.gain.exponentialRampToValueAtTime(0.0001, noteStart + 0.105);
+      oscillator.connect(gain);
+      gain.connect(filter);
+      oscillator.start(noteStart);
+      oscillator.stop(noteStart + 0.12);
+      nodes.push(oscillator, gain);
+    });
+    this.trackTransient(nodes, start + 0.64);
+    return true;
   }
 
   pacmanIntro(detail = {}) {
@@ -1749,6 +1792,396 @@ class ArcadeVisualEffects {
   }
 }
 
+const POWER_UP_DEFINITIONS = Object.freeze({
+  bulletTime: Object.freeze({
+    id: "bulletTime",
+    label: "BULLET TIME",
+    shortLabel: "TIME 0.5X",
+    color: "#00ffff",
+    duration: 6,
+    glyph: "⚡"
+  }),
+  spreadShot: Object.freeze({
+    id: "spreadShot",
+    label: "SPREAD SHOT",
+    shortLabel: "TRIPLE SHOT",
+    color: "#ff007f",
+    duration: 5,
+    glyph: "✦"
+  }),
+  shield: Object.freeze({
+    id: "shield",
+    label: "RGB SHIELD",
+    shortLabel: "FORCE SHIELD",
+    color: "#00ff7f",
+    duration: 7,
+    glyph: "⬡"
+  })
+});
+
+class NeonPowerUpSystem {
+  constructor(engine, gameId) {
+    this.engine = engine;
+    this.gameId = gameId;
+    this.items = [];
+    this.particles = [];
+    this.effects = new Map();
+    this.maximumItems = 3;
+    this.elapsed = 0;
+  }
+
+  reset() {
+    this.items.splice(0, this.items.length);
+    this.particles.splice(0, this.particles.length);
+    this.effects.clear();
+    this.elapsed = 0;
+  }
+
+  clearItems() {
+    this.items.splice(0, this.items.length);
+  }
+
+  deactivateAll() {
+    this.effects.clear();
+  }
+
+  isActive(type) {
+    return (this.effects.get(type)?.remaining || 0) > 0;
+  }
+
+  getRemaining(type) {
+    return Math.max(0, this.effects.get(type)?.remaining || 0);
+  }
+
+  getEnemyTimeScale() {
+    return this.isActive("bulletTime") ? 0.5 : 1;
+  }
+
+  getSpreadAngles(baseAngle) {
+    if (!this.isActive("spreadShot")) return [baseAngle];
+    const spread = 20 * Math.PI / 180;
+    return [baseAngle - spread, baseAngle, baseAngle + spread];
+  }
+
+  getProjectileLimit(normalLimit) {
+    return this.isActive("spreadShot") ? normalLimit * 3 : normalLimit;
+  }
+
+  spawnRandom(x, y, options = {}) {
+    if (this.items.length >= this.maximumItems) return null;
+    const chance = Math.max(0, Math.min(1, Number(options.chance ?? 1)));
+    if (!options.force && Math.random() > chance) return null;
+    const allowedTypes = Array.isArray(options.types) && options.types.length > 0
+      ? options.types.filter((type) => POWER_UP_DEFINITIONS[type])
+      : Object.keys(POWER_UP_DEFINITIONS);
+    if (allowedTypes.length === 0) return null;
+    const type = allowedTypes[Math.floor(Math.random() * allowedTypes.length)];
+    return this.spawn(type, x, y, options);
+  }
+
+  spawn(type, x, y, options = {}) {
+    const definition = POWER_UP_DEFINITIONS[type];
+    if (!definition || this.items.length >= this.maximumItems) return null;
+    const item = {
+      type,
+      x: Number(x) || 0,
+      y: Number(y) || 0,
+      vx: Number(options.vx) || 0,
+      vy: Number(options.vy) || 0,
+      radius: Math.max(12, Number(options.radius) || 16),
+      life: Math.max(4, Number(options.life) || 11),
+      maxLife: Math.max(4, Number(options.life) || 11),
+      phase: Math.random() * Math.PI * 2,
+      rotation: Math.random() * Math.PI * 2,
+      rotationSpeed: (Math.random() < 0.5 ? -1 : 1) * (1.4 + Math.random() * 1.2),
+      bob: Math.max(0, Number(options.bob ?? 5)),
+      wrap: Boolean(options.wrap),
+      margin: Math.max(16, Number(options.margin) || 26)
+    };
+    this.items.push(item);
+    this.engine.showCanvasMessage("POWER-UP INBOUND", {
+      x: item.x,
+      y: Math.max(94, item.y - 25),
+      color: definition.color,
+      size: 10,
+      duration: 0.9,
+      rise: 22,
+      blink: 12,
+      glitchStrength: 0.55
+    });
+    return item;
+  }
+
+  update(deltaTime, collector = null, options = {}) {
+    const dt = Math.max(0, Math.min(0.05, Number(deltaTime) || 0));
+    this.elapsed += dt;
+    if (options.active !== false) {
+      for (const [type, effect] of Array.from(this.effects.entries())) {
+        effect.remaining = Math.max(0, effect.remaining - dt);
+        if (effect.remaining <= 0) {
+          this.effects.delete(type);
+          const definition = POWER_UP_DEFINITIONS[type];
+          this.engine.showCanvasMessage(`${definition.shortLabel} OFFLINE`, {
+            y: 104,
+            color: definition.color,
+            size: 10,
+            duration: 0.75,
+            blink: 9,
+            fixed: true,
+            glitchStrength: 0.45
+          });
+        }
+      }
+    }
+
+    const width = Number(options.width) || 800;
+    const height = Number(options.height) || 600;
+    for (let index = this.items.length - 1; index >= 0; index -= 1) {
+      const item = this.items[index];
+      item.life -= dt;
+      item.phase += dt * 4.5;
+      item.rotation += item.rotationSpeed * dt;
+      item.x += item.vx * dt;
+      item.y += item.vy * dt;
+      if (item.wrap) {
+        if (item.x < -item.margin) item.x = width + item.margin;
+        if (item.x > width + item.margin) item.x = -item.margin;
+        if (item.y < -item.margin) item.y = height + item.margin;
+        if (item.y > height + item.margin) item.y = -item.margin;
+      } else if (item.x < -80 || item.x > width + 80 || item.y < -80 || item.y > height + 80) {
+        this.items.splice(index, 1);
+        continue;
+      }
+      if (item.life <= 0) {
+        this.items.splice(index, 1);
+        continue;
+      }
+      const displayY = item.y + Math.sin(item.phase) * item.bob;
+      if (collector && Math.hypot(collector.x - item.x, collector.y - displayY) <= collector.radius + item.radius) {
+        this.collect(index, item.x, displayY);
+      }
+    }
+
+    for (let index = this.particles.length - 1; index >= 0; index -= 1) {
+      const particle = this.particles[index];
+      particle.life -= dt;
+      if (particle.life <= 0) {
+        this.particles.splice(index, 1);
+        continue;
+      }
+      particle.x += particle.vx * dt;
+      particle.y += particle.vy * dt;
+      particle.vx *= Math.pow(0.93, dt * 60);
+      particle.vy *= Math.pow(0.93, dt * 60);
+      particle.radius *= Math.pow(0.975, dt * 60);
+    }
+  }
+
+  collect(index, x, y) {
+    const item = this.items[index];
+    if (!item) return;
+    this.items.splice(index, 1);
+    this.activate(item.type, x, y);
+  }
+
+  activate(type, x, y) {
+    const definition = POWER_UP_DEFINITIONS[type];
+    if (!definition) return;
+    this.effects.set(type, {
+      remaining: definition.duration,
+      duration: definition.duration
+    });
+    this.createImplosion(x, y, definition.color, 18);
+    this.engine.audio.playArcadeSound(this.gameId, "power_up", { type });
+    this.engine.haptics.vibrate([35, 25, 70], `power-up-${type}`, 100);
+    this.engine.triggerScreenShake(0.12, 5.5);
+    this.engine.triggerGlitch(0.16, 0.7);
+    this.engine.showCanvasMessage(`${definition.glyph} ${definition.label}`, {
+      x,
+      y: y - 18,
+      color: definition.color,
+      size: 15,
+      duration: 1.25,
+      rise: 36,
+      blink: 13,
+      glitchStrength: 0.85
+    });
+    this.engine.showToast(`${definition.label} · ${definition.duration}s`);
+  }
+
+  createImplosion(x, y, color, count = 16) {
+    for (let index = 0; index < count; index += 1) {
+      const angle = Math.random() * Math.PI * 2;
+      const distance = 28 + Math.random() * 44;
+      const life = 0.38 + Math.random() * 0.34;
+      const speed = distance / life;
+      this.particles.push({
+        x: x + Math.cos(angle) * distance,
+        y: y + Math.sin(angle) * distance,
+        vx: -Math.cos(angle) * speed,
+        vy: -Math.sin(angle) * speed,
+        life,
+        maxLife: life,
+        radius: 1.4 + Math.random() * 3.1,
+        color
+      });
+    }
+  }
+
+  draw(ctx) {
+    this.drawParticles(ctx);
+    for (const item of this.items) this.drawCapsule(ctx, item);
+  }
+
+  drawCapsule(ctx, item) {
+    const definition = POWER_UP_DEFINITIONS[item.type];
+    const y = item.y + Math.sin(item.phase) * item.bob;
+    const lastMoments = item.life < 2;
+    const alpha = lastMoments ? 0.42 + Math.abs(Math.sin(item.phase * 4)) * 0.58 : 1;
+    ctx.save();
+    ctx.translate(item.x, y);
+    ctx.rotate(item.rotation);
+    ctx.globalAlpha = alpha;
+    ctx.globalCompositeOperation = "lighter";
+    ctx.strokeStyle = definition.color;
+    ctx.fillStyle = this.hexToRgba(definition.color, 0.12);
+    ctx.lineWidth = 2.2;
+    ctx.shadowColor = definition.color;
+    ctx.shadowBlur = 18;
+    ctx.beginPath();
+    for (let side = 0; side < 8; side += 1) {
+      const angle = side / 8 * Math.PI * 2;
+      const radius = item.radius * (side % 2 === 0 ? 1 : 0.78);
+      const px = Math.cos(angle) * radius;
+      const py = Math.sin(angle) * radius;
+      if (side === 0) ctx.moveTo(px, py);
+      else ctx.lineTo(px, py);
+    }
+    ctx.closePath();
+    ctx.fill();
+    ctx.stroke();
+    ctx.rotate(-item.rotation);
+    ctx.beginPath();
+    ctx.arc(0, 0, item.radius * 0.52, 0, Math.PI * 2);
+    ctx.fillStyle = this.hexToRgba(definition.color, 0.34 + Math.abs(Math.sin(item.phase)) * 0.18);
+    ctx.fill();
+    ctx.strokeStyle = "rgba(255,255,255,.75)";
+    ctx.lineWidth = 1;
+    ctx.stroke();
+    ctx.globalCompositeOperation = "source-over";
+    ctx.fillStyle = "#ffffff";
+    ctx.shadowColor = definition.color;
+    ctx.shadowBlur = 12;
+    ctx.font = '700 13px "Orbitron", sans-serif';
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.fillText(definition.glyph, 0, 1);
+    ctx.restore();
+  }
+
+  drawParticles(ctx) {
+    if (this.particles.length === 0) return;
+    ctx.save();
+    ctx.globalCompositeOperation = "lighter";
+    for (const particle of this.particles) {
+      const alpha = Math.max(0, particle.life / particle.maxLife);
+      ctx.globalAlpha = alpha;
+      ctx.fillStyle = particle.color;
+      ctx.shadowColor = particle.color;
+      ctx.shadowBlur = 10;
+      ctx.beginPath();
+      ctx.arc(particle.x, particle.y, Math.max(0.35, particle.radius), 0, Math.PI * 2);
+      ctx.fill();
+    }
+    ctx.restore();
+  }
+
+  drawHud(ctx, x, y, width = 360) {
+    const active = Array.from(this.effects.entries())
+      .filter(([, effect]) => effect.remaining > 0)
+      .sort((first, second) => second[1].remaining - first[1].remaining);
+    if (active.length === 0) return;
+    const rowHeight = 18;
+    ctx.save();
+    ctx.textBaseline = "middle";
+    for (let index = 0; index < active.length; index += 1) {
+      const [type, effect] = active[index];
+      const definition = POWER_UP_DEFINITIONS[type];
+      const ratio = Math.max(0, Math.min(1, effect.remaining / effect.duration));
+      const rowY = y + index * rowHeight;
+      const warningAlpha = effect.remaining <= 1 ? 0.45 + Math.abs(Math.sin(this.elapsed * 22)) * 0.55 : 1;
+      ctx.globalAlpha = warningAlpha;
+      ctx.fillStyle = "rgba(3,1,10,.78)";
+      ctx.fillRect(x, rowY, width, 13);
+      ctx.strokeStyle = this.hexToRgba(definition.color, 0.48);
+      ctx.lineWidth = 1;
+      ctx.strokeRect(x + 0.5, rowY + 0.5, width - 1, 12);
+      const fillWidth = Math.max(0, (width - 4) * ratio);
+      const gradient = ctx.createLinearGradient(x, rowY, x + width, rowY);
+      gradient.addColorStop(0, this.hexToRgba(definition.color, 0.25));
+      gradient.addColorStop(0.65, definition.color);
+      gradient.addColorStop(1, "#ffffff");
+      ctx.fillStyle = gradient;
+      ctx.shadowColor = definition.color;
+      ctx.shadowBlur = effect.remaining <= 1 ? 18 : 9;
+      ctx.fillRect(x + 2, rowY + 2, fillWidth, 9);
+      ctx.shadowBlur = 0;
+      ctx.globalAlpha = 1;
+      ctx.fillStyle = "#ffffff";
+      ctx.font = '700 8px "Orbitron", sans-serif';
+      ctx.textAlign = "left";
+      ctx.fillText(definition.shortLabel, x + 7, rowY + 7);
+      ctx.textAlign = "right";
+      ctx.fillText(`${effect.remaining.toFixed(1)}s`, x + width - 6, rowY + 7);
+    }
+    ctx.restore();
+  }
+
+  drawShield(ctx, x, y, radius, time = this.elapsed) {
+    if (!this.isActive("shield")) return;
+    const remaining = this.getRemaining("shield");
+    const warning = remaining <= 1 ? 0.45 + Math.abs(Math.sin(time * 22)) * 0.55 : 1;
+    ctx.save();
+    ctx.translate(x, y);
+    ctx.globalAlpha = warning;
+    ctx.globalCompositeOperation = "lighter";
+    for (let ring = 0; ring < 3; ring += 1) {
+      const color = ring === 0 ? "#00ffff" : ring === 1 ? "#ff007f" : "#00ff7f";
+      ctx.strokeStyle = color;
+      ctx.shadowColor = color;
+      ctx.shadowBlur = 14;
+      ctx.lineWidth = 1.8;
+      ctx.rotate((ring % 2 === 0 ? 1 : -1) * time * (0.65 + ring * 0.24));
+      ctx.beginPath();
+      const sides = 8 + ring * 2;
+      for (let side = 0; side <= sides; side += 1) {
+        const angle = side / sides * Math.PI * 2;
+        const pulse = 1 + Math.sin(time * 7 + side * 1.7) * 0.035;
+        const ringRadius = radius + ring * 4;
+        const px = Math.cos(angle) * ringRadius * pulse;
+        const py = Math.sin(angle) * ringRadius * pulse;
+        if (side === 0) ctx.moveTo(px, py);
+        else ctx.lineTo(px, py);
+      }
+      ctx.stroke();
+    }
+    ctx.restore();
+  }
+
+  hexToRgba(hex, alpha) {
+    const normalized = String(hex).replace("#", "");
+    const value = normalized.length === 3
+      ? normalized.split("").map((character) => character + character).join("")
+      : normalized.padEnd(6, "0").slice(0, 6);
+    const number = Number.parseInt(value, 16);
+    const red = number >> 16 & 255;
+    const green = number >> 8 & 255;
+    const blue = number & 255;
+    return `rgba(${red},${green},${blue},${alpha})`;
+  }
+}
+
+
 class AlienInvadersGame {
   constructor(engine) {
     this.engine = engine;
@@ -1773,10 +2206,12 @@ class AlienInvadersGame {
     this.damageFlash = 0;
     this.comboCount = 0;
     this.comboTimer = 0;
+    this.wavePowerUpDropped = false;
     this.playerBullets = [];
     this.enemyBullets = [];
     this.aliens = [];
     this.particles = [];
+    this.powerUps = new NeonPowerUpSystem(engine, "space-invaders");
     this.player = {
       x: this.width / 2,
       y: this.height - 58,
@@ -1799,6 +2234,7 @@ class AlienInvadersGame {
     this.comboCount = 0;
     this.comboTimer = 0;
     this.alienMarchStep = 0;
+    this.wavePowerUpDropped = false;
     this.player.x = this.width / 2;
     this.player.y = this.height - 58;
     this.player.shotCooldown = 0;
@@ -1806,6 +2242,7 @@ class AlienInvadersGame {
     this.playerBullets.length = 0;
     this.enemyBullets.length = 0;
     this.particles.length = 0;
+    this.powerUps.reset();
     this.spawnWave();
     this.engine.onGameStart();
   }
@@ -1822,6 +2259,7 @@ class AlienInvadersGame {
     this.comboCount = 0;
     this.comboTimer = 0;
     this.alienMarchStep = 0;
+    this.wavePowerUpDropped = false;
     this.player.x = this.width / 2;
     this.player.y = this.height - 58;
     this.player.shotCooldown = 0;
@@ -1830,6 +2268,7 @@ class AlienInvadersGame {
     this.enemyBullets.length = 0;
     this.aliens.length = 0;
     this.particles.length = 0;
+    this.powerUps.reset();
   }
 
   endGame() {
@@ -1837,6 +2276,7 @@ class AlienInvadersGame {
     this.state = GAME_STATES.GAME_OVER;
     this.playerBullets.length = 0;
     this.enemyBullets.length = 0;
+    this.powerUps.deactivateAll();
     this.createExplosion(this.player.x, this.player.y, "#42f5ff", 18);
     this.engine.triggerScreenShake(0.42, 16);
     this.engine.triggerGlitch(0.4, 1.35);
@@ -1861,6 +2301,7 @@ class AlienInvadersGame {
     this.alienAnimationTimer = 0;
     this.alienMarchStep = 0;
     this.waveTransition = 0;
+    this.wavePowerUpDropped = false;
     this.enemyShotTimer = Math.max(0.45, 1.15 - this.wave * 0.045);
     this.formationBaseSpeed = 38 + this.wave * 6;
 
@@ -1915,8 +2356,15 @@ class AlienInvadersGame {
     this.sessionTime += deltaTime;
     this.player.invulnerable = Math.max(0, this.player.invulnerable - deltaTime);
     this.player.shotCooldown = Math.max(0, this.player.shotCooldown - deltaTime);
+    this.powerUps.update(deltaTime, {
+      x: this.player.x,
+      y: this.player.y,
+      radius: 29
+    }, { active: true, width: this.width, height: this.height });
 
     if (this.waveTransition > 0) {
+      this.updatePlayer(deltaTime);
+      this.updatePlayerBullets(deltaTime);
       this.waveTransition -= deltaTime;
       if (this.waveTransition <= 0) {
         this.wave += 1;
@@ -1926,16 +2374,26 @@ class AlienInvadersGame {
       return;
     }
 
+    const enemyDelta = deltaTime * this.powerUps.getEnemyTimeScale();
     this.updatePlayer(deltaTime);
     this.updatePlayerBullets(deltaTime);
-    this.updateAlienFormation(deltaTime);
-    this.updateEnemyFire(deltaTime);
-    this.updateEnemyBullets(deltaTime);
+    this.updateAlienFormation(enemyDelta);
+    this.updateEnemyFire(enemyDelta);
+    this.updateEnemyBullets(enemyDelta);
     this.resolveCollisions();
 
     const aliveCount = this.getAliveAlienCount();
     if (aliveCount === 0 && this.waveTransition <= 0) {
       this.score += 500 * this.wave;
+      if (!this.wavePowerUpDropped) {
+        this.wavePowerUpDropped = true;
+        this.powerUps.spawnRandom(this.width * (0.34 + Math.random() * 0.32), 108, {
+          force: true,
+          vy: 78,
+          life: 9.5,
+          bob: 6
+        });
+      }
       this.waveTransition = 1.65;
       this.enemyBullets.length = 0;
     }
@@ -1950,15 +2408,22 @@ class AlienInvadersGame {
     const halfWidth = this.player.width / 2;
     this.player.x = Math.max(halfWidth + 18, Math.min(this.width - halfWidth - 18, this.player.x));
 
-    if (this.input.isDown("Space") && this.player.shotCooldown <= 0 && this.playerBullets.length < 3) {
-      this.playerBullets.push({
-        x: this.player.x,
-        y: this.player.y - 27,
-        width: 5,
-        height: 17,
-        speed: 660
-      });
-      this.player.shotCooldown = 0.2;
+    const projectileLimit = this.powerUps.getProjectileLimit(3);
+    const shotAngles = this.powerUps.getSpreadAngles(-Math.PI / 2);
+    if (this.input.isDown("Space") && this.player.shotCooldown <= 0 && this.playerBullets.length + shotAngles.length <= projectileLimit) {
+      const speed = 660;
+      for (const angle of shotAngles) {
+        this.playerBullets.push({
+          x: this.player.x + Math.cos(angle) * 4,
+          y: this.player.y - 27,
+          vx: Math.cos(angle) * speed,
+          vy: Math.sin(angle) * speed,
+          width: 5,
+          height: 17,
+          speed
+        });
+      }
+      this.player.shotCooldown = shotAngles.length > 1 ? 0.25 : 0.2;
       this.engine.audio.playArcadeSound("space-invaders", "player_laser");
       this.engine.haptics.shot();
       this.engine.emitToastPulse();
@@ -1968,8 +2433,9 @@ class AlienInvadersGame {
   updatePlayerBullets(deltaTime) {
     for (let index = this.playerBullets.length - 1; index >= 0; index -= 1) {
       const bullet = this.playerBullets[index];
-      bullet.y -= bullet.speed * deltaTime;
-      if (bullet.y + bullet.height < 0) this.playerBullets.splice(index, 1);
+      bullet.x += (Number.isFinite(bullet.vx) ? bullet.vx : 0) * deltaTime;
+      bullet.y += (Number.isFinite(bullet.vy) ? bullet.vy : -bullet.speed) * deltaTime;
+      if (bullet.y + bullet.height < 0 || bullet.x < -30 || bullet.x > this.width + 30) this.playerBullets.splice(index, 1);
     }
   }
 
@@ -2050,13 +2516,46 @@ class AlienInvadersGame {
     }
   }
 
+  destroyAlien(alien, source = "bullet") {
+    if (!alien || !alien.alive) return;
+    alien.alive = false;
+    this.score += alien.type === 2 ? 220 : 100;
+    this.comboCount = this.comboTimer > 0 ? this.comboCount + 1 : 1;
+    this.comboTimer = 1.25;
+    if (this.comboCount >= 3) {
+      const comboBonus = 100 * (this.comboCount - 2);
+      this.score += comboBonus;
+      this.engine.showCanvasMessage(`+${comboBonus} COMBO`, {
+        x: alien.x,
+        y: alien.y - 12,
+        color: alien.type === 2 ? "#ff66f7" : "#b7ff3c",
+        size: 16,
+        duration: 1.05,
+        rise: 42,
+        blink: 12
+      });
+    }
+    this.createExplosion(alien.x, alien.y, alien.type === 2 ? "#ff3cf7" : "#9dff5a");
+    this.engine.audio.playArcadeSound("space-invaders", "invader_death", {
+      intensity: alien.type === 2 ? 1.18 : 0.92
+    });
+    this.engine.triggerScreenShake(alien.type === 2 ? 0.24 : 0.075, alien.type === 2 ? 11 : 3);
+    if (alien.type === 2) {
+      this.engine.triggerGlitch(0.24, 1.2);
+      this.powerUps.spawnRandom(alien.x, alien.y, {
+        chance: source === "shield" ? 0.22 : 0.38,
+        vy: 66,
+        life: 9,
+        bob: 5
+      });
+    }
+  }
+
   resolveCollisions() {
     for (let bulletIndex = this.playerBullets.length - 1; bulletIndex >= 0; bulletIndex -= 1) {
       const bullet = this.playerBullets[bulletIndex];
-      let targetIndex = -1;
-
-      for (let alienIndex = 0; alienIndex < this.aliens.length; alienIndex += 1) {
-        const alien = this.aliens[alienIndex];
+      let target = null;
+      for (const alien of this.aliens) {
         if (!alien.alive) continue;
         if (this.rectanglesOverlap(
           bullet.x - bullet.width / 2,
@@ -2068,49 +2567,43 @@ class AlienInvadersGame {
           alien.width,
           alien.height
         )) {
-          targetIndex = alienIndex;
+          target = alien;
           break;
         }
       }
-
-      if (targetIndex >= 0) {
-        const alien = this.aliens[targetIndex];
-        alien.alive = false;
+      if (target) {
         this.playerBullets.splice(bulletIndex, 1);
-        this.score += alien.type === 2 ? 220 : 100;
-        this.comboCount = this.comboTimer > 0 ? this.comboCount + 1 : 1;
-        this.comboTimer = 1.25;
-        if (this.comboCount >= 3) {
-          const comboBonus = 100 * (this.comboCount - 2);
-          this.score += comboBonus;
-          this.engine.showCanvasMessage(`+${comboBonus} COMBO`, {
-            x: alien.x,
-            y: alien.y - 12,
-            color: alien.type === 2 ? "#ff66f7" : "#b7ff3c",
-            size: 16,
-            duration: 1.05,
-            rise: 42,
-            blink: 12
-          });
-        }
-        this.createExplosion(alien.x, alien.y, alien.type === 2 ? "#ff3cf7" : "#9dff5a");
-        this.engine.audio.playArcadeSound("space-invaders", "invader_death", {
-          intensity: alien.type === 2 ? 1.18 : 0.92
-        });
-        this.engine.triggerScreenShake(alien.type === 2 ? 0.24 : 0.075, alien.type === 2 ? 11 : 3);
-        if (alien.type === 2) this.engine.triggerGlitch(0.24, 1.2);
+        this.destroyAlien(target, "bullet");
       }
     }
 
-    if (this.player.invulnerable > 0) return;
+    const shieldActive = this.powerUps.isActive("shield");
+    const shieldRadius = 48;
+    if (shieldActive) {
+      for (let index = this.enemyBullets.length - 1; index >= 0; index -= 1) {
+        const bullet = this.enemyBullets[index];
+        if (Math.hypot(bullet.x - this.player.x, bullet.y - this.player.y) <= shieldRadius + bullet.radius) {
+          this.enemyBullets.splice(index, 1);
+          this.createExplosion(bullet.x, bullet.y, "#00ff7f", 6);
+        }
+      }
+      for (const alien of this.aliens) {
+        if (!alien.alive) continue;
+        const alienRadius = Math.max(alien.width, alien.height) * 0.46;
+        if (Math.hypot(alien.x - this.player.x, alien.y - this.player.y) <= shieldRadius + alienRadius) {
+          this.destroyAlien(alien, "shield");
+        }
+      }
+      return;
+    }
 
+    if (this.player.invulnerable > 0) return;
     const playerHitbox = {
       x: this.player.x - 20,
       y: this.player.y - 17,
       width: 40,
       height: 30
     };
-
     for (let index = this.enemyBullets.length - 1; index >= 0; index -= 1) {
       const bullet = this.enemyBullets[index];
       if (this.circleIntersectsRectangle(bullet.x, bullet.y, bullet.radius + 2, playerHitbox)) {
@@ -2122,6 +2615,7 @@ class AlienInvadersGame {
   }
 
   damagePlayer() {
+    if (this.powerUps.isActive("shield")) return;
     this.lives -= 1;
     this.damageFlash = 0.78;
     this.engine.triggerScreenShake(0.38, 15);
@@ -2201,10 +2695,12 @@ class AlienInvadersGame {
     } else {
       this.drawBattlefield(ctx);
       this.drawParticles(ctx);
+      this.powerUps.draw(ctx);
       this.drawPlayerBullets(ctx);
       this.drawEnemyBullets(ctx);
       this.drawAliens(ctx);
       this.drawPlayer(ctx);
+      this.powerUps.drawShield(ctx, this.player.x, this.player.y, 42, this.sessionTime);
       this.drawHud(ctx);
 
       if (this.waveTransition > 0) this.drawWaveTransition(ctx);
@@ -2580,27 +3076,28 @@ class AlienInvadersGame {
     ctx.fillStyle = "rgba(3,1,7,.72)";
     ctx.strokeStyle = "rgba(66,245,255,.24)";
     ctx.lineWidth = 1;
-    ctx.fillRect(18, 16, 924, 52);
-    ctx.strokeRect(18.5, 16.5, 923, 51);
+    ctx.fillRect(18, 16, 764, 52);
+    ctx.strokeRect(18.5, 16.5, 763, 51);
 
     ctx.fillStyle = "rgba(248,247,255,.42)";
     ctx.font = "700 11px Rajdhani, sans-serif";
     ctx.fillText("SCORE", 36, 38);
-    ctx.fillText("WAVE", 262, 38);
-    ctx.fillText("ALIENS", 405, 38);
-    ctx.fillText("LIVES", 710, 38);
+    ctx.fillText("WAVE", 252, 38);
+    ctx.fillText("ALIENS", 382, 38);
+    ctx.fillText("LIVES", 620, 38);
 
     ctx.fillStyle = "#42f5ff";
     ctx.shadowColor = "#42f5ff";
     ctx.shadowBlur = 10;
     ctx.font = "800 17px Orbitron, sans-serif";
     ctx.fillText(this.score.toString().padStart(6, "0"), 92, 42);
-    ctx.fillText(this.wave.toString().padStart(2, "0"), 313, 42);
-    ctx.fillText(alive.toString().padStart(2, "0"), 464, 42);
+    ctx.fillText(this.wave.toString().padStart(2, "0"), 303, 42);
+    ctx.fillText(alive.toString().padStart(2, "0"), 444, 42);
 
     for (let life = 0; life < this.lives; life += 1) {
-      this.drawMiniShip(ctx, 785 + life * 45, 41);
+      this.drawMiniShip(ctx, 690 + life * 34, 41);
     }
+    this.powerUps.drawHud(ctx, 22, 76, 360);
     ctx.restore();
   }
 
@@ -2742,8 +3239,12 @@ class NeonPacmanGame {
     this.roundPauseTimer = 0;
     this.damageFlash = 0;
     this.pelletsRemaining = 0;
+    this.powerSpawnTimer = 9;
+    this.spreadPulseCooldown = 0;
     this.maze = [];
     this.particles = [];
+    this.energyPulses = [];
+    this.powerUps = new NeonPowerUpSystem(engine, "pac-man");
     this.playerSpawn = { column: 15, row: 17 };
     this.ghostSpawns = new Map();
     this.player = this.createPlayer();
@@ -2828,7 +3329,11 @@ class NeonPacmanGame {
     this.levelTransition = 0;
     this.roundPauseTimer = 1.15;
     this.damageFlash = 0;
+    this.powerSpawnTimer = 8 + Math.random() * 4;
+    this.spreadPulseCooldown = 0;
     this.particles.length = 0;
+    this.energyPulses.length = 0;
+    this.powerUps.reset();
     this.loadLevel();
     this.player.invulnerable = 2.2;
     this.engine.onGameStart();
@@ -2846,7 +3351,11 @@ class NeonPacmanGame {
     this.levelTransition = 0;
     this.roundPauseTimer = 0;
     this.damageFlash = 0;
+    this.powerSpawnTimer = 9;
+    this.spreadPulseCooldown = 0;
     this.particles.length = 0;
+    this.energyPulses.length = 0;
+    this.powerUps.reset();
     this.loadLevel();
   }
 
@@ -2856,6 +3365,8 @@ class NeonPacmanGame {
     this.engine.audio.playArcadeSound("pac-man", "ghost_vulnerable", { active: false, fade: 0.025 });
     this.frightenedTimer = 0;
     this.roundPauseTimer = 0;
+    this.energyPulses.length = 0;
+    this.powerUps.deactivateAll();
     this.createBurst(this.player.gridX, this.player.gridY, "#ffd83d", 24, 1.1);
     if (playDeathSound) this.engine.audio.playArcadeSound("pac-man", "pacman_death");
     this.engine.onGameOver(this.score);
@@ -2872,6 +3383,7 @@ class NeonPacmanGame {
   update(deltaTime) {
     this.gameTime += deltaTime;
     this.damageFlash = Math.max(0, this.damageFlash - deltaTime * 2.8);
+    this.spreadPulseCooldown = Math.max(0, this.spreadPulseCooldown - deltaTime);
     this.updateParticles(deltaTime);
 
     if (this.state === GAME_STATES.MENU) {
@@ -2886,6 +3398,12 @@ class NeonPacmanGame {
 
     this.player.invulnerable = Math.max(0, this.player.invulnerable - deltaTime);
     this.readDirectionInput();
+    this.powerUps.update(deltaTime, {
+      x: this.gridToWorldX(this.player.gridX),
+      y: this.gridToWorldY(this.player.gridY),
+      radius: 16
+    }, { active: true, width: this.width, height: this.height });
+    this.updateEnergyPulses(deltaTime);
 
     if (this.levelTransition > 0) {
       this.levelTransition -= deltaTime;
@@ -2898,6 +3416,12 @@ class NeonPacmanGame {
       return;
     }
 
+    this.powerSpawnTimer -= deltaTime;
+    if (this.powerSpawnTimer <= 0) {
+      this.spawnPeriodicPowerUp();
+      this.powerSpawnTimer = Math.max(8.5, 13.5 - this.level * 0.25) + Math.random() * 5;
+    }
+
     if (this.frightenedTimer > 0) {
       this.frightenedTimer = Math.max(0, this.frightenedTimer - deltaTime);
       if (this.frightenedTimer === 0) {
@@ -2908,6 +3432,7 @@ class NeonPacmanGame {
 
     this.updatePlayer(deltaTime);
     this.consumePelletAtPlayer();
+    this.emitSpreadPulse();
     this.updateGhosts(deltaTime);
     this.resolveGhostCollisions();
 
@@ -2953,6 +3478,7 @@ class NeonPacmanGame {
   updateGhosts(deltaTime) {
     const normalSpeed = 4.15 + Math.min(1.45, (this.level - 1) * 0.12);
     const frightenedSpeed = 3.25 + Math.min(0.8, (this.level - 1) * 0.07);
+    const enemyScale = this.powerUps.getEnemyTimeScale();
 
     for (const ghost of this.ghosts) {
       if (ghost.respawnTimer > 0) {
@@ -2961,7 +3487,7 @@ class NeonPacmanGame {
         continue;
       }
 
-      ghost.speed = this.frightenedTimer > 0 ? frightenedSpeed : normalSpeed;
+      ghost.speed = (this.frightenedTimer > 0 ? frightenedSpeed : normalSpeed) * enemyScale;
       this.moveEntityOnGrid(ghost, deltaTime, () => {
         ghost.direction = this.chooseGhostDirection(ghost);
       });
@@ -3093,38 +3619,164 @@ class NeonPacmanGame {
     };
   }
 
+  spawnPeriodicPowerUp() {
+    const candidates = [];
+    for (let row = 1; row < this.rows - 1; row += 1) {
+      for (let column = 1; column < this.columns - 1; column += 1) {
+        if (this.isWall(column, row)) continue;
+        const playerDistance = Math.hypot(column - this.player.gridX, row - this.player.gridY);
+        if (playerDistance < 4.5) continue;
+        if (this.ghosts.some((ghost) => ghost.respawnTimer <= 0 && Math.hypot(column - ghost.gridX, row - ghost.gridY) < 2.5)) continue;
+        candidates.push({ column, row });
+      }
+    }
+    if (candidates.length === 0) return;
+    const target = candidates[Math.floor(Math.random() * candidates.length)];
+    this.powerUps.spawnRandom(this.gridToWorldX(target.column), this.gridToWorldY(target.row), {
+      force: true,
+      life: 12,
+      bob: 4
+    });
+  }
+
+  emitSpreadPulse() {
+    if (!this.powerUps.isActive("spreadShot") || this.spreadPulseCooldown > 0) return;
+    const direction = this.player.direction.x === 0 && this.player.direction.y === 0
+      ? this.player.queuedDirection
+      : this.player.direction;
+    if (direction.x === 0 && direction.y === 0) return;
+    const baseAngle = Math.atan2(direction.y, direction.x);
+    const speed = 285;
+    const x = this.gridToWorldX(this.player.gridX);
+    const y = this.gridToWorldY(this.player.gridY);
+    for (const angle of this.powerUps.getSpreadAngles(baseAngle)) {
+      this.energyPulses.push({
+        x: x + Math.cos(angle) * 14,
+        y: y + Math.sin(angle) * 14,
+        vx: Math.cos(angle) * speed,
+        vy: Math.sin(angle) * speed,
+        life: 0.72,
+        radius: 4,
+        visited: new Set()
+      });
+    }
+    this.spreadPulseCooldown = 0.38;
+    this.engine.audio.playArcadeSound("pac-man", "player_laser");
+  }
+
+  updateEnergyPulses(deltaTime) {
+    for (let index = this.energyPulses.length - 1; index >= 0; index -= 1) {
+      const pulse = this.energyPulses[index];
+      pulse.life -= deltaTime;
+      if (pulse.life <= 0) {
+        this.energyPulses.splice(index, 1);
+        continue;
+      }
+      pulse.x += pulse.vx * deltaTime;
+      pulse.y += pulse.vy * deltaTime;
+      const column = Math.round((pulse.x - this.originX) / this.tileSize - 0.5);
+      const row = Math.round((pulse.y - this.originY) / this.tileSize - 0.5);
+      if (column < 0 || column >= this.columns || row < 0 || row >= this.rows || this.isWall(column, row)) {
+        this.energyPulses.splice(index, 1);
+        continue;
+      }
+      const tileKey = `${column}:${row}`;
+      if (!pulse.visited.has(tileKey)) {
+        pulse.visited.add(tileKey);
+        this.consumeMazeTile(column, row, "pulse");
+      }
+      let hitGhost = false;
+      for (const ghost of this.ghosts) {
+        if (ghost.respawnTimer > 0) continue;
+        const ghostX = this.gridToWorldX(ghost.gridX);
+        const ghostY = this.gridToWorldY(ghost.gridY);
+        if (Math.hypot(pulse.x - ghostX, pulse.y - ghostY) > 17) continue;
+        this.captureGhost(ghost, 150, "ENERGY HIT");
+        hitGhost = true;
+        break;
+      }
+      if (hitGhost) this.energyPulses.splice(index, 1);
+    }
+  }
+
+  consumeMazeTile(column, row, source = "player") {
+    if (row < 0 || row >= this.rows || column < 0 || column >= this.columns) return false;
+    const tile = this.maze[row][column];
+    if (tile !== 2 && tile !== 3) return false;
+    this.maze[row][column] = 0;
+    this.pelletsRemaining -= 1;
+    if (tile === 2) {
+      this.score += 10;
+      this.createPelletSpark(column, row, source === "pulse" ? "#ff66f7" : "#ffe75b", source === "pulse" ? 5 : 3);
+      this.engine.audio.playArcadeSound("pac-man", "waka_waka", {
+        brightness: source === "pulse" ? 1.12 : 0.86 + (this.score % 40) / 200
+      });
+      return true;
+    }
+    this.score += 50;
+    this.frightenedTimer = 7;
+    this.frightenedChain = 0;
+    for (const ghost of this.ghosts) {
+      if (ghost.respawnTimer <= 0) ghost.direction = this.getOppositeDirection(ghost.direction);
+    }
+    this.createBurst(column, row, "#ffe75b", 18, 0.75);
+    this.engine.audio.playArcadeSound("pac-man", "waka_waka", { brightness: 1.22 });
+    this.engine.audio.playArcadeSound("pac-man", "ghost_vulnerable", { active: true });
+    this.engine.showCanvasMessage("POWER MODE", {
+      color: "#ffe75b", size: 18, duration: 1.15, blink: 9
+    });
+    this.engine.showToast("POWER PELLET · GHOSTS VULNERABLE FOR 7 SECONDS");
+    return true;
+  }
+
+  captureGhost(ghost, points, label = "CAPTURED") {
+    this.score += points;
+    this.createBurst(ghost.gridX, ghost.gridY, ghost.color, 20, 0.95);
+    this.engine.audio.explosion(0.52);
+    this.engine.triggerScreenShake(0.08, 3.5);
+    this.engine.showCanvasMessage(`+${points} ${label}`, {
+      x: this.gridToWorldX(ghost.gridX),
+      y: this.gridToWorldY(ghost.gridY) - 8,
+      color: ghost.color,
+      size: 13,
+      duration: 1.15,
+      rise: 38,
+      blink: 11
+    });
+    ghost.respawnTimer = 2.15;
+    ghost.gridX = ghost.spawnColumn;
+    ghost.gridY = ghost.spawnRow;
+    ghost.direction = MAZE_DIRECTIONS.NONE;
+  }
+
+  drawEnergyPulses(ctx) {
+    if (this.energyPulses.length === 0) return;
+    ctx.save();
+    ctx.globalCompositeOperation = "lighter";
+    for (const pulse of this.energyPulses) {
+      const alpha = Math.max(0, Math.min(1, pulse.life / 0.72));
+      ctx.globalAlpha = alpha;
+      ctx.fillStyle = "#ff007f";
+      ctx.shadowColor = "#ff007f";
+      ctx.shadowBlur = 15;
+      ctx.beginPath();
+      ctx.arc(pulse.x, pulse.y, pulse.radius + (1 - alpha) * 2, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.strokeStyle = "#00ffff";
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.arc(pulse.x, pulse.y, pulse.radius + 4, 0, Math.PI * 2);
+      ctx.stroke();
+    }
+    ctx.restore();
+  }
+
   consumePelletAtPlayer() {
     const column = Math.round(this.player.gridX);
     const row = Math.round(this.player.gridY);
     const centered = Math.abs(this.player.gridX - column) < 0.3 && Math.abs(this.player.gridY - row) < 0.3;
-    if (!centered || row < 0 || row >= this.rows || column < 0 || column >= this.columns) return;
-
-    const tile = this.maze[row][column];
-    if (tile === 2) {
-      this.maze[row][column] = 0;
-      this.pelletsRemaining -= 1;
-      this.score += 10;
-      this.createPelletSpark(column, row, "#ffe75b", 3);
-      this.engine.audio.playArcadeSound("pac-man", "waka_waka", {
-        brightness: 0.86 + (this.score % 40) / 200
-      });
-    } else if (tile === 3) {
-      this.maze[row][column] = 0;
-      this.pelletsRemaining -= 1;
-      this.score += 50;
-      this.frightenedTimer = 7;
-      this.frightenedChain = 0;
-      for (const ghost of this.ghosts) {
-        if (ghost.respawnTimer <= 0) ghost.direction = this.getOppositeDirection(ghost.direction);
-      }
-      this.createBurst(column, row, "#ffe75b", 18, 0.75);
-      this.engine.audio.playArcadeSound("pac-man", "waka_waka", { brightness: 1.22 });
-      this.engine.audio.playArcadeSound("pac-man", "ghost_vulnerable", { active: true });
-      this.engine.showCanvasMessage("POWER MODE", {
-        color: "#ffe75b", size: 18, duration: 1.15, blink: 9
-      });
-      this.engine.showToast("POWER PELLET · GHOSTS VULNERABLE FOR 7 SECONDS");
-    }
+    if (!centered) return;
+    this.consumeMazeTile(column, row, "player");
   }
 
   resolveGhostCollisions() {
@@ -3133,26 +3785,15 @@ class NeonPacmanGame {
       const distance = Math.hypot(this.player.gridX - ghost.gridX, this.player.gridY - ghost.gridY);
       if (distance > 0.72) continue;
 
+      if (this.powerUps.isActive("shield")) {
+        this.captureGhost(ghost, 300, "SHIELD HIT");
+        continue;
+      }
+
       if (this.frightenedTimer > 0) {
         this.frightenedChain += 1;
         const ghostScore = 200 * Math.pow(2, Math.min(3, this.frightenedChain - 1));
-        this.score += ghostScore;
-        this.createBurst(ghost.gridX, ghost.gridY, ghost.color, 20, 0.95);
-        this.engine.audio.explosion(0.52);
-        this.engine.triggerScreenShake(0.08, 3.5);
-        this.engine.showCanvasMessage(`+${ghostScore} COMBO`, {
-          x: this.gridToWorldX(ghost.gridX),
-          y: this.gridToWorldY(ghost.gridY) - 8,
-          color: ghost.color,
-          size: 15,
-          duration: 1.2,
-          rise: 38,
-          blink: 11
-        });
-        ghost.respawnTimer = 2.15;
-        ghost.gridX = ghost.spawnColumn;
-        ghost.gridY = ghost.spawnRow;
-        ghost.direction = MAZE_DIRECTIONS.NONE;
+        this.captureGhost(ghost, ghostScore, "COMBO");
         this.engine.showToast(`${ghost.name.toUpperCase()} CAPTURED · +${ghostScore}`);
       } else if (this.player.invulnerable <= 0) {
         this.loseLife();
@@ -3162,6 +3803,7 @@ class NeonPacmanGame {
   }
 
   loseLife() {
+    if (this.powerUps.isActive("shield")) return;
     this.lives -= 1;
     this.damageFlash = 1;
     this.createBurst(this.player.gridX, this.player.gridY, "#ffd83d", 26, 1.05);
@@ -3215,9 +3857,12 @@ class NeonPacmanGame {
     this.frightenedTimer = 0;
     this.frightenedChain = 0;
     this.particles.length = 0;
+    this.energyPulses.length = 0;
+    this.powerUps.clearItems();
     this.loadLevel();
     this.roundPauseTimer = 1.25;
     this.player.invulnerable = 2.3;
+    this.powerSpawnTimer = 8 + Math.random() * 4;
   }
 
   canMoveFromPosition(entity, direction) {
@@ -3346,8 +3991,17 @@ class NeonPacmanGame {
     this.drawBackdrop(ctx);
     this.drawMaze(ctx, 1);
     this.drawPellets(ctx);
+    this.powerUps.draw(ctx);
     this.drawGhosts(ctx);
+    this.drawEnergyPulses(ctx);
     this.drawPlayer(ctx);
+    this.powerUps.drawShield(
+      ctx,
+      this.gridToWorldX(this.player.gridX),
+      this.gridToWorldY(this.player.gridY),
+      21,
+      this.gameTime
+    );
     this.drawParticles(ctx);
     this.drawHud(ctx);
 
@@ -3676,13 +4330,13 @@ class NeonPacmanGame {
       const ratio = this.frightenedTimer / 7;
       ctx.shadowBlur = 0;
       ctx.fillStyle = "rgba(255,255,255,.1)";
-      ctx.fillRect(139, 57, 682, 3);
+      ctx.fillRect(139, 57, 522, 3);
       ctx.fillStyle = "#275dff";
       ctx.shadowColor = "#275dff";
       ctx.shadowBlur = 8;
-      ctx.fillRect(139, 57, 682 * ratio, 3);
+      ctx.fillRect(139, 57, 522 * ratio, 3);
     }
-
+    this.powerUps.drawHud(ctx, 139, 63, 522);
     ctx.restore();
   }
 
@@ -3773,6 +4427,7 @@ class NeonAsteroidsGame {
     this.bullets = [];
     this.asteroids = [];
     this.particles = [];
+    this.powerUps = new NeonPowerUpSystem(engine, "asteroids");
     this.highScoreStorageKey = "arcade_asteroids_highscore";
     this.highScore = this.loadHighScore();
     this.ship = this.createShip();
@@ -3838,6 +4493,7 @@ class NeonAsteroidsGame {
     this.bullets.length = 0;
     this.asteroids.length = 0;
     this.particles.length = 0;
+    this.powerUps.reset();
     this.resetShip(3);
     this.spawnWave();
     this.engine.onGameStart();
@@ -3858,6 +4514,7 @@ class NeonAsteroidsGame {
     this.bullets.length = 0;
     this.asteroids.length = 0;
     this.particles.length = 0;
+    this.powerUps.reset();
     this.ship = this.createShip();
   }
 
@@ -3884,6 +4541,7 @@ class NeonAsteroidsGame {
     if (this.state !== GAME_STATES.PLAYING) return;
     this.engine.audio.playArcadeSound("asteroids", "ship_thrust", { active: false, fade: 0.025 });
     this.state = GAME_STATES.GAME_OVER;
+    this.powerUps.deactivateAll();
     this.createExplosion(this.ship.x, this.ship.y, "#42f5ff", 15, 170);
     this.engine.triggerScreenShake(0.44, 18);
     this.engine.triggerGlitch(0.38, 1.55);
@@ -3988,10 +4646,15 @@ class NeonAsteroidsGame {
     this.elapsed += deltaTime;
     this.ship.shotCooldown = Math.max(0, this.ship.shotCooldown - deltaTime);
     this.ship.invulnerable = Math.max(0, this.ship.invulnerable - deltaTime);
+    this.powerUps.update(deltaTime, {
+      x: this.ship.x,
+      y: this.ship.y,
+      radius: this.ship.radius + 3
+    }, { active: true, width: this.width, height: this.height });
 
     this.updateShip(deltaTime);
     this.updateBullets(deltaTime);
-    this.updateAsteroids(deltaTime);
+    this.updateAsteroids(deltaTime * this.powerUps.getEnemyTimeScale());
     this.resolveBulletCollisions();
     this.resolveShipCollisions();
 
@@ -4052,24 +4715,29 @@ class NeonAsteroidsGame {
     ship.y += ship.vy * deltaTime;
     this.wrapEntity(ship);
 
-    if (this.input.isDown("Space") && ship.shotCooldown <= 0 && this.bullets.length < 5) {
+    const projectileLimit = this.powerUps.getProjectileLimit(5);
+    const shotCount = this.powerUps.isActive("spreadShot") ? 3 : 1;
+    if (this.input.isDown("Space") && ship.shotCooldown <= 0 && this.bullets.length + shotCount <= projectileLimit) {
       this.fireBullet();
     }
   }
 
   fireBullet() {
     const ship = this.ship;
-    const directionX = Math.cos(ship.angle);
-    const directionY = Math.sin(ship.angle);
-    this.bullets.push({
-      x: ship.x + directionX * 23,
-      y: ship.y + directionY * 23,
-      vx: ship.vx + directionX * 540,
-      vy: ship.vy + directionY * 540,
-      life: 1.08,
-      radius: 3
-    });
-    ship.shotCooldown = 0.17;
+    const angles = this.powerUps.getSpreadAngles(ship.angle);
+    for (const angle of angles) {
+      const directionX = Math.cos(angle);
+      const directionY = Math.sin(angle);
+      this.bullets.push({
+        x: ship.x + directionX * 23,
+        y: ship.y + directionY * 23,
+        vx: ship.vx + directionX * 540,
+        vy: ship.vy + directionY * 540,
+        life: 1.08,
+        radius: 3
+      });
+    }
+    ship.shotCooldown = angles.length > 1 ? 0.22 : 0.17;
     this.engine.audio.playArcadeSound("asteroids", "player_laser");
     this.engine.haptics.shot();
   }
@@ -4148,6 +4816,17 @@ class NeonAsteroidsGame {
     );
     if (asteroid.size === "large") this.engine.triggerGlitch(0.22, 1.05);
     this.engine.audio.playArcadeSound("asteroids", "asteroid_explosion", { size: asteroid.size });
+    if (asteroid.size === "large" || asteroid.size === "medium") {
+      const chance = asteroid.size === "large" ? 0.46 : 0.28;
+      this.powerUps.spawnRandom(asteroid.x, asteroid.y, {
+        chance,
+        vx: (Math.random() - 0.5) * 56,
+        vy: (Math.random() - 0.5) * 56,
+        life: 11,
+        wrap: true,
+        bob: 4
+      });
+    }
 
     this.comboCount = this.comboTimer > 0 ? this.comboCount + 1 : 1;
     this.comboTimer = 1.15;
@@ -4187,6 +4866,16 @@ class NeonAsteroidsGame {
   }
 
   resolveShipCollisions() {
+    if (this.powerUps.isActive("shield")) {
+      const shieldRadius = 40;
+      for (let index = this.asteroids.length - 1; index >= 0; index -= 1) {
+        const asteroid = this.asteroids[index];
+        if (this.toroidalDistance(this.ship, asteroid) > shieldRadius + asteroid.radius * 0.82) continue;
+        this.asteroids.splice(index, 1);
+        this.destroyAsteroid(asteroid);
+      }
+      return;
+    }
     if (this.ship.invulnerable > 0) return;
 
     for (const asteroid of this.asteroids) {
@@ -4197,6 +4886,7 @@ class NeonAsteroidsGame {
   }
 
   hitShip() {
+    if (this.powerUps.isActive("shield")) return;
     this.lives -= 1;
     this.createExplosion(this.ship.x, this.ship.y, "#42f5ff", 15, 210);
     this.createExplosion(this.ship.x, this.ship.y, "#ff3cf7", 11, 145);
@@ -4293,10 +4983,12 @@ class NeonAsteroidsGame {
     if (this.state === GAME_STATES.MENU) {
       this.drawMenu();
     } else {
+      this.powerUps.draw(ctx);
       this.drawAsteroids();
       this.drawBullets();
       this.drawParticles();
       if (this.state === GAME_STATES.PLAYING || this.lives > 0) this.drawShip();
+      this.powerUps.drawShield(ctx, this.ship.x, this.ship.y, 34, this.elapsed);
       this.drawHud();
       if (this.state === GAME_STATES.GAME_OVER) this.drawGameOverPanel();
     }
@@ -4579,7 +5271,13 @@ class NeonAsteroidsGame {
     ctx.textAlign = "center";
     ctx.fillText(`BULLETS ${this.bullets.length}/5`, this.width / 2, this.height - 30);
     ctx.textAlign = "right";
-    ctx.fillText(this.ship.invulnerable > 0 ? `SHIELD ${this.ship.invulnerable.toFixed(1)}s` : "SHIELD OFF", this.width - 28, this.height - 30);
+    const shieldText = this.powerUps.isActive("shield")
+      ? `RGB SHIELD ${this.powerUps.getRemaining("shield").toFixed(1)}s`
+      : this.ship.invulnerable > 0
+        ? `RESPAWN SHIELD ${this.ship.invulnerable.toFixed(1)}s`
+        : "SHIELD OFF";
+    ctx.fillText(shieldText, this.width - 28, this.height - 30);
+    this.powerUps.drawHud(ctx, 28, 76, 370);
     ctx.restore();
   }
 
@@ -4892,12 +5590,13 @@ class ArcadeEngine {
   }
 
   releaseTransientArrays() {
-    const arrayNames = ["particles", "bullets", "playerBullets", "enemyBullets", "floatingMessages"];
+    const arrayNames = ["particles", "bullets", "playerBullets", "enemyBullets", "energyPulses", "floatingMessages"];
     for (const name of arrayNames) {
       const target = name === "floatingMessages" ? this : this.module;
       const value = target?.[name];
       if (Array.isArray(value) && value.length > 0) value.splice(0, value.length);
     }
+    if (this.module?.powerUps) this.module.powerUps.reset();
   }
 
   loop(timestamp) {
