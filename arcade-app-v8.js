@@ -845,6 +845,9 @@ class InputManager {
     this.virtualSources = new Map();
     this.enabled = false;
     this.controlCodes = new Set(["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", "Space", "Enter"]);
+    this.directionCodes = new Set(["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"]);
+    this.directionOrder = new Map();
+    this.inputSequence = 0;
     this.keys = Object.seal({
       ArrowLeft: false,
       ArrowRight: false,
@@ -857,13 +860,53 @@ class InputManager {
     this.handleKeyDown = this.handleKeyDown.bind(this);
     this.handleKeyUp = this.handleKeyUp.bind(this);
     this.handleWindowBlur = this.handleWindowBlur.bind(this);
-    window.addEventListener("keydown", this.handleKeyDown, { passive: false });
-    window.addEventListener("keyup", this.handleKeyUp, { passive: false });
+    this.handleVisibilityChange = this.handleVisibilityChange.bind(this);
+    document.addEventListener("keydown", this.handleKeyDown, { capture: true, passive: false });
+    window.addEventListener("keyup", this.handleKeyUp, { capture: true, passive: false });
     window.addEventListener("blur", this.handleWindowBlur);
+    document.addEventListener("visibilitychange", this.handleVisibilityChange);
   }
 
   normalizeCode(code) {
-    return code === " " ? "Space" : code;
+    const value = String(code || "");
+    if (value === " " || value === "Spacebar" || value === "Space") return "Space";
+    if (value === "Left") return "ArrowLeft";
+    if (value === "Right") return "ArrowRight";
+    if (value === "Up") return "ArrowUp";
+    if (value === "Down") return "ArrowDown";
+    if (value === "Return") return "Enter";
+    return value;
+  }
+
+  codeFromEvent(event) {
+    const code = this.normalizeCode(event.code);
+    if (this.controlCodes.has(code)) return code;
+    return this.normalizeCode(event.key);
+  }
+
+  isEditableTarget(target) {
+    if (!(target instanceof Element)) return false;
+    return Boolean(target.closest("input, textarea, select, [contenteditable='true']"));
+  }
+
+  rememberDirection(code) {
+    if (!this.directionCodes.has(code)) return;
+    this.inputSequence += 1;
+    this.directionOrder.set(code, this.inputSequence);
+  }
+
+  getPreferredDirection() {
+    let preferred = null;
+    let newestSequence = -1;
+    for (const code of this.directionCodes) {
+      if (!this.keysDown.has(code) && !this.keysPressed.has(code)) continue;
+      const sequence = this.directionOrder.get(code) || 0;
+      if (sequence >= newestSequence) {
+        newestSequence = sequence;
+        preferred = code;
+      }
+    }
+    return preferred;
   }
 
   syncKeyState(code) {
@@ -882,26 +925,33 @@ class InputManager {
   }
 
   setEnabled(enabled) {
-    this.enabled = Boolean(enabled);
-    if (!this.enabled) this.clear();
+    const nextEnabled = Boolean(enabled);
+    if (nextEnabled !== this.enabled) this.clear();
+    this.enabled = nextEnabled;
   }
 
   handleKeyDown(event) {
-    if (!this.enabled) return;
-    const code = this.normalizeCode(event.code || event.key);
+    if (!this.enabled || this.isEditableTarget(event.target)) return;
+    const code = this.codeFromEvent(event);
     if (!this.controlCodes.has(code)) return;
     event.preventDefault();
-    if (!this.physicalKeysDown.has(code) && !this.keysDown.has(code)) this.keysPressed.add(code);
+    event.stopPropagation();
+    if (!this.physicalKeysDown.has(code) && !this.keysDown.has(code)) {
+      this.keysPressed.add(code);
+      this.rememberDirection(code);
+    }
     this.physicalKeysDown.add(code);
     this.keysDown.add(code);
     this.syncKeyState(code);
   }
 
   handleKeyUp(event) {
-    if (!this.enabled) return;
-    const code = this.normalizeCode(event.code || event.key);
+    const code = this.codeFromEvent(event);
     if (!this.controlCodes.has(code)) return;
-    event.preventDefault();
+    if (this.enabled && !this.isEditableTarget(event.target)) {
+      event.preventDefault();
+      event.stopPropagation();
+    }
     this.physicalKeysDown.delete(code);
     if (!this.hasVirtualSourceForCode(code)) this.keysDown.delete(code);
     this.syncKeyState(code);
@@ -920,7 +970,10 @@ class InputManager {
       const wasDown = this.keysDown.has(normalizedCode);
       sources.add(sourceId);
       this.keysDown.add(normalizedCode);
-      if (!wasDown) this.keysPressed.add(normalizedCode);
+      if (!wasDown) {
+        this.keysPressed.add(normalizedCode);
+        this.rememberDirection(normalizedCode);
+      }
       this.syncKeyState(normalizedCode);
       return;
     }
@@ -947,6 +1000,10 @@ class InputManager {
     this.clear();
   }
 
+  handleVisibilityChange() {
+    if (document.hidden) this.clear();
+  }
+
   isDown(code) {
     return this.keysDown.has(this.normalizeCode(code));
   }
@@ -967,6 +1024,8 @@ class InputManager {
     this.keysPressed.clear();
     this.physicalKeysDown.clear();
     this.virtualSources.clear();
+    this.directionOrder.clear();
+    this.inputSequence = 0;
     this.syncAllKeyStates();
   }
 }
@@ -1042,7 +1101,9 @@ class TouchArcadeControls {
     this.input = input;
     this.modalElement = modalElement;
     this.onLayoutChange = typeof onLayoutChange === "function" ? onLayoutChange : null;
-    this.isTouchDevice = "ontouchstart" in window;
+    this.isTouchDevice = "ontouchstart" in window
+      || Number(navigator.maxTouchPoints || 0) > 0
+      || window.matchMedia?.("(pointer: coarse)").matches === true;
     this.root = null;
     this.joystick = null;
     this.knob = null;
@@ -1107,6 +1168,37 @@ class TouchArcadeControls {
 
   bindJoystick() {
     const prevent = (event) => event.preventDefault();
+
+    if ("PointerEvent" in window) {
+      const finishPointer = (event) => {
+        if (event.pointerId !== this.activeJoystickTouch) return;
+        event.preventDefault();
+        this.activeJoystickTouch = null;
+        this.resetJoystick();
+      };
+
+      this.joystick.addEventListener("pointerdown", (event) => {
+        if (event.pointerType === "mouse" && event.button !== 0) return;
+        event.preventDefault();
+        if (this.activeJoystickTouch !== null) return;
+        this.activeJoystickTouch = event.pointerId;
+        try { this.joystick.setPointerCapture?.(event.pointerId); } catch (error) { /* Pointer capture is optional. */ }
+        this.joystick.classList.add("is-active");
+        this.updateJoystickFromTouch(event);
+      }, { passive: false });
+
+      this.joystick.addEventListener("pointermove", (event) => {
+        if (event.pointerId !== this.activeJoystickTouch) return;
+        event.preventDefault();
+        this.updateJoystickFromTouch(event);
+      }, { passive: false });
+
+      this.joystick.addEventListener("pointerup", finishPointer, { passive: false });
+      this.joystick.addEventListener("pointercancel", finishPointer, { passive: false });
+      this.joystick.addEventListener("lostpointercapture", finishPointer, { passive: false });
+      return;
+    }
+
     this.joystick.addEventListener("touchstart", (event) => {
       event.preventDefault();
       if (this.activeJoystickTouch !== null || event.changedTouches.length === 0) return;
@@ -1175,6 +1267,33 @@ class TouchArcadeControls {
     const code = button.dataset.touchButton;
     const sourcePrefix = `touch-button-${code}`;
 
+    if ("PointerEvent" in window) {
+      const releasePointer = (event) => {
+        const active = this.activeButtonTouches.get(event.pointerId);
+        if (!active || active.button !== button) return;
+        event.preventDefault();
+        this.input.setVirtualKey(active.code, false, active.sourceId);
+        this.activeButtonTouches.delete(event.pointerId);
+        const stillActive = Array.from(this.activeButtonTouches.values()).some((item) => item.button === button);
+        button.classList.toggle("is-active", stillActive);
+      };
+
+      button.addEventListener("pointerdown", (event) => {
+        if (event.pointerType === "mouse" && event.button !== 0) return;
+        event.preventDefault();
+        const sourceId = `${sourcePrefix}-${event.pointerId}`;
+        this.activeButtonTouches.set(event.pointerId, { code, sourceId, button });
+        try { button.setPointerCapture?.(event.pointerId); } catch (error) { /* Pointer capture is optional. */ }
+        this.input.setVirtualKey(code, true, sourceId);
+        button.classList.add("is-active");
+      }, { passive: false });
+      button.addEventListener("pointermove", (event) => event.preventDefault(), { passive: false });
+      button.addEventListener("pointerup", releasePointer, { passive: false });
+      button.addEventListener("pointercancel", releasePointer, { passive: false });
+      button.addEventListener("lostpointercapture", releasePointer, { passive: false });
+      return;
+    }
+
     button.addEventListener("touchstart", (event) => {
       event.preventDefault();
       for (const touch of event.changedTouches) {
@@ -1185,9 +1304,7 @@ class TouchArcadeControls {
       button.classList.add("is-active");
     }, { passive: false });
 
-    button.addEventListener("touchmove", (event) => {
-      event.preventDefault();
-    }, { passive: false });
+    button.addEventListener("touchmove", (event) => event.preventDefault(), { passive: false });
 
     const release = (event) => {
       event.preventDefault();
@@ -2293,7 +2410,7 @@ class NeonPacmanGame {
     this.frightenedTimer = 0;
     this.frightenedChain = 0;
     this.levelTransition = 0;
-    this.roundPauseTimer = 2.9;
+    this.roundPauseTimer = 1.15;
     this.damageFlash = 0;
     this.particles.length = 0;
     this.loadLevel();
@@ -2352,6 +2469,7 @@ class NeonPacmanGame {
     }
 
     this.player.invulnerable = Math.max(0, this.player.invulnerable - deltaTime);
+    this.readDirectionInput();
 
     if (this.levelTransition > 0) {
       this.levelTransition -= deltaTime;
@@ -2372,7 +2490,6 @@ class NeonPacmanGame {
       }
     }
 
-    this.readDirectionInput();
     this.updatePlayer(deltaTime);
     this.consumePelletAtPlayer();
     this.updateGhosts(deltaTime);
@@ -2388,16 +2505,15 @@ class NeonPacmanGame {
   }
 
   readDirectionInput() {
-    if (this.input.wasPressed("ArrowUp")) this.player.queuedDirection = MAZE_DIRECTIONS.UP;
-    if (this.input.wasPressed("ArrowDown")) this.player.queuedDirection = MAZE_DIRECTIONS.DOWN;
-    if (this.input.wasPressed("ArrowLeft")) this.player.queuedDirection = MAZE_DIRECTIONS.LEFT;
-    if (this.input.wasPressed("ArrowRight")) this.player.queuedDirection = MAZE_DIRECTIONS.RIGHT;
-
-    if (this.player.direction === MAZE_DIRECTIONS.NONE) {
-      if (this.input.isDown("ArrowUp")) this.player.queuedDirection = MAZE_DIRECTIONS.UP;
-      else if (this.input.isDown("ArrowDown")) this.player.queuedDirection = MAZE_DIRECTIONS.DOWN;
-      else if (this.input.isDown("ArrowLeft")) this.player.queuedDirection = MAZE_DIRECTIONS.LEFT;
-      else if (this.input.isDown("ArrowRight")) this.player.queuedDirection = MAZE_DIRECTIONS.RIGHT;
+    const directionByCode = {
+      ArrowUp: MAZE_DIRECTIONS.UP,
+      ArrowDown: MAZE_DIRECTIONS.DOWN,
+      ArrowLeft: MAZE_DIRECTIONS.LEFT,
+      ArrowRight: MAZE_DIRECTIONS.RIGHT
+    };
+    const preferredCode = this.input.getPreferredDirection();
+    if (preferredCode && directionByCode[preferredCode]) {
+      this.player.queuedDirection = directionByCode[preferredCode];
     }
   }
 
@@ -2437,41 +2553,60 @@ class NeonPacmanGame {
   }
 
   moveEntityOnGrid(entity, deltaTime, centerCallback) {
-    let remainingDistance = entity.speed * deltaTime;
-    const maximumSubstep = 0.055;
+    let remainingDistance = Math.max(0, entity.speed * deltaTime);
+    const epsilon = 0.00001;
+    let safetyCounter = 0;
 
-    while (remainingDistance > 0.0001) {
-      const step = Math.min(maximumSubstep, remainingDistance);
+    while (remainingDistance > epsilon && safetyCounter < 32) {
+      safetyCounter += 1;
       const nearestColumn = Math.round(entity.gridX);
       const nearestRow = Math.round(entity.gridY);
-      const centerTolerance = 0.046;
+      const isCentered = Math.abs(entity.gridX - nearestColumn) <= epsilon
+        && Math.abs(entity.gridY - nearestRow) <= epsilon;
 
-      if (
-        Math.abs(entity.gridX - nearestColumn) <= centerTolerance &&
-        Math.abs(entity.gridY - nearestRow) <= centerTolerance
-      ) {
+      if (isCentered) {
         entity.gridX = nearestColumn;
         entity.gridY = nearestRow;
         centerCallback();
+        if (entity.direction === MAZE_DIRECTIONS.NONE) break;
+        if (!this.canEnter(nearestColumn, nearestRow, entity.direction)) {
+          entity.direction = MAZE_DIRECTIONS.NONE;
+          break;
+        }
       }
 
-      if (entity.direction === MAZE_DIRECTIONS.NONE) break;
+      const direction = entity.direction;
+      if (direction === MAZE_DIRECTIONS.NONE) break;
 
-      const candidateX = entity.gridX + entity.direction.x * step;
-      const candidateY = entity.gridY + entity.direction.y * step;
-      const candidateColumn = Math.round(candidateX);
-      const candidateRow = Math.round(candidateY);
+      if (direction.x !== 0) entity.gridY = Math.round(entity.gridY);
+      if (direction.y !== 0) entity.gridX = Math.round(entity.gridX);
 
-      if (this.isWall(candidateColumn, candidateRow)) {
-        entity.gridX = Math.round(entity.gridX);
-        entity.gridY = Math.round(entity.gridY);
+      let targetX = entity.gridX;
+      let targetY = entity.gridY;
+      if (direction.x > 0) targetX = Math.floor(entity.gridX + epsilon) + 1;
+      if (direction.x < 0) targetX = Math.ceil(entity.gridX - epsilon) - 1;
+      if (direction.y > 0) targetY = Math.floor(entity.gridY + epsilon) + 1;
+      if (direction.y < 0) targetY = Math.ceil(entity.gridY - epsilon) - 1;
+
+      const targetColumn = Math.round(targetX);
+      const targetRow = Math.round(targetY);
+      if (this.isWall(targetColumn, targetRow)) {
+        entity.gridX = nearestColumn;
+        entity.gridY = nearestRow;
         entity.direction = MAZE_DIRECTIONS.NONE;
         break;
       }
 
-      entity.gridX = candidateX;
-      entity.gridY = candidateY;
-      remainingDistance -= step;
+      const distanceToTarget = Math.abs(targetX - entity.gridX) + Math.abs(targetY - entity.gridY);
+      const travelDistance = Math.min(remainingDistance, distanceToTarget);
+      entity.gridX += direction.x * travelDistance;
+      entity.gridY += direction.y * travelDistance;
+      remainingDistance -= travelDistance;
+
+      if (distanceToTarget - travelDistance <= epsilon) {
+        entity.gridX = targetX;
+        entity.gridY = targetY;
+      }
     }
   }
 
@@ -3235,9 +3370,9 @@ class NeonAsteroidsGame {
       vy: 0,
       angle: -Math.PI / 2,
       radius: 17,
-      rotationSpeed: 3.9,
-      thrustPower: 238,
-      drag: 0.985,
+      rotationSpeed: 4.35,
+      thrustPower: 330,
+      drag: 0.987,
       shotCooldown: 0,
       invulnerable: 0,
       thrusting: false
@@ -3485,7 +3620,7 @@ class NeonAsteroidsGame {
     ship.vy *= dragFactor;
 
     const speed = Math.hypot(ship.vx, ship.vy);
-    const maximumSpeed = 410;
+    const maximumSpeed = 460;
     if (speed > maximumSpeed) {
       ship.vx = ship.vx / speed * maximumSpeed;
       ship.vy = ship.vy / speed * maximumSpeed;
@@ -4230,7 +4365,10 @@ class ArcadeEngine {
     this.lastTimestamp = 0;
     this.telemetryAccumulator = 0;
     this.maxSubstep = 1 / 120;
-    this.maxFrameDelta = 0.05;
+    this.maxFrameDelta = 0.25;
+    this.lowPowerMode = Number(navigator.deviceMemory || 8) <= 4
+      || Number(navigator.hardwareConcurrency || 8) <= 4
+      || window.matchMedia?.("(pointer: coarse)").matches === true;
     this.scoreIntegrity = new ScoreIntegrityGuard();
     this.integrityAlertShown = false;
     this.activeGame = GAME_CATALOG["space-invaders"];
@@ -4264,7 +4402,7 @@ class ArcadeEngine {
     this.height = 600;
     this.dpr = 1;
     this.canvasScaler.setLogicalSize(this.width, this.height);
-    this.ctx.imageSmoothingEnabled = true;
+    this.ctx.imageSmoothingEnabled = false;
     this.draw();
   }
 
@@ -4273,7 +4411,8 @@ class ArcadeEngine {
   }
 
   createStarField() {
-    this.stars = Array.from({ length: 96 }, () => ({
+    const starCount = this.lowPowerMode ? 48 : 76;
+    this.stars = Array.from({ length: starCount }, () => ({
       x: Math.random() * this.width,
       y: Math.random() * this.height,
       size: 0.35 + Math.random() * 1.55,
@@ -4335,16 +4474,19 @@ class ArcadeEngine {
     }
   }
 
-  loop() {
+  loop(timestamp) {
     if (!this.isRunning) return;
-    const now = performance.now();
+    const now = Number.isFinite(timestamp) ? timestamp : performance.now();
     let remaining = Math.min(Math.max(0, (now - this.lastTimestamp) / 1000), this.maxFrameDelta);
     this.lastTimestamp = now;
 
-    while (remaining > 0) {
+    let updateCount = 0;
+    const maximumUpdates = 32;
+    while (remaining > 0.000001 && updateCount < maximumUpdates) {
       const deltaTime = Math.min(remaining, this.maxSubstep);
       this.update(deltaTime);
       remaining -= deltaTime;
+      updateCount += 1;
     }
 
     this.draw();
@@ -4483,14 +4625,16 @@ class ArcadeEngine {
     this.integrityAlertShown = false;
     this.scoreIntegrity.reset(this.activeGame.id, 0);
     this.sessionStartHighScore = this.scoreStore.get(this.activeGame.id);
-    this.showCanvasMessage("READY?", {
-      y: this.height * 0.44,
-      color: this.activeGame.accent,
-      size: 28,
-      duration: 1.45,
-      blink: 8,
-      fixed: true
-    });
+    if (this.activeGame.id !== "pac-man") {
+      this.showCanvasMessage("READY?", {
+        y: this.height * 0.44,
+        color: this.activeGame.accent,
+        size: 28,
+        duration: 1.15,
+        blink: 8,
+        fixed: true
+      });
+    }
   }
 
   onGameOver(score) {
@@ -4684,6 +4828,15 @@ const touchControls = new TouchArcadeControls(input, modal, () => engine.resizeV
 let lastFocusedElement = null;
 let toastTimer = null;
 
+function focusGameInput() {
+  if (!modal.classList.contains("is-open")) return;
+  try {
+    canvas.focus({ preventScroll: true });
+  } catch (error) {
+    canvas.focus();
+  }
+}
+
 function openGame(gameId) {
   const game = GAME_CATALOG[gameId];
   if (!game) return;
@@ -4706,7 +4859,7 @@ function openGame(gameId) {
 
   requestAnimationFrame(() => {
     engine.resizeVisualCanvas(true);
-    dialog.focus({ preventScroll: true });
+    focusGameInput();
   });
   showToast(`${game.title} · ${game.playable ? "COMBAT CORE READY" : "MODULE LOCKED"}`);
 }
@@ -4764,15 +4917,24 @@ document.querySelectorAll("[data-open-game]").forEach((button) => {
 
 document.querySelectorAll("[data-close-modal]").forEach((element) => element.addEventListener("click", closeGame));
 closeModalButton.addEventListener("click", closeGame);
-primaryGameButton.addEventListener("click", () => engine.handlePrimaryAction());
+primaryGameButton.addEventListener("click", () => {
+  engine.handlePrimaryAction();
+  focusGameInput();
+});
 if (audioToggleButton) audioToggleButton.addEventListener("click", () => engine.toggleAudio());
 resetGameButton.addEventListener("click", () => {
   engine.resetToMenu();
   showToast("CORE RESET · MENU RESTORED");
+  focusGameInput();
 });
 exploreButton.addEventListener("click", () => {
   document.getElementById("catalog").scrollIntoView({ behavior: "smooth", block: "start" });
 });
+canvas.addEventListener("pointerdown", () => {
+  engine.audio.unlock();
+  focusGameInput();
+});
+canvas.addEventListener("click", focusGameInput);
 
 document.addEventListener("keydown", (event) => {
   if (event.key === "Escape" && modal.classList.contains("is-open")) {

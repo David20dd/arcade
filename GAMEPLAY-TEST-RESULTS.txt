@@ -1,0 +1,34 @@
+NEON ARCADE GAMEPLAY TESTS
+==========================
+
+JavaScript syntax: PASS
+CSS brace balance: PASS (119 / 119)
+Canvas internal resolution: PASS (800 x 600)
+Mobile visual ratio: PASS (304 x 228 = 4:3)
+Canvas focus after opening game: PASS
+
+ALIEN INVADERS
+- Start state: PLAYING
+- ArrowRight movement: PASS
+- Test movement: x 400 -> 755
+- Projectile arrays use splice cleanup: PASS
+
+NEON PAC-MAN
+- Direction buffering during READY: PASS
+- Center-to-center maze navigation: PASS
+- Test movement: gridX 15 -> 13
+- Pills consumed during movement: PASS (score 0 -> 20)
+- Wall collision at column 12: PASS
+
+NEON ASTEROIDS
+- Thrust input: PASS
+- Inertia and acceleration: PASS
+- Test movement: y 300 -> 118.79
+- Velocity after thrust: approximately -187 px/s
+- Wrap and projectile cleanup retained: PASS
+
+MOBILE TOUCH
+- Controls injected: PASS
+- Joystick ArrowRight activation: PASS
+- Key release on touch end: PASS
+- Canvas remains fully visible above controls: PASS

@@ -360,10 +360,10 @@
         </div>
       </div>
 
-      <div class="grid gap-5 p-4 sm:p-6 lg:grid-cols-[1fr_238px]">
+      <div id="gameLayout" class="grid gap-5 p-4 sm:p-6 lg:grid-cols-[1fr_238px]">
         <div class="min-w-0">
           <div id="canvasFrame" class="canvas-frame rounded-2xl">
-            <canvas id="gameCanvas" width="800" height="600" aria-label="Área interactiva del motor de juego"></canvas>
+            <canvas id="gameCanvas" width="800" height="600" tabindex="0" role="application" aria-describedby="controlDescription" aria-label="Juego Arcade interactivo. Usa las flechas, Espacio y Enter."></canvas>
           </div>
 
           <div class="mt-4 flex flex-col gap-3 rounded-2xl border modal-accent-border bg-white/[0.025] p-3 sm:flex-row sm:items-center sm:justify-between sm:p-4">
@@ -381,7 +381,7 @@
           </div>
         </div>
 
-        <aside class="flex flex-col gap-4">
+        <aside id="gameSidebar" class="flex flex-col gap-4">
           <div class="rounded-2xl border modal-accent-border bg-white/[0.025] p-4">
             <p class="font-display text-[10px] font-bold tracking-[0.2em] text-white/38">TELEMETRY</p>
             <dl class="mt-4 space-y-3">
