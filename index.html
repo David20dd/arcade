@@ -22,7 +22,7 @@
   <link rel="stylesheet" href="./arcade-tailwind-v4.1.10.css" />
   <script src="./firebase-config.js" defer></script>
 
-  <link rel="stylesheet" href="./arcade-theme-v8.css?v=8.6.0" />
+  <link rel="stylesheet" href="./arcade-theme-v8.css?v=8.7.0" />
 </head>
 
 <body class="antialiased boot-active">
@@ -181,9 +181,24 @@
           <p class="font-display text-xs font-bold tracking-[0.25em] text-fuchsia-300">SELECT GAME PROTOCOL</p>
           <h2 class="font-display mt-3 text-3xl font-black tracking-tight text-white sm:text-4xl">ARCADE TERMINALS</h2>
         </div>
-        <p class="max-w-md text-sm font-medium leading-relaxed text-white/48 sm:text-right">
-          Selecciona un módulo. Alien Invaders y Neon Pac-Man ya cuentan con mecánicas completas dentro del mismo motor Canvas.
-        </p>
+        <div class="catalog-control-cluster">
+          <p class="max-w-md text-sm font-medium leading-relaxed text-white/48 sm:text-right">
+            Selecciona un módulo, conecta tu mando y activa el desafío Turbo para ejecutar el núcleo arcade a velocidad extrema.
+          </p>
+          <div class="challenge-control-panel" aria-label="Controles globales de desafío">
+            <button id="turboToggleButton" type="button" class="turbo-toggle" role="switch" aria-checked="false" aria-pressed="false">
+              <span class="turbo-switch-track" aria-hidden="true"><span class="turbo-switch-knob"></span></span>
+              <span class="turbo-switch-copy">
+                <span class="turbo-switch-title">TURBO MODE</span>
+                <span id="turboMultiplierText" class="turbo-switch-status">NORMAL · 1.0X</span>
+              </span>
+            </button>
+            <div class="gamepad-signal" aria-live="polite">
+              <span class="gamepad-signal-icon" aria-hidden="true">⌁</span>
+              <span id="gamepadStatusText">GAMEPAD: SEARCHING</span>
+            </div>
+          </div>
+        </div>
       </div>
 
       <div class="grid gap-6 lg:grid-cols-3">
@@ -342,8 +357,8 @@
   </main>
 
   <footer class="relative z-10 mx-auto flex max-w-7xl flex-col gap-4 px-5 py-9 text-xs font-semibold tracking-[0.13em] text-white/35 sm:flex-row sm:items-center sm:justify-between sm:px-8 lg:px-10">
-    <p>NEON NEXUS / ARCADE CORE v8.6</p>
-    <p>CANVAS 800×600 · KEYBOARD · TOUCH · RESPONSIVE UI</p>
+    <p>NEON NEXUS / ARCADE CORE v8.7</p>
+    <p>CANVAS 800×600 · KEYBOARD · TOUCH · GAMEPAD · TURBO 1.5X</p>
   </footer>
 
   <div id="gameModal" class="modal-shell fixed inset-0 z-[100] flex items-center justify-center p-3 sm:p-6 lg:p-10" aria-hidden="true">
@@ -457,7 +472,7 @@
 
   <div id="toast" class="toast fixed bottom-5 left-1/2 z-[120] rounded-full border border-white/12 bg-[#0b0614]/92 px-4 py-2 text-xs font-bold tracking-[0.12em] text-white/75 shadow-2xl backdrop-blur-xl" role="status" aria-live="polite"></div>
 
-  <script src="./arcade-app-v8.js?v=8.6.0" defer></script>
+  <script src="./arcade-app-v8.js?v=8.7.0" defer></script>
 
 </body>
 </html>

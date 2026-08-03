@@ -21,7 +21,7 @@ const GAME_CATALOG = Object.freeze({
     secondary: "#ff3cf7",
     symbol: "INVADER GRID",
     hint: "Flechas izquierda/derecha para moverte. Mantén Espacio para disparar.",
-    controls: "← → MOVER NAVE / SPACE DISPARAR / ENTER INICIAR",
+    controls: "← → MOVER / SPACE DISPARAR / GAMEPAD STICK + A / ENTER INICIAR",
     canvasWidth: 800,
     canvasHeight: 600,
     playable: true
@@ -35,7 +35,7 @@ const GAME_CATALOG = Object.freeze({
     secondary: "#7055ff",
     symbol: "MAZE CORE",
     hint: "Usa las cuatro flechas para moverte. Las píldoras grandes activan 7 segundos de poder.",
-    controls: "FLECHAS: MOVER / POWER PELLET: FANTASMAS VULNERABLES 7s / SPACE: INICIAR",
+    controls: "FLECHAS O GAMEPAD: MOVER / POWER PELLET: 7s / A O SPACE: INICIAR",
     canvasWidth: 800,
     canvasHeight: 600,
     playable: true
@@ -49,7 +49,7 @@ const GAME_CATALOG = Object.freeze({
     secondary: "#ff3cf7",
     symbol: "VECTOR FIELD",
     hint: "Gira con izquierda/derecha, acelera con arriba y dispara con Espacio.",
-    controls: "← → ROTAR / ↑ EMPUJE / SPACE DISPARAR / ENTER INICIAR",
+    controls: "STICK O ← → ROTAR / ↑ EMPUJE / A O SPACE DISPARAR / START INICIAR",
     canvasWidth: 800,
     canvasHeight: 600,
     playable: true
@@ -155,6 +155,13 @@ class RetroAudio {
     this.activeTransients = new Set();
     this.lastPlayedAt = new Map();
     this.noiseBuffers = new Map();
+    this.tempoMultiplier = 1;
+  }
+
+  setTempoMultiplier(multiplier = 1) {
+    const normalized = Number(multiplier);
+    this.tempoMultiplier = Number.isFinite(normalized) ? Math.max(0.75, Math.min(2, normalized)) : 1;
+    return this.tempoMultiplier;
   }
 
   readEnabledState() {
@@ -352,6 +359,7 @@ class RetroAudio {
     }
 
     if (normalizedAction === "boot" || normalizedAction === "boot_sequence" || normalizedAction === "system_ready") return this.bootChime(detail);
+    if (normalizedAction === "achievement" || normalizedAction === "achievement_unlocked" || normalizedAction === "reward") return this.achievementReward(detail);
     if (normalizedAction === "power_up" || normalizedAction === "powerup" || normalizedAction === "upgraded") return this.powerUpUpgrade(detail);
     if (normalizedAction === "laser" || normalizedAction === "player_laser") return this.genericLaser(detail);
     if (normalizedAction === "explosion") return this.genericExplosion(detail);
@@ -361,6 +369,56 @@ class RetroAudio {
 
   playSynthSound(action, detail = {}) {
     return this.playArcadeSound("global", action, detail);
+  }
+
+  achievementReward(detail = {}) {
+    if (!this.canPlay("global:achievement", 0.18)) return false;
+    const context = this.context;
+    const start = context.currentTime + 0.012;
+    const volume = Math.max(0.65, Math.min(1.2, Number(detail.volume) || 1));
+    const notes = [659.25, 880, 1174.66, 1567.98];
+    const bus = context.createGain();
+    const filter = context.createBiquadFilter();
+    filter.type = "highpass";
+    filter.frequency.setValueAtTime(420, start);
+    filter.frequency.exponentialRampToValueAtTime(1200, start + 0.46);
+    bus.gain.setValueAtTime(0.0001, start);
+    bus.gain.exponentialRampToValueAtTime(0.72 * volume, start + 0.018);
+    filter.connect(bus);
+    bus.connect(this.masterGain);
+    const nodes = [filter, bus];
+    notes.forEach((frequency, index) => {
+      const noteStart = start + index * 0.095;
+      const noteEnd = noteStart + 0.12;
+      const oscillator = context.createOscillator();
+      const sparkle = context.createOscillator();
+      const gain = context.createGain();
+      const sparkleGain = context.createGain();
+      oscillator.type = "square";
+      oscillator.frequency.setValueAtTime(frequency, noteStart);
+      oscillator.frequency.exponentialRampToValueAtTime(frequency * 1.035, noteEnd);
+      sparkle.type = "sine";
+      sparkle.frequency.setValueAtTime(frequency * 2, noteStart);
+      gain.gain.setValueAtTime(0.0001, noteStart);
+      gain.gain.exponentialRampToValueAtTime(0.11, noteStart + 0.008);
+      gain.gain.exponentialRampToValueAtTime(0.0001, noteEnd);
+      sparkleGain.gain.setValueAtTime(0.0001, noteStart);
+      sparkleGain.gain.exponentialRampToValueAtTime(0.035, noteStart + 0.006);
+      sparkleGain.gain.exponentialRampToValueAtTime(0.0001, noteEnd);
+      oscillator.connect(gain);
+      sparkle.connect(sparkleGain);
+      gain.connect(filter);
+      sparkleGain.connect(filter);
+      oscillator.start(noteStart);
+      sparkle.start(noteStart);
+      oscillator.stop(noteEnd + 0.01);
+      sparkle.stop(noteEnd + 0.01);
+      nodes.push(oscillator, sparkle, gain, sparkleGain);
+    });
+    bus.gain.setValueAtTime(0.72 * volume, start + 0.32);
+    bus.gain.exponentialRampToValueAtTime(0.0001, start + 0.52);
+    this.trackTransient(nodes, start + 0.58);
+    return true;
   }
 
   powerUpUpgrade(detail = {}) {
@@ -446,7 +504,8 @@ class RetroAudio {
   }
 
   pacmanIntro(detail = {}) {
-    if (!this.canPlay("pacman:intro", 2.6)) return false;
+    const tempo = Math.max(1, Number(detail.tempo) || this.tempoMultiplier || 1);
+    if (!this.canPlay("pacman:intro", 2.6 / tempo)) return false;
     this.stopLoop("pacman:ghost-vulnerable", 0.025);
     const context = this.context;
     const startTime = context.currentTime + 0.035;
@@ -472,7 +531,8 @@ class RetroAudio {
     const nodes = [filter, bus];
     let cursor = startTime;
     for (let index = 0; index < sequence.length; index += 1) {
-      const [frequency, duration] = sequence[index];
+      const [frequency, baseDuration] = sequence[index];
+      const duration = baseDuration / tempo;
       const oscillator = context.createOscillator();
       const gain = context.createGain();
       const sub = context.createOscillator();
@@ -499,7 +559,7 @@ class RetroAudio {
       oscillator.stop(noteEnd + 0.01);
       sub.stop(noteEnd + 0.01);
       nodes.push(oscillator, gain, sub, subGain);
-      cursor = noteEnd + (index % 7 === 6 ? 0.085 : 0.026);
+      cursor = noteEnd + (index % 7 === 6 ? 0.085 / tempo : 0.026 / tempo);
     }
     bus.gain.setValueAtTime(0.78 * volume, Math.max(startTime + 0.03, cursor - 0.12));
     bus.gain.exponentialRampToValueAtTime(0.0001, cursor + 0.08);
@@ -1328,7 +1388,7 @@ class BootSequenceController {
       return;
     }
     this.lines = [
-      { at: 90, text: "BOOTING ARCADE CORE v8.6...", state: "ok" },
+      { at: 90, text: "BOOTING ARCADE CORE v8.7...", state: "ok" },
       { at: 390, text: "VERIFYING INPUT MATRIX... OK", state: "ok" },
       { at: 700, text: "CONNECTING TO SEED-SERVER... LINKED", state: "ok" },
       { at: 1030, text: "LOADING RENDER MOTORS... 800x600", state: "ok" },
@@ -1596,6 +1656,239 @@ class InputManager {
     this.directionOrder.clear();
     this.inputSequence = 0;
     this.syncAllKeyStates();
+  }
+}
+
+const ACHIEVEMENT_DEFINITIONS = Object.freeze([
+  Object.freeze({
+    id: "untouchable-pilot",
+    title: "PILOTO INTOCABLE",
+    description: "Superaste 3 oleadas consecutivas de Alien Invaders sin perder una vida.",
+    icon: "◇",
+    accent: "#00ffff"
+  }),
+  Object.freeze({
+    id: "ghost-hunter",
+    title: "CAZADOR DE FANTASMAS",
+    description: "Capturaste 4 fantasmas durante el efecto de una sola píldora grande.",
+    icon: "✦",
+    accent: "#ff007f"
+  })
+]);
+
+class AchievementSystem {
+  constructor(audio, storageKey = "neonNexus.achievements.v1") {
+    this.audio = audio;
+    this.storageKey = storageKey;
+    this.definitions = new Map(ACHIEVEMENT_DEFINITIONS.map((achievement) => [achievement.id, achievement]));
+    this.unlocked = this.load();
+    this.layer = this.createLayer();
+    this.activePopups = new Set();
+  }
+
+  load() {
+    try {
+      const parsed = JSON.parse(window.localStorage.getItem(this.storageKey) || "[]");
+      return new Set(Array.isArray(parsed) ? parsed.filter((id) => typeof id === "string") : []);
+    } catch (error) {
+      return new Set();
+    }
+  }
+
+  persist() {
+    try {
+      window.localStorage.setItem(this.storageKey, JSON.stringify(Array.from(this.unlocked)));
+    } catch (error) {
+      return false;
+    }
+    return true;
+  }
+
+  createLayer() {
+    const existing = document.getElementById("achievementLayer");
+    if (existing) return existing;
+    const layer = document.createElement("div");
+    layer.id = "achievementLayer";
+    layer.className = "achievement-layer";
+    layer.setAttribute("aria-live", "polite");
+    layer.setAttribute("aria-label", "Logros desbloqueados");
+    document.body.appendChild(layer);
+    return layer;
+  }
+
+  isUnlocked(id) {
+    return this.unlocked.has(String(id || ""));
+  }
+
+  unlock(id) {
+    const normalizedId = String(id || "");
+    const achievement = this.definitions.get(normalizedId);
+    if (!achievement || this.unlocked.has(normalizedId)) return false;
+    this.unlocked.add(normalizedId);
+    this.persist();
+    this.showPopup(achievement);
+    this.audio?.playSynthSound("achievement", { volume: 1 });
+    return true;
+  }
+
+  showPopup(achievement) {
+    const popup = document.createElement("article");
+    popup.className = "achievement-popup";
+    popup.style.setProperty("--achievement-accent", achievement.accent);
+
+    const icon = document.createElement("div");
+    icon.className = "achievement-popup-icon";
+    icon.textContent = achievement.icon;
+
+    const content = document.createElement("div");
+    content.className = "achievement-popup-content";
+    const eyebrow = document.createElement("p");
+    eyebrow.className = "achievement-popup-eyebrow";
+    eyebrow.textContent = "ACHIEVEMENT UNLOCKED";
+    const title = document.createElement("h3");
+    title.className = "achievement-popup-title";
+    title.textContent = achievement.title;
+    const description = document.createElement("p");
+    description.className = "achievement-popup-description";
+    description.textContent = achievement.description;
+    content.append(eyebrow, title, description);
+    popup.append(icon, content);
+    this.layer.appendChild(popup);
+    this.activePopups.add(popup);
+
+    requestAnimationFrame(() => popup.classList.add("is-visible"));
+    window.setTimeout(() => popup.classList.add("is-leaving"), 4300);
+    window.setTimeout(() => {
+      this.activePopups.delete(popup);
+      popup.remove();
+    }, 4950);
+  }
+}
+
+class GamepadInputController {
+  constructor(input, notify = null) {
+    this.input = input;
+    this.notify = typeof notify === "function" ? notify : () => {};
+    this.supported = typeof navigator !== "undefined" && typeof navigator.getGamepads === "function";
+    this.activeIndex = null;
+    this.activeId = "";
+    this.sourcePrefix = "gamepad";
+    this.deadZone = 0.22;
+    this.connectedIndexes = new Set();
+    this.handleConnected = this.handleConnected.bind(this);
+    this.handleDisconnected = this.handleDisconnected.bind(this);
+    if (this.supported) {
+      window.addEventListener("gamepadconnected", this.handleConnected);
+      window.addEventListener("gamepaddisconnected", this.handleDisconnected);
+    }
+    this.updateStatus();
+  }
+
+  handleConnected(event) {
+    const gamepad = event.gamepad;
+    if (!gamepad) return;
+    this.connectedIndexes.add(gamepad.index);
+    this.activeIndex = gamepad.index;
+    this.activeId = gamepad.id || "GAMEPAD";
+    this.updateStatus(true);
+    this.notify(`GAMEPAD CONNECTED · ${this.getDisplayName(gamepad)}`);
+  }
+
+  handleDisconnected(event) {
+    const gamepad = event.gamepad;
+    if (gamepad) this.connectedIndexes.delete(gamepad.index);
+    if (!gamepad || this.activeIndex === gamepad.index) {
+      this.activeIndex = null;
+      this.activeId = "";
+      this.releaseAll();
+    }
+    this.updateStatus();
+    this.notify("GAMEPAD DISCONNECTED");
+  }
+
+  getDisplayName(gamepad) {
+    const raw = String(gamepad?.id || "GAMEPAD").replace(/\s*\([^)]*\)\s*/g, " ").trim();
+    return raw.length > 30 ? `${raw.slice(0, 27)}...` : raw || "GAMEPAD";
+  }
+
+  buttonPressed(button) {
+    if (!button) return false;
+    return button.pressed === true || Number(button.value || 0) > 0.55;
+  }
+
+  findActiveGamepad() {
+    if (!this.supported) return null;
+    const pads = Array.from(navigator.getGamepads() || []).filter(Boolean);
+    if (pads.length === 0) return null;
+    const preferred = pads.find((pad) => pad.index === this.activeIndex && pad.connected !== false);
+    return preferred || pads.find((pad) => pad.connected !== false) || null;
+  }
+
+  setDirection(code, active) {
+    this.input.setVirtualKey(code, active, `${this.sourcePrefix}-${code}`);
+  }
+
+  checkGamepadInput() {
+    if (!this.supported) return false;
+    const gamepad = this.findActiveGamepad();
+    if (!gamepad) {
+      this.releaseAll();
+      if (this.activeIndex !== null) {
+        this.activeIndex = null;
+        this.activeId = "";
+        this.updateStatus();
+      }
+      return false;
+    }
+
+    if (this.activeIndex !== gamepad.index || this.activeId !== gamepad.id) {
+      this.activeIndex = gamepad.index;
+      this.activeId = gamepad.id || "GAMEPAD";
+      this.connectedIndexes.add(gamepad.index);
+      this.updateStatus(true);
+    }
+
+    if (!this.input.enabled) {
+      this.releaseAll();
+      return true;
+    }
+
+    const horizontal = Number(gamepad.axes?.[0] || 0);
+    const vertical = Number(gamepad.axes?.[1] || 0);
+    const left = horizontal < -this.deadZone || this.buttonPressed(gamepad.buttons?.[14]);
+    const right = horizontal > this.deadZone || this.buttonPressed(gamepad.buttons?.[15]);
+    const up = vertical < -this.deadZone || this.buttonPressed(gamepad.buttons?.[12]);
+    const down = vertical > this.deadZone || this.buttonPressed(gamepad.buttons?.[13]);
+    const action = this.buttonPressed(gamepad.buttons?.[0]);
+    const menu = this.buttonPressed(gamepad.buttons?.[9]);
+
+    this.setDirection("ArrowLeft", left && !right);
+    this.setDirection("ArrowRight", right && !left);
+    this.setDirection("ArrowUp", up && !down);
+    this.setDirection("ArrowDown", down && !up);
+    this.input.setVirtualKey("Space", action, `${this.sourcePrefix}-action`);
+    this.input.setVirtualKey("Enter", menu, `${this.sourcePrefix}-menu`);
+    return true;
+  }
+
+  releaseAll() {
+    for (const code of ["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown"]) {
+      this.input.setVirtualKey(code, false, `${this.sourcePrefix}-${code}`);
+    }
+    this.input.setVirtualKey("Space", false, `${this.sourcePrefix}-action`);
+    this.input.setVirtualKey("Enter", false, `${this.sourcePrefix}-menu`);
+  }
+
+  updateStatus(connected = this.activeIndex !== null) {
+    const status = document.getElementById("gamepadStatusText");
+    if (!status) return;
+    if (!this.supported) {
+      status.textContent = "GAMEPAD: UNSUPPORTED";
+      status.dataset.state = "unsupported";
+      return;
+    }
+    status.textContent = connected ? "GAMEPAD: CONNECTED" : "GAMEPAD: SEARCHING";
+    status.dataset.state = connected ? "connected" : "searching";
   }
 }
 
@@ -2520,6 +2813,8 @@ class AlienInvadersGame {
     this.comboCount = 0;
     this.comboTimer = 0;
     this.wavePowerUpDropped = false;
+    this.cleanWaves = 0;
+    this.waveDamageTaken = false;
     this.playerBullets = [];
     this.enemyBullets = [];
     this.aliens = [];
@@ -2548,6 +2843,8 @@ class AlienInvadersGame {
     this.comboTimer = 0;
     this.alienMarchStep = 0;
     this.wavePowerUpDropped = false;
+    this.cleanWaves = 0;
+    this.waveDamageTaken = false;
     this.player.x = this.width / 2;
     this.player.y = this.height - 58;
     this.player.shotCooldown = 0;
@@ -2573,6 +2870,8 @@ class AlienInvadersGame {
     this.comboTimer = 0;
     this.alienMarchStep = 0;
     this.wavePowerUpDropped = false;
+    this.cleanWaves = 0;
+    this.waveDamageTaken = false;
     this.player.x = this.width / 2;
     this.player.y = this.height - 58;
     this.player.shotCooldown = 0;
@@ -2615,6 +2914,7 @@ class AlienInvadersGame {
     this.alienMarchStep = 0;
     this.waveTransition = 0;
     this.wavePowerUpDropped = false;
+    this.waveDamageTaken = false;
     this.enemyShotTimer = Math.max(0.45, 1.15 - this.wave * 0.045);
     this.formationBaseSpeed = 38 + this.wave * 6;
 
@@ -2698,6 +2998,12 @@ class AlienInvadersGame {
     const aliveCount = this.getAliveAlienCount();
     if (aliveCount === 0 && this.waveTransition <= 0) {
       this.score += 500 * this.wave;
+      if (this.waveDamageTaken) {
+        this.cleanWaves = 0;
+      } else {
+        this.cleanWaves += 1;
+        if (this.cleanWaves >= 3) this.engine.achievements.unlock("untouchable-pilot");
+      }
       if (!this.wavePowerUpDropped) {
         this.wavePowerUpDropped = true;
         this.powerUps.spawnRandom(this.width * (0.34 + Math.random() * 0.32), 108, {
@@ -2929,6 +3235,8 @@ class AlienInvadersGame {
 
   damagePlayer() {
     if (this.powerUps.isActive("shield")) return;
+    this.waveDamageTaken = true;
+    this.cleanWaves = 0;
     this.lives -= 1;
     this.damageFlash = 0.78;
     this.engine.triggerScreenShake(0.38, 15);
@@ -4107,6 +4415,7 @@ class NeonPacmanGame {
         this.frightenedChain += 1;
         const ghostScore = 200 * Math.pow(2, Math.min(3, this.frightenedChain - 1));
         this.captureGhost(ghost, ghostScore, "COMBO");
+        if (this.frightenedChain >= 4) this.engine.achievements.unlock("ghost-hunter");
         this.engine.showToast(`${ghost.name.toUpperCase()} CAPTURED · +${ghostScore}`);
       } else if (this.player.invulnerable <= 0) {
         this.loseLife();
@@ -5733,7 +6042,13 @@ const SCORE_INTEGRITY_RULES = Object.freeze({
 
 class ScoreIntegrityGuard {
   constructor() {
+    this.speedMultiplier = 1;
     this.reset("space-invaders", 0);
+  }
+
+  setSpeedMultiplier(multiplier = 1) {
+    const value = Number(multiplier);
+    this.speedMultiplier = Number.isFinite(value) ? Math.max(1, Math.min(1.5, value)) : 1;
   }
 
   reset(gameId, initialScore = 0) {
@@ -5762,7 +6077,7 @@ class ScoreIntegrityGuard {
     if (frameDelta > this.rule.maxFrameDelta) return this.block("IMPOSSIBLE FRAME INCREMENT");
 
     const elapsedSeconds = Math.max(0, (now - this.startedAt) / 1000);
-    const sessionMaximum = this.initialScore + this.rule.baseAllowance + this.rule.maxPerSecond * elapsedSeconds;
+    const sessionMaximum = this.initialScore + this.rule.baseAllowance + this.rule.maxPerSecond * this.speedMultiplier * elapsedSeconds;
     if (normalized > sessionMaximum) return this.block("IMPOSSIBLE SCORE RATE");
 
     this.lastValidScore = normalized;
@@ -5808,6 +6123,13 @@ class ArcadeEngine {
     this.scoreStore = new HighScoreStore();
     this.audio = new RetroAudio();
     this.haptics = new ArcadeHaptics();
+    this.turboStorageKey = "neonNexus.turboMode.v1";
+    this.turboEnabled = this.readTurboState();
+    this.gameSpeedMultiplier = this.turboEnabled ? 1.5 : 1;
+    this.audio.setTempoMultiplier(this.gameSpeedMultiplier);
+    this.scoreIntegrity.setSpeedMultiplier(this.gameSpeedMultiplier);
+    this.achievements = new AchievementSystem(this.audio);
+    this.gamepad = new GamepadInputController(this.input, (message) => this.showToast(message));
     this.visualEffects = new ArcadeVisualEffects(this.canvas, this.ui.dialog || null);
     this.module = new AlienInvadersGame(this);
     this.stars = [];
@@ -5827,8 +6149,61 @@ class ArcadeEngine {
     this.resizeCanvas();
     this.refreshHighScoreUi();
     this.syncAudioUi();
+    this.syncTurboUi();
     this.syncUi(true);
     this.draw();
+  }
+
+  readTurboState() {
+    try {
+      return window.localStorage.getItem(this.turboStorageKey) === "enabled";
+    } catch (error) {
+      return false;
+    }
+  }
+
+  persistTurboState() {
+    try {
+      window.localStorage.setItem(this.turboStorageKey, this.turboEnabled ? "enabled" : "disabled");
+    } catch (error) {
+      return false;
+    }
+    return true;
+  }
+
+  setTurboMode(enabled, notify = true) {
+    this.turboEnabled = Boolean(enabled);
+    this.gameSpeedMultiplier = this.turboEnabled ? 1.5 : 1;
+    this.audio.setTempoMultiplier(this.gameSpeedMultiplier);
+    this.scoreIntegrity.setSpeedMultiplier(this.gameSpeedMultiplier);
+    this.persistTurboState();
+    this.syncTurboUi();
+    if (notify) {
+      this.triggerGlitch(0.2, this.turboEnabled ? 1.15 : 0.65);
+      this.showToast(this.turboEnabled ? "TURBO MODE ENGAGED · 1.5X" : "TURBO MODE DISENGAGED · 1.0X");
+      this.audio.playSynthSound("power_up", { type: this.turboEnabled ? "spreadShot" : "generic" });
+    }
+    return this.turboEnabled;
+  }
+
+  toggleTurboMode() {
+    return this.setTurboMode(!this.turboEnabled, true);
+  }
+
+  syncTurboUi() {
+    const button = this.ui.turboButton;
+    const status = this.ui.turboStatus;
+    if (button) {
+      button.classList.toggle("is-active", this.turboEnabled);
+      button.setAttribute("aria-checked", this.turboEnabled ? "true" : "false");
+      button.setAttribute("aria-pressed", this.turboEnabled ? "true" : "false");
+    }
+    if (status) status.textContent = this.turboEnabled ? "EXTREME · 1.5X" : "NORMAL · 1.0X";
+    document.documentElement.dataset.turbo = this.turboEnabled ? "on" : "off";
+  }
+
+  checkGamepadInput() {
+    return this.gamepad?.checkGamepadInput() || false;
   }
 
   resizeCanvas() {
@@ -5897,6 +6272,7 @@ class ArcadeEngine {
     this.haptics.stop();
     if (this.animationId !== null) cancelAnimationFrame(this.animationId);
     this.animationId = null;
+    this.gamepad?.releaseAll();
     this.input.clear();
     this.releaseTransientArrays();
     this.visualEffects.reset();
@@ -5914,12 +6290,14 @@ class ArcadeEngine {
 
   loop(timestamp) {
     if (!this.isRunning) return;
+    this.checkGamepadInput();
     const now = Number.isFinite(timestamp) ? timestamp : performance.now();
-    let remaining = Math.min(Math.max(0, (now - this.lastTimestamp) / 1000), this.maxFrameDelta);
+    const rawDelta = Math.min(Math.max(0, (now - this.lastTimestamp) / 1000), this.maxFrameDelta);
+    let remaining = rawDelta * this.gameSpeedMultiplier;
     this.lastTimestamp = now;
 
     let updateCount = 0;
-    const maximumUpdates = 32;
+    const maximumUpdates = this.turboEnabled ? 48 : 32;
     while (remaining > 0.000001 && updateCount < maximumUpdates) {
       const deltaTime = Math.min(remaining, this.maxSubstep);
       this.update(deltaTime);
@@ -5928,7 +6306,7 @@ class ArcadeEngine {
     }
 
     this.draw();
-    this.input.endFrame();
+    if (updateCount > 0) this.input.endFrame();
     this.animationId = requestAnimationFrame(this.loop);
   }
 
@@ -6296,6 +6674,8 @@ const closeModalButton = document.getElementById("closeModalButton");
 const primaryGameButton = document.getElementById("primaryGameButton");
 const resetGameButton = document.getElementById("resetGameButton");
 const audioToggleButton = document.getElementById("audioToggleButton");
+const turboToggleButton = document.getElementById("turboToggleButton");
+const turboMultiplierText = document.getElementById("turboMultiplierText");
 const toast = document.getElementById("toast");
 const systemClock = document.getElementById("systemClock");
 const exploreButton = document.getElementById("exploreButton");
@@ -6311,6 +6691,8 @@ const ui = {
   telemetryWave: document.getElementById("telemetryWave"),
   primaryButton: primaryGameButton,
   audioButton: audioToggleButton,
+  turboButton: turboToggleButton,
+  turboStatus: turboMultiplierText,
   dialog,
   modalTitle
 };
@@ -6466,6 +6848,7 @@ primaryGameButton.addEventListener("click", () => {
   focusGameInput();
 });
 if (audioToggleButton) audioToggleButton.addEventListener("click", () => engine.toggleAudio());
+if (turboToggleButton) turboToggleButton.addEventListener("click", () => engine.toggleTurboMode());
 resetGameButton.addEventListener("click", () => {
   engine.resetToMenu();
   showToast("CORE RESET · MENU RESTORED");
