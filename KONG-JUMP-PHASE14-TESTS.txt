@@ -1,0 +1,28 @@
+NEON NEXUS — KONG-JUMP PHASE 14 VALIDATION
+================================================
+
+STATIC VALIDATION
+[PASS] Master JavaScript passes node --check.
+[PASS] HTML contains 5 carousel items and 5 navigation dots.
+[PASS] All HTML IDs are unique.
+[PASS] Kong-Jump registered in GAME_CATALOG.
+[PASS] Dedicated localStorage key: arcade_kongjump_highscore.
+[PASS] Global leaderboard alias: kongjump.
+[PASS] Firebase rules accept kongjump.
+
+PHYSICS TESTS (Chromium, instrumented master build)
+[PASS] Automatic platform positioning on inclined girders.
+[PASS] Horizontal movement: x 102.0 -> 294.0 after one simulated second.
+[PASS] Jump: y 525.01 -> 463.91 after activation.
+[PASS] Ladder traversal reaches the upper platform and exits climbing state.
+[PASS] Barrel falls from platform 4 to platform 3 and resumes rolling.
+[PASS] Hammer activates for exactly 5 seconds.
+[PASS] Princess rescue awards +1000 points.
+[PASS] Princess rescue increments level by 1.
+[PASS] ScoreStore accepts and reads Kong-Jump scores.
+[PASS] No runtime page errors in the isolated game logic test.
+
+MEMORY / PERFORMANCE
+[PASS] Barrels and particles use reverse loops plus splice removal.
+[PASS] Game remains inside the shared strict 60 FPS engine.
+[PASS] Canvas remains at fixed logical resolution 800x600.

@@ -2,7 +2,7 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
     function validGame(game) {
-      return game == 'invaders' || game == 'pacman' || game == 'asteroids' || game == 'tron';
+      return game == 'invaders' || game == 'pacman' || game == 'asteroids' || game == 'tron' || game == 'kongjump';
     }
 
     function validUsername(username) {
@@ -13,7 +13,7 @@ service cloud.firestore {
     }
 
     function validScore(score) {
-      return score is int && score > 0 && score <= 50000000;
+      return score is int && score > 0 && score <= 999999999;
     }
 
     function validEntry() {
@@ -28,8 +28,7 @@ service cloud.firestore {
     }
 
     match /arcade_leaderboard/{entryId} {
-      allow list: if request.query.limit != null && request.query.limit <= 5;
-      allow get: if request.auth != null && resource.data.uid == request.auth.uid;
+      allow read: if true;
 
       allow create: if request.auth != null
         && validEntry()
