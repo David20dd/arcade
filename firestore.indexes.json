@@ -1,0 +1,13 @@
+{
+  "indexes": [
+    {
+      "collectionGroup": "arcade_leaderboard",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "game", "order": "ASCENDING" },
+        { "fieldPath": "score", "order": "DESCENDING" }
+      ]
+    }
+  ],
+  "fieldOverrides": []
+}

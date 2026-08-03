@@ -1,0 +1,30 @@
+NEON NEXUS ARCADE — AUDITORÍA FASE 8
+Fecha: 2026-08-02
+
+RESULTADOS
+[PASS] Aplicación encapsulada dentro de una IIFE con strict mode.
+[PASS] Motor, módulos de juego, input, audio y servicio Firebase no se exponen en window.
+[PASS] Eliminado el evento público de Game Over que podía falsificarse desde consola.
+[PASS] Validador de integridad bloquea saltos imposibles, formato inválido, rollback y tasa excesiva.
+[PASS] Una sesión comprometida no actualiza localStorage ni Firestore.
+[PASS] Game loop usa performance.now(), delta time acotado y subpasos máximos de 1/120 s.
+[PASS] Delta máximo por frame limitado a 0.05 s para evitar saltos tras suspensión de pestaña.
+[PASS] Balas, partículas y mensajes muertos se eliminan con splice en recorridos inversos.
+[PASS] Limpieza agresiva de arrays al cerrar, cambiar de juego o detectar alteración.
+[PASS] Sonidos continuos y transitorios se detienen y desconectan al cerrar el modal.
+[PASS] Buffers de ruido Web Audio reutilizados para reducir asignaciones y latencia.
+[PASS] Tailwind runtime CDN eliminado; CSS utilitario compilado y versionado localmente.
+[PASS] HTML reducido y recursos JavaScript/CSS separados para permitir caché inmutable.
+[PASS] Configuración Firebase separada en firebase-config.js y consumida dentro del closure.
+[PASS] Integración opcional de Firebase App Check con reCAPTCHA Enterprise.
+[PASS] Firestore Rules limitan juegos, iniciales, puntuación, propiedad por UID y Top 5.
+[PASS] Configuraciones de cabeceras y caché incluidas para Netlify, Vercel y Firebase Hosting.
+[PASS] CSP incluida en HTML y en configuraciones de hosting compatibles.
+[PASS] Sintaxis JavaScript validada con node --check.
+[PASS] Archivos JSON de despliegue parseados correctamente.
+
+LIMITACIÓN DE SEGURIDAD
+La protección frontend impide trampas casuales y bloquea modificaciones matemáticamente imposibles, pero un navegador controlado por un atacante nunca puede ser una autoridad absoluta. Para rankings con premios o valor económico debe usarse un backend autoritativo (por ejemplo Cloud Functions) que verifique App Check y valide eventos o sesiones de juego.
+
+LIMITACIÓN DE PRUEBA
+El entorno de generación bloqueó la navegación automatizada a servidores locales y URLs file://. Se realizaron comprobaciones estáticas, sintácticas, estructurales y de lógica aislada; la prueba final visual debe hacerse desde la URL publicada.

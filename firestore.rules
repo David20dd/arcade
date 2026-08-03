@@ -1,0 +1,47 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function validGame(game) {
+      return game == 'invaders' || game == 'pacman' || game == 'asteroids';
+    }
+
+    function validUsername(username) {
+      return username is string
+        && username.size() >= 1
+        && username.size() <= 3
+        && username.matches('^[A-Z0-9]{1,3}$');
+    }
+
+    function validScore(score) {
+      return score is int && score > 0 && score <= 50000000;
+    }
+
+    function validEntry() {
+      return request.resource.data.keys().hasOnly([
+          'username', 'game', 'score', 'timestamp', 'uid'
+        ])
+        && validUsername(request.resource.data.username)
+        && validGame(request.resource.data.game)
+        && validScore(request.resource.data.score)
+        && request.resource.data.uid == request.auth.uid
+        && request.resource.data.timestamp == request.time;
+    }
+
+    match /arcade_leaderboard/{entryId} {
+      allow list: if request.query.limit != null && request.query.limit <= 5;
+      allow get: if request.auth != null && resource.data.uid == request.auth.uid;
+
+      allow create: if request.auth != null
+        && validEntry()
+        && entryId == request.resource.data.game + '_' + request.auth.uid;
+
+      allow update: if request.auth != null
+        && resource.data.uid == request.auth.uid
+        && validEntry()
+        && entryId == request.resource.data.game + '_' + request.auth.uid
+        && request.resource.data.score > resource.data.score;
+
+      allow delete: if false;
+    }
+  }
+}

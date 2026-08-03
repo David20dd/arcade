@@ -1,0 +1,741 @@
+    :root {
+      color-scheme: dark;
+      --bg: #05020a;
+      --cyan: #42f5ff;
+      --magenta: #ff3cf7;
+      --lime: #b7ff3c;
+      --amber: #ffbd3c;
+      --surface: rgba(13, 7, 24, 0.82);
+      --border: rgba(128, 94, 255, 0.28);
+      --modal-accent: #42f5ff;
+      --modal-accent-rgb: 66, 245, 255;
+      --modal-secondary: #ff3cf7;
+      --crt-flicker: 1;
+      --crt-jitter-x: 0px;
+      --crt-jitter-y: 0px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      background: var(--bg);
+    }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      overflow-x: hidden;
+      color: #f8f7ff;
+      font-family: "Rajdhani", sans-serif;
+      background:
+        radial-gradient(circle at 15% 0%, rgba(101, 50, 255, 0.21), transparent 34rem),
+        radial-gradient(circle at 88% 18%, rgba(255, 60, 247, 0.14), transparent 30rem),
+        radial-gradient(circle at 50% 110%, rgba(66, 245, 255, 0.12), transparent 38rem),
+        #05020a;
+    }
+
+    body.modal-open {
+      overflow: hidden;
+    }
+
+    body::before {
+      position: fixed;
+      inset: 0;
+      z-index: 9998;
+      pointer-events: none;
+      content: "";
+      background:
+        linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.17) 50%),
+        linear-gradient(90deg, rgba(255, 0, 0, 0.025), rgba(0, 255, 0, 0.012), rgba(0, 0, 255, 0.025));
+      background-size: 100% 4px, 6px 100%;
+      mix-blend-mode: screen;
+      opacity: 0.52;
+    }
+
+    body::after {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      pointer-events: none;
+      content: "";
+      background: radial-gradient(circle, transparent 55%, rgba(0, 0, 0, 0.7) 132%);
+      animation: crtFlicker 7s linear infinite;
+    }
+
+    ::selection {
+      color: #05020a;
+      background: var(--cyan);
+    }
+
+    .font-display {
+      font-family: "Orbitron", sans-serif;
+    }
+
+    .page-grid {
+      position: fixed;
+      inset: 0;
+      z-index: -2;
+      pointer-events: none;
+      background-image:
+        linear-gradient(rgba(117, 91, 255, 0.055) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(117, 91, 255, 0.055) 1px, transparent 1px);
+      background-size: 44px 44px;
+      mask-image: linear-gradient(to bottom, black, transparent 85%);
+    }
+
+    .page-orb {
+      position: fixed;
+      z-index: -1;
+      width: 28rem;
+      height: 28rem;
+      border-radius: 9999px;
+      pointer-events: none;
+      filter: blur(90px);
+      opacity: 0.14;
+      animation: orbDrift 14s ease-in-out infinite alternate;
+    }
+
+    .neon-text-cyan {
+      color: var(--cyan);
+      text-shadow:
+        0 0 8px rgba(66, 245, 255, 0.9),
+        0 0 24px rgba(66, 245, 255, 0.42);
+    }
+
+    .neon-text-magenta {
+      color: var(--magenta);
+      text-shadow:
+        0 0 8px rgba(255, 60, 247, 0.86),
+        0 0 24px rgba(255, 60, 247, 0.4);
+    }
+
+    .glass-panel {
+      background: linear-gradient(145deg, rgba(17, 9, 31, 0.86), rgba(8, 4, 16, 0.74));
+      border: 1px solid rgba(132, 105, 255, 0.22);
+      box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.05),
+        0 22px 70px rgba(0, 0, 0, 0.38);
+      backdrop-filter: blur(18px);
+    }
+
+    .status-dot {
+      box-shadow: 0 0 0 4px rgba(183, 255, 60, 0.08), 0 0 14px rgba(183, 255, 60, 0.8);
+      animation: statusPulse 1.8s ease-in-out infinite;
+    }
+
+    .hero-ring {
+      position: relative;
+      isolation: isolate;
+    }
+
+    .hero-ring::before,
+    .hero-ring::after {
+      position: absolute;
+      inset: 50%;
+      z-index: -1;
+      content: "";
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    .hero-ring::before {
+      width: 22rem;
+      height: 22rem;
+      border: 1px solid rgba(66, 245, 255, 0.16);
+      box-shadow: 0 0 90px rgba(66, 245, 255, 0.08);
+      animation: ringSpin 18s linear infinite;
+    }
+
+    .hero-ring::after {
+      width: 17rem;
+      height: 17rem;
+      border: 1px dashed rgba(255, 60, 247, 0.22);
+      animation: ringSpin 12s linear infinite reverse;
+    }
+
+    .arcade-card {
+      --card-accent: #42f5ff;
+      --card-accent-rgb: 66, 245, 255;
+      position: relative;
+      isolation: isolate;
+      overflow: hidden;
+      transform: translateZ(0);
+      transition:
+        transform 320ms cubic-bezier(0.2, 0.8, 0.2, 1),
+        border-color 320ms ease,
+        box-shadow 320ms ease;
+    }
+
+    .arcade-card::before {
+      position: absolute;
+      inset: -1px;
+      z-index: -2;
+      content: "";
+      border-radius: inherit;
+      background: linear-gradient(135deg, rgba(var(--card-accent-rgb), 0.62), transparent 42%, rgba(255, 60, 247, 0.22));
+      opacity: 0.42;
+      transition: opacity 320ms ease;
+    }
+
+    .arcade-card::after {
+      position: absolute;
+      top: -25%;
+      left: -85%;
+      width: 52%;
+      height: 150%;
+      content: "";
+      pointer-events: none;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.11), transparent);
+      transform: skewX(-20deg);
+      transition: left 650ms cubic-bezier(0.2, 0.8, 0.2, 1);
+    }
+
+    .arcade-card:hover,
+    .arcade-card:focus-within {
+      z-index: 2;
+      transform: translateY(-10px) scale(1.018);
+      border-color: rgba(var(--card-accent-rgb), 0.62);
+      box-shadow:
+        0 24px 70px rgba(0, 0, 0, 0.5),
+        0 0 34px rgba(var(--card-accent-rgb), 0.19),
+        inset 0 0 32px rgba(var(--card-accent-rgb), 0.045);
+    }
+
+    .arcade-card:hover::before,
+    .arcade-card:focus-within::before {
+      opacity: 0.9;
+    }
+
+    .arcade-card:hover::after,
+    .arcade-card:focus-within::after {
+      left: 140%;
+    }
+
+    .game-art {
+      position: relative;
+      overflow: hidden;
+      background:
+        radial-gradient(circle at 50% 30%, rgba(var(--card-accent-rgb), 0.14), transparent 52%),
+        #06030d;
+    }
+
+    .game-art::after {
+      position: absolute;
+      inset: 0;
+      content: "";
+      pointer-events: none;
+      background: repeating-linear-gradient(to bottom, transparent 0 5px, rgba(255, 255, 255, 0.025) 6px);
+    }
+
+    .play-button {
+      position: relative;
+      overflow: hidden;
+      color: var(--card-accent);
+      border: 1px solid rgba(var(--card-accent-rgb), 0.46);
+      background: rgba(var(--card-accent-rgb), 0.075);
+      box-shadow: inset 0 0 16px rgba(var(--card-accent-rgb), 0.04);
+      transition: color 220ms ease, background 220ms ease, box-shadow 220ms ease, transform 220ms ease;
+    }
+
+    .high-score-strip {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      margin-top: 1rem;
+      padding: 0.7rem 0.85rem;
+      border: 1px solid rgba(var(--card-accent-rgb), 0.2);
+      border-radius: 0.85rem;
+      background: rgba(var(--card-accent-rgb), 0.045);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.035);
+    }
+
+    .high-score-value {
+      color: var(--card-accent);
+      font-family: "Press Start 2P", monospace;
+      font-size: 0.72rem;
+      line-height: 1;
+      text-shadow: 0 0 12px rgba(var(--card-accent-rgb), 0.68);
+    }
+
+    #audioToggleButton[data-enabled="true"] {
+      border-color: rgba(183, 255, 60, .35);
+      color: #d8ff90;
+      background: rgba(183, 255, 60, .07);
+      box-shadow: 0 0 18px rgba(183, 255, 60, .08);
+    }
+
+    .play-button:hover,
+    .play-button:focus-visible {
+      color: #05020a;
+      background: var(--card-accent);
+      box-shadow: 0 0 24px rgba(var(--card-accent-rgb), 0.45);
+      transform: translateY(-1px);
+      outline: none;
+    }
+
+    .modal-shell {
+      visibility: hidden;
+      opacity: 0;
+      pointer-events: none;
+      transition: visibility 0s linear 320ms, opacity 260ms ease;
+    }
+
+    .modal-shell.is-open {
+      visibility: visible;
+      opacity: 1;
+      pointer-events: auto;
+      transition-delay: 0s;
+    }
+
+    .modal-backdrop {
+      opacity: 0;
+      backdrop-filter: blur(0);
+      transition: opacity 300ms ease, backdrop-filter 300ms ease;
+    }
+
+    .modal-shell.is-open .modal-backdrop {
+      opacity: 1;
+      backdrop-filter: blur(18px);
+    }
+
+    .modal-panel {
+      transform: translateY(34px) scale(0.965);
+      opacity: 0;
+      border-color: rgba(var(--modal-accent-rgb), 0.28);
+      box-shadow:
+        0 36px 130px rgba(0, 0, 0, 0.72),
+        0 0 50px rgba(var(--modal-accent-rgb), 0.1),
+        inset 0 1px 0 rgba(255, 255, 255, 0.06);
+      transition:
+        transform 340ms cubic-bezier(0.16, 1, 0.3, 1),
+        opacity 260ms ease;
+    }
+
+    .modal-shell.is-open .modal-panel {
+      transform: translateY(0) scale(1);
+      opacity: 1;
+    }
+
+    .modal-accent-border {
+      border-color: rgba(var(--modal-accent-rgb), 0.26);
+    }
+
+    .modal-accent-text {
+      color: var(--modal-accent);
+      text-shadow: 0 0 14px rgba(var(--modal-accent-rgb), 0.55);
+    }
+
+    .canvas-frame {
+      position: relative;
+      overflow: hidden;
+      border: 1px solid rgba(var(--modal-accent-rgb), 0.4);
+      background: #020106;
+      box-shadow:
+        inset 0 0 65px rgba(0, 0, 0, 0.95),
+        0 0 34px rgba(var(--modal-accent-rgb), 0.12);
+    }
+
+    .canvas-frame {
+      position: relative;
+      margin-inline: auto;
+      max-width: 100%;
+      aspect-ratio: 4 / 3;
+      overflow: hidden;
+      contain: layout paint;
+      isolation: isolate;
+      border: 1px solid rgba(var(--modal-accent-rgb), 0.34);
+      border-radius: 28px 28px 36px 36px / 22px 22px 40px 40px;
+      background: #010103;
+      box-shadow:
+        inset 0 0 18px rgba(255, 255, 255, 0.04),
+        inset 0 0 65px rgba(0, 0, 0, 0.96),
+        0 0 0 1px rgba(255, 255, 255, 0.025),
+        0 0 32px rgba(var(--modal-accent-rgb), 0.12);
+      transform: perspective(1200px) rotateX(0.28deg) scale(0.997);
+      transform-origin: 50% 50%;
+      filter: brightness(var(--crt-flicker)) contrast(1.075) saturate(1.12);
+      will-change: filter, transform;
+    }
+
+    .canvas-frame::before {
+      position: absolute;
+      inset: 0;
+      z-index: 2;
+      content: "";
+      pointer-events: none;
+      border-radius: inherit;
+      background:
+        repeating-linear-gradient(
+          to bottom,
+          rgba(255, 255, 255, 0.018) 0,
+          rgba(255, 255, 255, 0.018) 1px,
+          rgba(0, 0, 0, 0.11) 2px,
+          rgba(0, 0, 0, 0.11) 4px
+        ),
+        repeating-linear-gradient(
+          to right,
+          rgba(255, 30, 70, 0.018) 0,
+          rgba(255, 30, 70, 0.018) 1px,
+          rgba(30, 255, 150, 0.012) 1px,
+          rgba(30, 255, 150, 0.012) 2px,
+          rgba(50, 120, 255, 0.018) 2px,
+          rgba(50, 120, 255, 0.018) 3px
+        ),
+        radial-gradient(ellipse at center, transparent 48%, rgba(0, 0, 0, 0.28) 78%, rgba(0, 0, 0, 0.83) 112%);
+      background-size: 100% 4px, 3px 100%, 100% 100%;
+      background-position: 0 0, 0 0, center;
+      mix-blend-mode: screen;
+      opacity: 0.82;
+      box-shadow: inset 0 0 72px rgba(0, 0, 0, 0.76);
+      animation: crtLineDrift 1.15s linear infinite;
+    }
+
+    .canvas-frame::after {
+      position: absolute;
+      top: -75%;
+      left: -4%;
+      z-index: 3;
+      width: 108%;
+      height: 36%;
+      content: "";
+      pointer-events: none;
+      border-radius: 50%;
+      background: linear-gradient(
+        to bottom,
+        transparent,
+        rgba(255, 255, 255, 0.018),
+        rgba(var(--modal-accent-rgb), 0.075),
+        transparent
+      );
+      filter: blur(0.6px);
+      opacity: 0.7;
+      animation: canvasScan 4.8s linear infinite;
+    }
+
+    #gameCanvas {
+      display: block;
+      width: 800px;
+      height: 600px;
+      max-width: none;
+      aspect-ratio: 4 / 3;
+      border-radius: inherit;
+      image-rendering: pixelated;
+      touch-action: none;
+      transform: translate(var(--crt-jitter-x), var(--crt-jitter-y)) scale(1.004);
+      transform-origin: center;
+      filter: contrast(1.035) saturate(1.08);
+      will-change: transform;
+    }
+
+    .touch-arcade-controls {
+      position: fixed;
+      inset: 0;
+      z-index: 115;
+      display: none;
+      align-items: flex-end;
+      justify-content: space-between;
+      padding:
+        0 max(18px, env(safe-area-inset-right))
+        max(16px, env(safe-area-inset-bottom))
+        max(18px, env(safe-area-inset-left));
+      pointer-events: none;
+      user-select: none;
+      -webkit-user-select: none;
+      touch-action: none;
+    }
+
+    .touch-arcade-controls.is-visible {
+      display: flex;
+    }
+
+    .touch-dpad-cluster,
+    .touch-action-cluster {
+      pointer-events: auto;
+      touch-action: none;
+    }
+
+    .touch-dpad-cluster {
+      display: grid;
+      justify-items: center;
+      gap: 7px;
+    }
+
+    .touch-joystick {
+      position: relative;
+      width: clamp(112px, 28vw, 148px);
+      aspect-ratio: 1;
+      border: 2px solid rgba(0, 255, 255, 0.68);
+      border-radius: 50%;
+      background:
+        radial-gradient(circle at center, rgba(0, 255, 255, 0.13) 0 22%, transparent 23%),
+        repeating-radial-gradient(circle, rgba(0, 255, 255, 0.09) 0 1px, transparent 2px 14px),
+        rgba(3, 7, 14, 0.78);
+      box-shadow:
+        inset 0 0 28px rgba(0, 255, 255, 0.14),
+        0 0 20px rgba(0, 255, 255, 0.34),
+        0 12px 36px rgba(0, 0, 0, 0.48);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      transition: border-color 120ms ease, box-shadow 120ms ease, transform 120ms ease;
+    }
+
+    .touch-joystick.is-active {
+      border-color: #00ffff;
+      box-shadow:
+        inset 0 0 34px rgba(0, 255, 255, 0.22),
+        0 0 30px rgba(0, 255, 255, 0.58),
+        0 12px 36px rgba(0, 0, 0, 0.48);
+      transform: scale(1.025);
+    }
+
+    .touch-joystick-knob {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 39%;
+      aspect-ratio: 1;
+      border: 1px solid rgba(188, 255, 255, 0.82);
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 28%, rgba(255,255,255,.72), rgba(0,255,255,.36) 18%, rgba(4,23,31,.94) 64%);
+      box-shadow: 0 0 18px rgba(0,255,255,.58), inset 0 0 12px rgba(0,255,255,.26);
+      transform: translate(0, 0);
+      translate: -50% -50%;
+      pointer-events: none;
+      will-change: transform;
+      transition: box-shadow 90ms linear;
+    }
+
+    .touch-dpad-mark {
+      position: absolute;
+      color: rgba(176, 255, 255, 0.52);
+      font-family: "Orbitron", sans-serif;
+      font-size: 12px;
+      text-shadow: 0 0 9px rgba(0,255,255,.65);
+      pointer-events: none;
+      transition: color 90ms ease, text-shadow 90ms ease;
+    }
+
+    .touch-dpad-up { top: 8px; left: 50%; transform: translateX(-50%); }
+    .touch-dpad-right { right: 9px; top: 50%; transform: translateY(-50%); }
+    .touch-dpad-down { bottom: 8px; left: 50%; transform: translateX(-50%); }
+    .touch-dpad-left { left: 9px; top: 50%; transform: translateY(-50%); }
+    .touch-joystick.is-up .touch-dpad-up,
+    .touch-joystick.is-right .touch-dpad-right,
+    .touch-joystick.is-down .touch-dpad-down,
+    .touch-joystick.is-left .touch-dpad-left {
+      color: #ffffff;
+      text-shadow: 0 0 5px #fff, 0 0 16px #00ffff;
+    }
+
+    .touch-control-caption {
+      font-family: "Press Start 2P", monospace;
+      font-size: 7px;
+      letter-spacing: .14em;
+      color: rgba(153, 255, 255, 0.62);
+      text-shadow: 0 0 8px rgba(0,255,255,.5);
+    }
+
+    .touch-action-cluster {
+      display: flex;
+      align-items: flex-end;
+      gap: clamp(12px, 3.5vw, 20px);
+      padding-bottom: 8px;
+    }
+
+    .touch-action-button {
+      display: grid;
+      place-items: center;
+      width: clamp(66px, 17vw, 86px);
+      aspect-ratio: 1;
+      border: 2px solid rgba(255, 0, 127, 0.76);
+      border-radius: 50%;
+      color: #ffd8eb;
+      background:
+        radial-gradient(circle at 34% 26%, rgba(255,255,255,.48), transparent 17%),
+        radial-gradient(circle, rgba(255,0,127,.34), rgba(30,2,20,.94) 66%);
+      box-shadow:
+        inset 0 0 20px rgba(255, 0, 127, 0.3),
+        0 0 15px #ff007f,
+        0 10px 28px rgba(0, 0, 0, 0.46);
+      font-family: "Orbitron", sans-serif;
+      touch-action: none;
+      -webkit-tap-highlight-color: transparent;
+      transition: transform 80ms ease, filter 80ms ease, box-shadow 80ms ease;
+    }
+
+    .touch-action-button strong {
+      display: block;
+      font-size: clamp(20px, 5vw, 28px);
+      line-height: 1;
+      text-shadow: 0 0 10px #ff007f;
+    }
+
+    .touch-action-button small {
+      margin-top: -10px;
+      font-family: "Press Start 2P", monospace;
+      font-size: 5px;
+      letter-spacing: .08em;
+      color: rgba(255, 218, 237, 0.66);
+    }
+
+    .touch-action-button.is-active {
+      transform: scale(0.91);
+      filter: brightness(1.35);
+      box-shadow:
+        inset 0 0 30px rgba(255, 255, 255, 0.25),
+        0 0 28px #ff007f,
+        0 4px 12px rgba(0, 0, 0, 0.46);
+    }
+
+    .touch-action-b {
+      width: clamp(58px, 15vw, 76px);
+      margin-bottom: 24px;
+      opacity: .9;
+    }
+
+    @media (hover: none) and (pointer: coarse) and (orientation: landscape) {
+      #gameDialog > .grid {
+        padding-bottom: 16px;
+      }
+
+      .touch-arcade-controls {
+        padding-bottom: max(6px, env(safe-area-inset-bottom));
+      }
+
+      .touch-joystick {
+        width: min(29vh, 132px);
+      }
+
+      .touch-action-button {
+        width: min(20vh, 78px);
+      }
+
+      .touch-action-b {
+        width: min(17vh, 68px);
+        margin-bottom: 12px;
+      }
+    }
+
+    @media (hover: none) and (pointer: coarse) {
+      .modal-panel {
+        max-height: 100dvh;
+        border-radius: 1rem;
+      }
+
+      #gameDialog > .grid {
+        padding-bottom: 184px;
+      }
+
+      .modal-shell {
+        padding: max(4px, env(safe-area-inset-top)) 4px 4px;
+      }
+    }
+
+    .state-chip {
+      border: 1px solid rgba(var(--modal-accent-rgb), 0.32);
+      color: var(--modal-accent);
+      background: rgba(var(--modal-accent-rgb), 0.07);
+      box-shadow: inset 0 0 12px rgba(var(--modal-accent-rgb), 0.035);
+    }
+
+    .modal-action {
+      border: 1px solid rgba(var(--modal-accent-rgb), 0.38);
+      color: var(--modal-accent);
+      background: rgba(var(--modal-accent-rgb), 0.07);
+      transition: transform 180ms ease, color 180ms ease, background 180ms ease, box-shadow 180ms ease;
+    }
+
+    .modal-action:hover,
+    .modal-action:focus-visible {
+      color: #05020a;
+      background: var(--modal-accent);
+      box-shadow: 0 0 22px rgba(var(--modal-accent-rgb), 0.38);
+      transform: translateY(-1px);
+      outline: none;
+    }
+
+    .keycap {
+      min-width: 2rem;
+      border: 1px solid rgba(255, 255, 255, 0.17);
+      border-bottom-width: 3px;
+      background: rgba(255, 255, 255, 0.055);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.07);
+    }
+
+    .toast {
+      transform: translate(-50%, 14px);
+      opacity: 0;
+      pointer-events: none;
+      transition: transform 220ms ease, opacity 220ms ease;
+    }
+
+    .toast.is-visible {
+      transform: translate(-50%, 0);
+      opacity: 1;
+    }
+
+    @keyframes crtFlicker {
+      0%, 100% { opacity: 0.74; }
+      48% { opacity: 0.66; }
+      49% { opacity: 0.77; }
+      50% { opacity: 0.65; }
+      51% { opacity: 0.73; }
+    }
+
+    @keyframes orbDrift {
+      from { transform: translate3d(-4%, -3%, 0) scale(0.96); }
+      to { transform: translate3d(8%, 6%, 0) scale(1.08); }
+    }
+
+    @keyframes ringSpin {
+      to { transform: translate(-50%, -50%) rotate(360deg); }
+    }
+
+    @keyframes statusPulse {
+      0%, 100% { opacity: 0.7; transform: scale(0.88); }
+      50% { opacity: 1; transform: scale(1.08); }
+    }
+
+    @keyframes canvasScan {
+      0% { top: -75%; opacity: 0; }
+      8% { opacity: 0.62; }
+      92% { opacity: 0.62; }
+      100% { top: 138%; opacity: 0; }
+    }
+
+    @keyframes crtLineDrift {
+      from { background-position: 0 0, 0 0, center; }
+      to { background-position: 0 4px, 3px 0, center; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        scroll-behavior: auto !important;
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+
+
+    .arcade-card,
+    .global-scoreboard {
+      content-visibility: auto;
+      contain-intrinsic-size: 520px;
+    }
+
+    #gameCanvas {
+      contain: strict;
+      touch-action: none;
+    }
+
+    .security-alert {
+      color: #ff416d !important;
+      text-shadow: 0 0 8px rgba(255, 65, 109, 0.95), 0 0 24px rgba(255, 65, 109, 0.55) !important;
+    }
