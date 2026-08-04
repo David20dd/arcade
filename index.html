@@ -3369,7 +3369,7 @@ html[data-turbo="on"] .retro-grid-plane {
   position: relative;
   z-index: 1;
   display: grid;
-  grid-template-columns: repeat(5, minmax(0, 1fr));
+  grid-template-columns: repeat(6, minmax(0, 1fr));
   gap: .65rem;
 }
 
@@ -3754,7 +3754,7 @@ body::before{content:"";position:fixed;inset:0;z-index:-2;pointer-events:none;ba
 @media(pointer:coarse) and (orientation:landscape){#gameSidebar{display:none!important}#gameLayout{display:flex!important;align-items:center;justify-content:center;height:calc(100vh - 66px);padding:4px!important}.modal-panel{width:100vw!important;height:100vh!important;max-width:none!important;max-height:none!important;border-radius:0!important;overflow:hidden!important}.canvas-frame{margin:auto}.virtual-joystick{width:88px;height:88px}.virtual-joystick-knob{width:40px;height:40px;margin:-20px}.virtual-action-cluster{width:104px;height:90px}.virtual-action-button{width:52px;height:52px}.virtual-action-b{width:44px;height:44px}}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important;transition-duration:.001ms!important}}
 
-/* Five-terminal catalog: compact, responsive and GPU-friendly. */
+/* Six-terminal catalog: compact, responsive and GPU-friendly. */
 .catalog-game-grid{grid-template-columns:repeat(auto-fit,minmax(225px,1fr))!important}
 .galaga-card .game-art{background:radial-gradient(circle at 50% 35%,rgba(0,255,255,.10),transparent 55%),#05020a}
 .galaga-card .play-button{box-shadow:inset 0 0 0 1px rgba(0,255,255,.18)}
@@ -3762,7 +3762,7 @@ body::before{content:"";position:fixed;inset:0;z-index:-2;pointer-events:none;ba
 
 
 /* ========================================================================== 
-   CORE_V5.8 — PIXEL-PERFECT SYMMETRY / FINAL OVERRIDES
+   CORE_V6.0 — PIXEL-PERFECT SYMMETRY / SIX TERMINALS
    Static CSS-only exterior. No cursor tracking, gyroscope or 3D tilt.
    ========================================================================== */
 :root{
@@ -3799,7 +3799,7 @@ main#top>section:first-child{display:none!important}
 .eco-mode-button small,.eco-mode-button strong{display:block;font-family:Orbitron,system-ui,sans-serif;letter-spacing:.1em}.eco-mode-button small{font-size:.48rem;color:rgba(255,255,255,.44)}.eco-mode-button strong{margin-top:4px;font-size:.56rem;color:#39ff88}
 .cabinet-switch-track{position:relative;width:32px;height:16px;border:1px solid rgba(57,255,136,.42);border-radius:999px;background:rgba(57,255,136,.09)}.cabinet-switch-track span{position:absolute;top:2px;left:17px;width:10px;height:10px;border-radius:50%;background:#39ff88;box-shadow:0 0 8px rgba(57,255,136,.8);transition:transform .2s ease,background-color .2s ease}.eco-mode-button[aria-pressed="false"] .cabinet-switch-track span{transform:translateX(-15px);background:#ff416d;box-shadow:0 0 8px rgba(255,65,109,.65)}
 
-.catalog-game-grid{display:grid!important;grid-template-columns:repeat(5,minmax(0,1fr))!important;gap:clamp(10px,1.15vw,18px)!important;align-items:stretch}
+.catalog-game-grid{display:grid!important;grid-template-columns:repeat(6,minmax(0,1fr))!important;gap:clamp(10px,1.15vw,18px)!important;align-items:stretch}
 .arcade-card{position:relative!important;isolation:isolate!important;min-width:0!important;border:1px solid rgba(var(--card-accent-rgb),.48)!important;border-radius:17px!important;padding:8px!important;background:linear-gradient(155deg,rgba(18,8,30,.9),rgba(3,1,7,.97))!important;box-shadow:inset 0 0 0 1px rgba(255,255,255,.045),inset 0 0 26px rgba(var(--card-accent-rgb),.025),0 14px 30px rgba(0,0,0,.32)!important;transition:transform .2s ease-out,border-color .2s ease-out,box-shadow .2s ease-out,opacity .2s ease-out,filter .2s ease-out!important;transform:translate3d(0,0,0);will-change:transform,opacity;contain:layout paint style}
 .arcade-card::before{inset:9px!important;border-radius:13px!important;background:radial-gradient(ellipse at 50% 20%,rgba(var(--card-accent-rgb),.18),transparent 66%)!important;opacity:.45!important;filter:none!important}
 .arcade-card::after{content:""!important;position:absolute!important;inset:14px 18px -13px!important;z-index:-3!important;width:auto!important;height:auto!important;left:18px!important;top:14px!important;border-radius:20px!important;background:var(--card-accent)!important;opacity:0!important;filter:blur(22px)!important;transform:translate3d(0,10px,0)!important;transition:opacity .2s ease-out!important;pointer-events:none!important}
@@ -3832,7 +3832,7 @@ html.comfort-mode .canvas-frame::after{background:radial-gradient(ellipse at cen
 
 
 /* ========================================================================== 
-   CORE_V5.8 — FINAL PIXEL-PERFECT CATALOG GEOMETRY
+   CORE_V6.0 — FINAL PIXEL-PERFECT CATALOG GEOMETRY
    ========================================================================== */
 #catalog{
   width:100%;
@@ -3993,7 +3993,7 @@ html.comfort-mode .canvas-frame::after{background:radial-gradient(ellipse at cen
   .catalog-game-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}
 }
 @media (min-width:1024px){
-  .catalog-game-grid{grid-template-columns:repeat(5,minmax(0,1fr))!important}
+  .catalog-game-grid{grid-template-columns:repeat(6,minmax(0,1fr))!important}
 }
 @media (max-width:1199px){
   .tactical-header-inner{grid-template-columns:1fr 1fr!important}
@@ -4008,6 +4008,32 @@ html.comfort-mode .canvas-frame::after{background:radial-gradient(ellipse at cen
 @media (max-width:639px){
   .arcade-card{min-height:30rem!important;max-width:28rem!important;margin-inline:auto!important}
 }
+
+
+/* ========================================================================== 
+   CORE_V6.0 — SIX-CARTRIDGE ANALOG CRT / NEON-OUTRUN
+   ========================================================================== */
+.catalog-game-grid{grid-template-columns:minmax(0,1fr)!important;gap:1rem!important}
+@media (min-width:640px){.catalog-game-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}}
+@media (min-width:1024px){.catalog-game-grid{grid-template-columns:repeat(6,minmax(0,1fr))!important}}
+.arcade-card{min-height:30.5rem!important;padding:1rem!important}
+.arcade-card .card-heading-row{min-height:6.45rem!important}
+.arcade-card h3{font-size:clamp(.66rem,.76vw,.87rem)!important}
+.outrun-card .game-art{background:linear-gradient(#10031c 0 48%,#020005 48% 100%)}
+.outrun-card .play-button{box-shadow:inset 0 0 0 1px rgba(255,0,127,.2)}
+.canvas-frame{isolation:isolate;transform:translateZ(0)}
+.crt-phosphor-overlay{position:absolute;inset:0;z-index:10;pointer-events:none;border-radius:inherit;background:repeating-linear-gradient(to bottom,rgba(255,255,255,.035) 0,rgba(255,255,255,.035) 1px,rgba(0,0,0,.12) 2px,rgba(0,0,0,.12) 4px),radial-gradient(circle,transparent 60%,rgba(0,0,0,.4) 100%);mix-blend-mode:screen;opacity:.995;transform:translateZ(0);will-change:opacity;animation:phosphorFlicker 1.9s linear infinite}
+@keyframes phosphorFlicker{0%{opacity:.99}50%{opacity:1}100%{opacity:.99}}
+html.eco-mode .crt-phosphor-overlay{animation-duration:3.2s;background:repeating-linear-gradient(to bottom,rgba(255,255,255,.024) 0,rgba(255,255,255,.024) 1px,rgba(0,0,0,.09) 2px,rgba(0,0,0,.09) 4px),radial-gradient(circle,transparent 60%,rgba(0,0,0,.4) 100%)}
+.snapshot-button{width:100%;display:flex;align-items:center;justify-content:space-between;border:1px solid rgba(var(--modal-accent-rgb),.3);border-radius:.75rem;background:rgba(var(--modal-accent-rgb),.055);padding:.78rem .85rem;color:rgba(255,255,255,.72);font:800 .58rem Orbitron,system-ui,sans-serif;letter-spacing:.11em;transition:.2s ease}
+.snapshot-button:hover{color:#fff;border-color:var(--modal-accent);box-shadow:0 0 18px rgba(var(--modal-accent-rgb),.18)}
+.cheat-terminal{position:absolute;inset:76px 18px 18px;z-index:45;display:grid;place-items:center;border:1px solid rgba(57,255,136,.32);border-radius:1.2rem;background:rgba(1,8,7,.94);box-shadow:inset 0 0 60px rgba(57,255,136,.05),0 0 36px rgba(0,0,0,.8);backdrop-filter:blur(14px)}
+.cheat-terminal[hidden]{display:none!important}
+.cheat-terminal-panel{width:min(560px,calc(100% - 28px));border:1px solid rgba(57,255,136,.4);border-radius:1rem;background:#020806;padding:1.2rem;box-shadow:0 0 28px rgba(57,255,136,.12)}
+.cheat-terminal-header{display:flex;align-items:start;justify-content:space-between;gap:1rem;border-bottom:1px solid rgba(57,255,136,.18);padding-bottom:.9rem}.cheat-terminal-header small{display:block;color:rgba(57,255,136,.58);font:700 .52rem 'Press Start 2P',monospace}.cheat-terminal-header h3{margin-top:.55rem;color:#8dffb9;font:900 1rem Orbitron,sans-serif;letter-spacing:.12em}.cheat-terminal-close{width:38px;height:38px;border:1px solid rgba(57,255,136,.3);border-radius:.65rem;color:#8dffb9;font-size:1.25rem}.cheat-terminal-copy{margin-top:.9rem;color:rgba(255,255,255,.52);font-size:.78rem;line-height:1.55}.cheat-command-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.65rem;margin-top:1rem}.cheat-command{border:1px solid rgba(57,255,136,.24);border-radius:.75rem;background:rgba(57,255,136,.045);padding:.8rem;color:#8dffb9;font:800 .58rem Orbitron,sans-serif;letter-spacing:.08em}.cheat-command:hover{background:rgba(57,255,136,.12);border-color:#39ff88}.cheat-warning{margin-top:1rem;color:#ffe75b;font:700 .5rem 'Press Start 2P',monospace;line-height:1.6}
+@media(max-width:600px){.cheat-command-grid{grid-template-columns:1fr}.cheat-terminal{inset:64px 8px 8px}.arcade-card{min-height:30rem!important}}
+@media(prefers-reduced-motion:reduce){.crt-phosphor-overlay{animation:none!important;opacity:.995}}
+
 </style><meta content="default-src 'self' data: blob:; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; connect-src 'none'; media-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self'" http-equiv="Content-Security-Policy"/></head>
 <body class="antialiased">
 <header class="tactical-header" id="tacticalHeader">
@@ -4018,7 +4044,7 @@ html.comfort-mode .canvas-frame::after{background:radial-gradient(ellipse at cen
     </a>
     <section class="matrix-diagnostic" aria-label="Diagnóstico del sistema">
       <span class="matrix-status-led" aria-hidden="true"></span>
-      <div><strong id="systemStatusText">CORE_V5.8 // ONLINE</strong><small>LOCAL RUNTIME · ECO GPU PIPELINE</small></div>
+      <div><strong id="systemStatusText">CORE_V6.0 // ONLINE</strong><small>LOCAL RUNTIME · ECO GPU PIPELINE</small></div>
       <time id="systemClock" aria-label="Reloj digital">--:--:--</time>
     </section>
     <div class="tactical-actions">
@@ -4037,7 +4063,7 @@ html.comfort-mode .canvas-frame::after{background:radial-gradient(ellipse at cen
 <div>
 <div class="mb-7 inline-flex items-center gap-3 rounded-full border border-fuchsia-300/20 bg-fuchsia-300/5 px-4 py-2 text-xs font-bold tracking-[0.22em] text-fuchsia-200">
 <span class="size-1.5 animate-pulse rounded-full bg-fuchsia-300 shadow-[0_0_12px_rgba(255,60,247,.8)]"></span>
-          CORE_V5.8 · FIVE TERMINALS · PIXEL GRID
+          CORE_V6.0 · SIX TERMINALS · ANALOG CRT
         </div>
 <h1 class="font-display max-w-4xl text-4xl font-black leading-[1.02] tracking-[-0.03em] text-white sm:text-6xl lg:text-7xl">
           EL PASADO
@@ -4056,7 +4082,7 @@ html.comfort-mode .canvas-frame::after{background:radial-gradient(ellipse at cen
 </div>
 <div class="mt-12 grid max-w-2xl grid-cols-3 gap-3 sm:gap-4">
 <div class="glass-panel rounded-2xl px-3 py-4 sm:px-5">
-<p class="font-display text-xl font-bold text-white sm:text-2xl">05</p>
+<p class="font-display text-xl font-bold text-white sm:text-2xl">06</p>
 <p class="mt-1 text-[10px] font-bold tracking-[0.18em] text-white/42 sm:text-xs">TERMINALES</p>
 </div>
 <div class="glass-panel rounded-2xl px-3 py-4 sm:px-5">
@@ -4164,7 +4190,7 @@ html.comfort-mode .canvas-frame::after{background:radial-gradient(ellipse at cen
 <button class="controls-reset-button" data-remap-reset="" type="button">RESTAURAR PREDETERMINADOS</button>
 </div>
 </section>
-<div class="catalog-game-grid grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-6 max-w-7xl mx-auto px-4">
+<div class="catalog-game-grid grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-4 max-w-7xl mx-auto px-4">
 <article class="arcade-card flex flex-col justify-between h-full bg-[#0f051d]/60 backdrop-blur-md border border-cyan-500/30 rounded-xl p-5 text-center transition-all duration-300 hover:scale-[1.02] hover:border-cyan-400" style="--card-accent:#42f5ff;--card-accent-rgb:66,245,255">
 <div class="game-art aspect-[16/10] rounded-[1.25rem] border border-cyan-300/15">
 <svg aria-label="Ilustración de Space Invaders" class="h-full w-full" fill="none" role="img" viewbox="0 0 640 400">
@@ -4333,7 +4359,7 @@ html.comfort-mode .canvas-frame::after{background:radial-gradient(ellipse at cen
 <article class="achievement-medal" data-achievement-id="ghost-hunter" data-title="Cazador de Fantasmas"><span class="achievement-medal-icon">✦</span><div><strong>CAZADOR DE FANTASMAS</strong><small data-medal-state="">LOCKED</small></div></article>
 <article class="achievement-medal" data-achievement-id="asteroid-ace" data-title="As del Cinturón"><span class="achievement-medal-icon">✧</span><div><strong>AS DEL CINTURÓN</strong><small data-medal-state="">LOCKED</small></div></article>
 <article class="achievement-medal" data-achievement-id="grid-survivor" data-title="Superviviente Grid"><span class="achievement-medal-icon">⬡</span><div><strong>SUPERVIVIENTE GRID</strong><small data-medal-state="">LOCKED</small></div></article>
-<article class="achievement-medal" data-achievement-id="dual-rescuer" data-title="Piloto Dual"><span class="achievement-medal-icon">♢</span><div><strong>PILOTO DUAL</strong><small data-medal-state="">LOCKED</small></div></article>
+<article class="achievement-medal" data-achievement-id="dual-rescuer" data-title="Piloto Dual"><span class="achievement-medal-icon">♢</span><div><strong>PILOTO DUAL</strong><small data-medal-state="">LOCKED</small></div></article><article class="achievement-medal" data-achievement-id="neon-roadrunner" data-title="Neon Roadrunner"><span class="achievement-medal-icon">▰</span><div><strong>NEON ROADRUNNER</strong><small data-medal-state="">LOCKED</small></div></article>
 </div>
 </aside>
 </section>
@@ -4355,8 +4381,8 @@ html.comfort-mode .canvas-frame::after{background:radial-gradient(ellipse at cen
 </section>
 </main>
 <footer class="relative z-10 mx-auto flex max-w-7xl flex-col gap-4 px-5 py-9 text-xs font-semibold tracking-[0.13em] text-white/35 sm:flex-row sm:items-center sm:justify-between sm:px-8 lg:px-10">
-<p>NEON NEXUS / CORE_V5.8 // ONLINE</p>
-<p>5 GAMES · CANVAS 800×600 · KEYBOARD · TOUCH · GAMEPAD · TURBO 1.5X</p>
+<p>NEON NEXUS / CORE_V6.0 // ONLINE</p>
+<p>6 GAMES · CANVAS 800×600 · KEYBOARD · TOUCH · GAMEPAD · TURBO 1.5X</p>
 </footer>
 <div aria-hidden="true" class="modal-shell fixed inset-0 z-[100] flex items-center justify-center p-3 sm:p-6 lg:p-10" id="gameModal">
 <div class="modal-backdrop absolute inset-0 bg-[#020105]/88" data-close-modal=""></div>
@@ -4389,7 +4415,7 @@ html.comfort-mode .canvas-frame::after{background:radial-gradient(ellipse at cen
 <div class="grid gap-5 p-4 sm:p-6 lg:grid-cols-[1fr_238px]" id="gameLayout">
 <div class="min-w-0">
 <div class="canvas-frame rounded-2xl" id="canvasFrame">
-<canvas aria-describedby="controlDescription" aria-label="Juego Arcade interactivo. Usa las flechas, Espacio y Enter." height="600" id="gameCanvas" role="application" tabindex="0" width="800"></canvas>
+<canvas aria-describedby="controlDescription" aria-label="Juego Arcade interactivo. Usa las flechas, Espacio y Enter." height="600" id="gameCanvas" role="application" tabindex="0" width="800"></canvas><div aria-hidden="true" class="crt-phosphor-overlay"></div>
 </div>
 <div class="mt-4 flex flex-col gap-3 rounded-2xl border modal-accent-border bg-white/[0.025] p-3 sm:flex-row sm:items-center sm:justify-between sm:p-4">
 <div class="flex flex-wrap items-center gap-2 text-[11px] font-bold tracking-[0.11em] text-white/48" id="controlDescription">
@@ -4436,7 +4462,7 @@ html.comfort-mode .canvas-frame::after{background:radial-gradient(ellipse at cen
 <div class="mt-4 grid gap-2.5">
 <button class="modal-action font-display rounded-xl px-4 py-3 text-xs font-black tracking-[0.15em]" id="primaryGameButton" type="button">START GAME</button>
 <button class="rounded-xl border border-white/12 bg-white/5 px-4 py-3 font-display text-xs font-black tracking-[0.15em] text-white/58 transition hover:border-white/24 hover:bg-white/9 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50" id="resetGameButton" type="button">RESET TO MENU</button>
-<button aria-pressed="true" class="rounded-xl border border-white/12 bg-white/5 px-4 py-3 font-display text-[10px] font-black tracking-[0.15em] text-white/58 transition hover:border-white/24 hover:bg-white/9 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50" data-enabled="true" id="audioToggleButton" type="button">SOUND: ON</button><button aria-pressed="false" class="debug-hitbox-toggle" id="debugHitboxButton" type="button"><span>DEBUG HITBOXES</span><strong>OFF</strong></button>
+<button aria-pressed="true" class="rounded-xl border border-white/12 bg-white/5 px-4 py-3 font-display text-[10px] font-black tracking-[0.15em] text-white/58 transition hover:border-white/24 hover:bg-white/9 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/50" data-enabled="true" id="audioToggleButton" type="button">SOUND: ON</button><button class="snapshot-button" id="snapshotButton" type="button"><span>SNAPSHOT</span><strong>PNG</strong></button><button aria-pressed="false" class="debug-hitbox-toggle" id="debugHitboxButton" type="button"><span>DEBUG HITBOXES</span><strong>OFF</strong></button>
 </div>
 </div>
 <div class="flex-1 rounded-2xl border border-white/8 bg-black/15 p-4">
@@ -4447,7 +4473,7 @@ html.comfort-mode .canvas-frame::after{background:radial-gradient(ellipse at cen
 <li class="flex gap-2"><span class="text-lime-300">✓</span><span>Space Invaders completo</span></li>
 <li class="flex gap-2"><span class="text-lime-300">✓</span><span>Neon Pac-Man completo</span></li>
 <li class="flex gap-2"><span class="text-lime-300">✓</span><span>TRON Lightcycles completo</span></li>
-<li class="flex gap-2"><span class="text-lime-300">✓</span><span>Cyber-Galaga Neón completo</span></li>
+<li class="flex gap-2"><span class="text-lime-300">✓</span><span>Cyber-Galaga Neón completo</span></li><li class="flex gap-2"><span class="text-lime-300">✓</span><span>Neon-Outrun completo</span></li>
 <li class="flex gap-2"><span class="text-lime-300">✓</span><span>Récords con localStorage</span></li>
 <li class="flex gap-2"><span class="text-lime-300">✓</span><span>Audio Web API por juego</span></li>
 <li class="flex gap-2"><span class="text-lime-300">✓</span><span>Canvas lógico fijo 800×600</span></li>
@@ -4457,6 +4483,20 @@ html.comfort-mode .canvas-frame::after{background:radial-gradient(ellipse at cen
 </div>
 </aside>
 </div>
+
+<section aria-label="Terminal de trucos" class="cheat-terminal" hidden id="cheatTerminal">
+  <div class="cheat-terminal-panel">
+    <header class="cheat-terminal-header"><div><small>KONAMI ACCESS GRANTED</small><h3>HIDDEN CHEAT TERMINAL</h3></div><button aria-label="Cerrar terminal de trucos" class="cheat-terminal-close" data-cheat-close type="button">×</button></header>
+    <p class="cheat-terminal-copy">Los comandos afectan únicamente la sesión activa. Para preservar la integridad competitiva, cualquier sesión modificada queda excluida del récord local.</p>
+    <div class="cheat-command-grid">
+      <button class="cheat-command" data-cheat-command="life" type="button">+1 EXTRA LIFE</button>
+      <button class="cheat-command" data-cheat-command="combo" type="button">COMBO X4</button>
+      <button class="cheat-command" data-cheat-command="score" type="button">+1000 SCORE</button>
+      <button class="cheat-command" data-cheat-command="purge" type="button">PURGE HAZARDS</button>
+    </div>
+    <p class="cheat-warning">CHEAT SESSION · HIGH SCORE STORAGE DISABLED</p>
+  </div>
+</section>
 </section>
 </div>
 <div aria-live="polite" class="toast fixed bottom-5 left-1/2 z-[120] rounded-full border border-white/12 bg-[#0b0614]/92 px-4 py-2 text-xs font-bold tracking-[0.12em] text-white/75 shadow-2xl backdrop-blur-xl" id="toast" role="status"></div>
@@ -4538,6 +4578,20 @@ const GAME_CATALOG = Object.freeze({
     symbol: "TRACTOR FORMATION",
     hint: "Muévete con izquierda/derecha, dispara con Espacio y rescata tu nave capturada para activar Dual Fighter.",
     controls: "← → MOVER / SPACE DISPARAR / GAMEPAD STICK + A / ENTER INICIAR",
+    canvasWidth: 800,
+    canvasHeight: 600,
+    playable: true
+  },
+  "outrun": {
+    id: "outrun",
+    title: "NEON-OUTRUN",
+    genre: "RETRO SYNTH ROAD",
+    accent: "#ff007f",
+    accentRgb: "255, 0, 127",
+    secondary: "#00ffff",
+    symbol: "HIGHWAY VECTOR",
+    hint: "Usa izquierda/derecha para mantener el auto en la carretera y esquivar vehículos amarillos que emergen del horizonte.",
+    controls: "← → CONDUCIR / GAMEPAD STICK / SPACE O ENTER INICIAR",
     canvasWidth: 800,
     canvasHeight: 600,
     playable: true
@@ -4656,6 +4710,7 @@ class HighScoreStore {
     this.asteroidsStorageKey = "arcade_asteroids_highscore";
     this.tronStorageKey = "arcade_tron_highscore";
     this.galagaStorageKey = "arcade_galaga_highscore";
+    this.outrunStorageKey = "arcade_outrun_highscore";
     this.scores = this.load();
     this.listeners = new Set();
     this.save();
@@ -4677,6 +4732,10 @@ class HighScoreStore {
       if (Number.isFinite(galagaScore) && galagaScore > Number(scores.galaga || 0)) {
         scores.galaga = Math.floor(galagaScore);
       }
+      const outrunScore = Number(window.localStorage.getItem("arcade_outrun_highscore"));
+      if (Number.isFinite(outrunScore) && outrunScore > Number(scores.outrun || 0)) {
+        scores.outrun = Math.floor(outrunScore);
+      }
       return scores;
     } catch (error) {
       return {};
@@ -4689,6 +4748,7 @@ class HighScoreStore {
       window.localStorage.setItem(this.asteroidsStorageKey, String(Math.max(0, Math.floor(Number(this.scores.asteroids) || 0))));
       window.localStorage.setItem(this.tronStorageKey, String(Math.max(0, Math.floor(Number(this.scores.tron) || 0))));
       window.localStorage.setItem(this.galagaStorageKey, String(Math.max(0, Math.floor(Number(this.scores.galaga) || 0))));
+      window.localStorage.setItem(this.outrunStorageKey, String(Math.max(0, Math.floor(Number(this.scores.outrun) || 0))));
     } catch (error) {
       // The in-memory score still works when storage is unavailable.
     }
@@ -4821,6 +4881,7 @@ class RetroAudio {
 
   normalizeGame(game) {
     const value = String(game || "").toLowerCase().replace(/_/g, "-");
+    if (value.includes("outrun") || value.includes("out-run")) return "outrun";
     if (value.includes("galaga")) return "galaga";
     if (value.includes("pac")) return "pac-man";
     if (value.includes("invader") || value.includes("alien")) return "space-invaders";
@@ -4972,6 +5033,13 @@ class RetroAudio {
   playArcadeSound(game, action, detail = {}) {
     const normalizedGame = this.normalizeGame(game);
     const normalizedAction = String(action || "").toLowerCase().replace(/-/g, "_");
+
+    if (normalizedGame === "outrun") {
+      if (normalizedAction === "outrun_intro" || normalizedAction === "intro") return this.outrunIntro(detail);
+      if (normalizedAction === "engine" || normalizedAction === "engine_loop") return this.outrunEngine(detail);
+      if (normalizedAction === "crash" || normalizedAction === "explosion") return this.outrunCrash(detail);
+      if (normalizedAction === "pass" || normalizedAction === "checkpoint") return this.outrunPass(detail);
+    }
 
     if (normalizedGame === "galaga") {
       if (normalizedAction === "galaga_intro" || normalizedAction === "intro") return this.galagaIntro(detail);
@@ -5448,6 +5516,108 @@ class RetroAudio {
     return true;
   }
 
+
+
+  outrunIntro(detail = {}) {
+    if (!this.canPlay("outrun:intro", 0.8)) return false;
+    const context = this.context;
+    const start = context.currentTime + 0.02;
+    const tempo = Math.max(0.8, Math.min(1.6, this.tempoMultiplier || 1));
+    const step = 0.105 / tempo;
+    const notes = [329.63, 415.30, 493.88, 659.25, 587.33, 493.88, 415.30, 523.25, 659.25, 783.99, 987.77, 783.99];
+    const bus = context.createGain();
+    const filter = context.createBiquadFilter();
+    filter.type = "lowpass";
+    filter.frequency.setValueAtTime(2700, start);
+    bus.gain.setValueAtTime(0.68 * Math.max(0.7, Math.min(1.2, Number(detail.volume) || 1)), start);
+    filter.connect(bus);
+    bus.connect(this.masterGain);
+    const nodes = [filter, bus];
+    notes.forEach((frequency, index) => {
+      const noteStart = start + index * step;
+      const noteEnd = noteStart + step * 0.78;
+      const lead = context.createOscillator();
+      const harmony = context.createOscillator();
+      const gain = context.createGain();
+      const harmonyGain = context.createGain();
+      lead.type = "triangle";
+      harmony.type = "square";
+      lead.frequency.setValueAtTime(frequency, noteStart);
+      harmony.frequency.setValueAtTime(frequency / 2, noteStart);
+      gain.gain.setValueAtTime(0.0001, noteStart);
+      gain.gain.exponentialRampToValueAtTime(0.105, noteStart + 0.008);
+      gain.gain.exponentialRampToValueAtTime(0.0001, noteEnd);
+      harmonyGain.gain.setValueAtTime(0.0001, noteStart);
+      harmonyGain.gain.exponentialRampToValueAtTime(0.025, noteStart + 0.01);
+      harmonyGain.gain.exponentialRampToValueAtTime(0.0001, noteEnd);
+      lead.connect(gain); harmony.connect(harmonyGain); gain.connect(filter); harmonyGain.connect(filter);
+      lead.start(noteStart); harmony.start(noteStart); lead.stop(noteEnd + 0.01); harmony.stop(noteEnd + 0.01);
+      nodes.push(lead, harmony, gain, harmonyGain);
+    });
+    this.trackTransient(nodes, start + notes.length * step + 0.12);
+    return true;
+  }
+
+  outrunEngine(detail = {}) {
+    const key = "outrun:engine";
+    const active = detail.active !== false;
+    const speed = Math.max(0, Math.min(1, Number(detail.speed) || 0));
+    if (!active || !this.enabled) { this.stopLoop(key, Number(detail.fade) || 0.05); return false; }
+    const context = this.unlock();
+    if (!context) return false;
+    const now = context.currentTime;
+    const existing = this.activeLoops.get(key);
+    if (existing) {
+      existing.carrier.frequency.setTargetAtTime(58 + speed * 105, now, 0.035);
+      existing.overtone.frequency.setTargetAtTime(116 + speed * 210, now, 0.035);
+      existing.filter.frequency.setTargetAtTime(380 + speed * 1450, now, 0.045);
+      existing.output.gain.setTargetAtTime(0.045 + speed * 0.075, now, 0.04);
+      return true;
+    }
+    const carrier = context.createOscillator();
+    const overtone = context.createOscillator();
+    const lfo = context.createOscillator();
+    const lfoDepth = context.createGain();
+    const carrierGain = context.createGain();
+    const overtoneGain = context.createGain();
+    const filter = context.createBiquadFilter();
+    const output = context.createGain();
+    carrier.type = "sawtooth"; overtone.type = "square"; lfo.type = "sine";
+    carrier.frequency.setValueAtTime(58 + speed * 105, now);
+    overtone.frequency.setValueAtTime(116 + speed * 210, now);
+    lfo.frequency.setValueAtTime(12, now); lfoDepth.gain.setValueAtTime(4 + speed * 9, now);
+    carrierGain.gain.setValueAtTime(0.11, now); overtoneGain.gain.setValueAtTime(0.028, now);
+    filter.type = "lowpass"; filter.frequency.setValueAtTime(380 + speed * 1450, now); filter.Q.setValueAtTime(3.2, now);
+    output.gain.setValueAtTime(0.0001, now); output.gain.exponentialRampToValueAtTime(0.045 + speed * 0.075, now + 0.08);
+    lfo.connect(lfoDepth); lfoDepth.connect(carrier.frequency);
+    carrier.connect(carrierGain); overtone.connect(overtoneGain); carrierGain.connect(filter); overtoneGain.connect(filter); filter.connect(output); output.connect(this.masterGain);
+    carrier.start(now); overtone.start(now); lfo.start(now);
+    this.activeLoops.set(key,{output,carrier,overtone,filter,sources:[carrier,overtone,lfo],nodes:[carrier,overtone,lfo,lfoDepth,carrierGain,overtoneGain,filter,output]});
+    return true;
+  }
+
+  outrunCrash(detail = {}) {
+    if (!this.canPlay("outrun:crash", 0.18)) return false;
+    const context = this.context; const now = context.currentTime; const end = now + 0.34;
+    const noise = context.createBufferSource(); const filter = context.createBiquadFilter(); const gain = context.createGain();
+    const impact = context.createOscillator(); const impactGain = context.createGain();
+    noise.buffer = this.createNoiseBuffer(0.34); filter.type = "lowpass"; filter.frequency.setValueAtTime(3200, now); filter.frequency.exponentialRampToValueAtTime(120, end); filter.Q.value = 1.4;
+    gain.gain.setValueAtTime(0.36, now); gain.gain.exponentialRampToValueAtTime(0.0001, end);
+    impact.type = "sawtooth"; impact.frequency.setValueAtTime(180, now); impact.frequency.exponentialRampToValueAtTime(42, end);
+    impactGain.gain.setValueAtTime(0.28, now); impactGain.gain.exponentialRampToValueAtTime(0.0001, end);
+    noise.connect(filter); filter.connect(gain); gain.connect(this.masterGain); impact.connect(impactGain); impactGain.connect(this.masterGain);
+    noise.start(now); impact.start(now); noise.stop(end + .01); impact.stop(end + .01);
+    this.trackTransient([noise,filter,gain,impact,impactGain],end+.05); return true;
+  }
+
+  outrunPass(detail = {}) {
+    if (!this.canPlay("outrun:pass", 0.055)) return false;
+    const context = this.context; const now = context.currentTime; const end = now + 0.09;
+    const oscillator = context.createOscillator(); const gain = context.createGain();
+    oscillator.type = "triangle"; oscillator.frequency.setValueAtTime(680, now); oscillator.frequency.exponentialRampToValueAtTime(1280 + (Number(detail.combo)||1)*70, end);
+    gain.gain.setValueAtTime(0.0001, now); gain.gain.exponentialRampToValueAtTime(0.12, now+.005); gain.gain.exponentialRampToValueAtTime(0.0001, end);
+    oscillator.connect(gain); gain.connect(this.masterGain); oscillator.start(now); oscillator.stop(end+.01); this.trackTransient([oscillator,gain],end+.03); return true;
+  }
 
   galagaIntro(detail = {}) {
     if (!this.canPlay("galaga:intro", 0.75)) return false;
@@ -6546,6 +6716,13 @@ const ACHIEVEMENT_DEFINITIONS = Object.freeze([
     description: "Rescataste una nave capturada y activaste Dual Fighter en Cyber-Galaga Neón.",
     icon: "♢",
     accent: "#00ffff"
+  }),
+  Object.freeze({
+    id: "neon-roadrunner",
+    title: "NEON ROADRUNNER",
+    description: "Superaste 7,500 puntos en Neon-Outrun sin abandonar la autopista de fósforo.",
+    icon: "▰",
+    accent: "#ff007f"
   })
 ]);
 
@@ -6612,6 +6789,7 @@ class AchievementSystem {
     const value = Math.max(0, Math.floor(Number(score) || 0));
     if (normalizedGame === "asteroids" && value >= 5000) this.unlock("asteroid-ace");
     if (normalizedGame === "tron" && value >= 5000) this.unlock("grid-survivor");
+    if (normalizedGame === "outrun" && value >= 7500) this.unlock("neon-roadrunner");
   }
 
   renderShowcase() {
@@ -6960,7 +7138,7 @@ class TouchArcadeControls {
     this.releaseAll();
     if (!this.root) return;
     this.root.dataset.game = this.activeGameId;
-    if (this.actionLabel) this.actionLabel.textContent = this.activeGameId === "pac-man" || this.activeGameId === "tron" ? "START" : "FIRE / START";
+    if (this.actionLabel) this.actionLabel.textContent = this.activeGameId === "pac-man" || this.activeGameId === "tron" || this.activeGameId === "outrun" ? "START" : "FIRE / START";
   }
 
   getControlDescription(gameId = this.activeGameId) {
@@ -6968,6 +7146,7 @@ class TouchArcadeControls {
     if (gameId === "pac-man") return "JOYSTICK: DIRECCIÓN · BOTÓN A/B: INICIAR";
     if (gameId === "tron") return "JOYSTICK: GIRO 90° · BOTÓN A/B: INICIAR";
     if (gameId === "asteroids") return "JOYSTICK: ROTAR Y EMPUJE · BOTÓN A: DISPARAR · B: INICIAR";
+    if (gameId === "outrun") return "JOYSTICK: CONDUCIR · BOTÓN A/B: INICIAR";
     return "JOYSTICK: MOVER · BOTÓN A: DISPARAR · B: INICIAR";
   }
 
@@ -7039,7 +7218,7 @@ class TouchArcadeControls {
     if (this.knob) this.knob.style.transform = `translate3d(${dx.toFixed(1)}px,${dy.toFixed(1)}px,0)`;
     const dead = maxDistance * 0.28;
     const gameId = this.activeGameId;
-    if (gameId === "space-invaders" || gameId === "galaga") {
+    if (gameId === "space-invaders" || gameId === "galaga" || gameId === "outrun") {
       this.setDirection("ArrowLeft", dx < -dead); this.setDirection("ArrowRight", dx > dead); this.setDirection("ArrowUp", false); this.setDirection("ArrowDown", false);
     } else if (gameId === "asteroids") {
       this.setDirection("ArrowLeft", dx < -dead); this.setDirection("ArrowRight", dx > dead); this.setDirection("ArrowUp", dy < -dead); this.setDirection("ArrowDown", false);
@@ -12242,71 +12421,295 @@ class CyberGalagaGame {
   }
 }
 
-class PlaceholderGame {
-  constructor(engine, config) {
+
+class NeonOutrunGame {
+  constructor(engine) {
     this.engine = engine;
     this.ctx = engine.ctx;
     this.input = engine.input;
-    this.config = config;
+    this.width = 800;
+    this.height = 600;
+    this.horizon = 190;
     this.state = GAME_STATES.MENU;
+    this.score = 0;
+    this.lives = 3;
+    this.stage = 1;
+    this.elapsed = 0;
+    this.distance = 0;
+    this.speed = 0;
+    this.scoreAccumulator = 0;
+    this.spawnTimer = 0;
+    this.obstacles = [];
+    this.particles = [];
+    this.combo = new ArcadeComboSystem(engine, "outrun", "#ff007f");
+    this.player = { offset: 0, invulnerable: 0, flash: 0, width: 70, height: 44 };
   }
 
-  update() {
-    if (this.input.wasPressed("Space") || this.input.wasPressed("Enter")) {
-      this.engine.showToast(`${this.config.title} · DISPONIBLE EN UNA PRÓXIMA FASE`);
-    }
-  }
-
-  draw() {
-    const ctx = this.ctx;
-    const pulse = 0.58 + Math.sin(performance.now() * 0.003) * 0.16;
-    ctx.save();
-    ctx.textAlign = "center";
-    ctx.strokeStyle = this.config.accent;
-    ctx.shadowColor = this.config.accent;
-    ctx.shadowBlur = 22;
-    ctx.lineWidth = 2;
-    ctx.beginPath();
-    ctx.arc(this.engine.width / 2, 215, 82, 0, Math.PI * 2);
-    ctx.stroke();
-    ctx.setLineDash([8, 12]);
-    ctx.strokeStyle = this.config.secondary;
-    ctx.beginPath();
-    ctx.arc(this.engine.width / 2, 215, 105, performance.now() * 0.0005, Math.PI * 1.5 + performance.now() * 0.0005);
-    ctx.stroke();
-    ctx.setLineDash([]);
-
-    ctx.fillStyle = this.config.accent;
-    ctx.font = "900 30px Orbitron, sans-serif";
-    ctx.fillText(this.config.title, this.engine.width / 2, 355);
-    ctx.shadowBlur = 0;
-    ctx.fillStyle = "rgba(248,247,255,.55)";
-    ctx.font = "700 15px Rajdhani, sans-serif";
-    ctx.fillText("MODULE RESERVED FOR A FUTURE DEVELOPMENT PHASE", this.engine.width / 2, 391);
-    ctx.globalAlpha = pulse;
-    ctx.fillStyle = this.config.accent;
-    ctx.font = "800 13px Orbitron, sans-serif";
-    ctx.fillText("PRESS SPACE FOR STATUS", this.engine.width / 2, 449);
-    ctx.restore();
-  }
-
-  handlePrimaryAction() {
-    this.engine.showToast(`${this.config.title} · MÓDULO TODAVÍA BLOQUEADO`);
+  start() {
+    this.state = GAME_STATES.PLAYING;
+    this.score = 0;
+    this.lives = 3;
+    this.stage = 1;
+    this.elapsed = 0;
+    this.distance = 0;
+    this.speed = 108;
+    this.scoreAccumulator = 0;
+    this.spawnTimer = 1.25;
+    this.player.offset = 0;
+    this.player.invulnerable = 1.25;
+    this.player.flash = 0;
+    this.obstacles.splice(0, this.obstacles.length);
+    this.particles.splice(0, this.particles.length);
+    this.combo.reset();
+    this.engine.onGameStart();
+    this.engine.audio.playArcadeSound("outrun", "outrun_intro", { volume: 0.9 });
+    this.engine.audio.playArcadeSound("outrun", "engine", { active: true, speed: 0.25 });
   }
 
   resetToMenu() {
     this.state = GAME_STATES.MENU;
+    this.score = 0;
+    this.lives = 3;
+    this.stage = 1;
+    this.elapsed = 0;
+    this.distance = 0;
+    this.speed = 0;
+    this.scoreAccumulator = 0;
+    this.spawnTimer = 0;
+    this.player.offset = 0;
+    this.player.invulnerable = 0;
+    this.player.flash = 0;
+    this.obstacles.splice(0, this.obstacles.length);
+    this.particles.splice(0, this.particles.length);
+    this.combo.reset();
+    this.engine.audio.playArcadeSound("outrun", "engine", { active: false, fade: 0.04 });
   }
 
-  getTelemetry() {
-    return {
-      state: "LOCKED",
-      score: "------",
-      primaryMetric: "--",
-      secondaryMetric: "--",
-      primaryButton: "MODULE PENDING"
-    };
+  handlePrimaryAction() {
+    if (this.state === GAME_STATES.MENU || this.state === GAME_STATES.GAME_OVER) this.start();
+    else this.endGame(true);
   }
+
+  endGame(manual = false) {
+    if (this.state !== GAME_STATES.PLAYING) return;
+    this.state = GAME_STATES.GAME_OVER;
+    this.engine.audio.playArcadeSound("outrun", "engine", { active: false, fade: 0.045 });
+    if (manual) this.engine.showCanvasMessage("HIGHWAY LINK ABORTED", { y: 220, color: "#ff007f", size: 14, duration: 1.4, fixed: true });
+    this.engine.onGameOver(this.score);
+  }
+
+  update(deltaTime) {
+    const dt = Math.max(0, Math.min(0.05, Number(deltaTime) || 0));
+    this.elapsed += dt;
+    this.updateParticles(dt);
+    this.combo.update(dt);
+    if (this.state === GAME_STATES.MENU || this.state === GAME_STATES.GAME_OVER) {
+      if (this.input.wasPressed("Space") || this.input.wasPressed("Enter")) this.start();
+      return;
+    }
+
+    const left = this.input.isDown("ArrowLeft") ? 1 : 0;
+    const right = this.input.isDown("ArrowRight") ? 1 : 0;
+    const steering = right - left;
+    const steeringRate = 0.9 + this.speed / 520;
+    this.player.offset += steering * steeringRate * dt;
+    const curvePull = Math.sin(this.elapsed * 0.42 + this.distance * 0.0012) * (0.08 + this.speed / 4200);
+    this.player.offset -= curvePull * dt;
+    this.player.offset = Math.max(-1.45, Math.min(1.45, this.player.offset));
+    this.player.invulnerable = Math.max(0, this.player.invulnerable - dt);
+    this.player.flash = Math.max(0, this.player.flash - dt * 4.5);
+
+    const maximumSpeed = Math.min(380, 252 + this.stage * 13);
+    this.speed = Math.min(maximumSpeed, this.speed + (13 + this.stage * 0.65) * dt);
+    const offRoad = Math.abs(this.player.offset) > 0.98;
+    if (offRoad) {
+      this.speed = Math.max(72, this.speed - 105 * dt);
+      this.player.offset *= Math.pow(0.996, dt * 60);
+    }
+
+    this.distance += this.speed * dt * 0.34;
+    this.stage = Math.min(99, 1 + Math.floor(this.distance / 1500));
+    this.scoreAccumulator += this.speed * dt * (offRoad ? 0.045 : 0.082);
+    const wholePoints = Math.floor(this.scoreAccumulator);
+    if (wholePoints > 0) { this.score += wholePoints; this.scoreAccumulator -= wholePoints; }
+
+    this.spawnTimer -= dt;
+    if (this.spawnTimer <= 0) {
+      this.spawnObstacle();
+      const pace = Math.max(0.48, 1.28 - this.speed / 540 - this.stage * 0.012);
+      this.spawnTimer = pace + Math.random() * 0.72;
+    }
+
+    for (let index = this.obstacles.length - 1; index >= 0; index -= 1) {
+      const obstacle = this.obstacles[index];
+      obstacle.z += dt * (0.135 + this.speed / 760) * obstacle.speedFactor;
+      obstacle.wobble += dt * obstacle.wobbleSpeed;
+      if (!obstacle.hit && obstacle.z >= 0.82 && obstacle.z <= 1.02 && this.player.invulnerable <= 0) {
+        const laneDistance = Math.abs((obstacle.lane + Math.sin(obstacle.wobble) * 0.035) - this.player.offset);
+        if (laneDistance < 0.27) this.crash(obstacle);
+      }
+      if (obstacle.z > 1.12) {
+        if (!obstacle.hit) {
+          const award = this.combo.register(115 + this.stage * 12, "OVERTAKE");
+          this.score += award;
+          this.engine.audio.playArcadeSound("outrun", "pass", { combo: this.combo.multiplier });
+        }
+        this.obstacles.splice(index, 1);
+      }
+    }
+
+    this.engine.audio.playArcadeSound("outrun", "engine", { active: true, speed: this.speed / 380 });
+  }
+
+  spawnObstacle() {
+    let lane = -0.82 + Math.random() * 1.64;
+    if (Math.abs(lane - this.player.offset) < 0.22 && Math.random() < 0.72) lane = lane < 0 ? Math.min(0.82, lane + 0.48) : Math.max(-0.82, lane - 0.48);
+    this.obstacles.push({ lane, z: 0.015, speedFactor: 0.83 + Math.random() * 0.34, wobble: Math.random() * Math.PI * 2, wobbleSpeed: (Math.random() < .5 ? -1 : 1) * (0.7 + Math.random() * 1.2), hit: false, variant: Math.floor(Math.random() * 3) });
+  }
+
+  crash(obstacle) {
+    obstacle.hit = true;
+    this.lives -= 1;
+    this.speed = Math.max(58, this.speed * 0.42);
+    this.player.invulnerable = 2.15;
+    this.player.flash = 1;
+    this.combo.breakChain();
+    const position = this.obstacleScreenPosition(obstacle);
+    this.createExplosion(position.x, Math.min(this.height - 75, position.y), 15);
+    this.engine.audio.playArcadeSound("outrun", "crash");
+    this.engine.haptics.damage();
+    this.engine.triggerScreenShake(0.48, 18);
+    this.engine.triggerGlitch(0.26, 1.05);
+    this.engine.showCanvasMessage("CRASH!", { x: position.x, y: position.y - 36, color: "#ffe75b", size: 18, duration: 1.05, rise: 26, blink: 14 });
+    if (this.lives <= 0) this.endGame(false);
+  }
+
+  createExplosion(x, y, count = 15) {
+    for (let index = 0; index < count; index += 1) {
+      const angle = Math.PI * 2 * index / count + Math.random() * 0.28;
+      const speed = 85 + Math.random() * 155;
+      const life = 0.48 + Math.random() * 0.42;
+      this.particles.push({ x, y, vx: Math.cos(angle) * speed, vy: Math.sin(angle) * speed - 30, life, maxLife: life, size: 2 + Math.random() * 4, color: index % 3 === 0 ? "#ffffff" : index % 2 === 0 ? "#ff007f" : "#ffe75b", rotation: Math.random() * Math.PI, spin: (Math.random() - .5) * 8 });
+    }
+  }
+
+  updateParticles(dt) {
+    for (let index = this.particles.length - 1; index >= 0; index -= 1) {
+      const particle = this.particles[index];
+      particle.life -= dt;
+      if (particle.life <= 0) { this.particles.splice(index, 1); continue; }
+      particle.x += particle.vx * dt; particle.y += particle.vy * dt; particle.vy += 180 * dt; particle.rotation += particle.spin * dt;
+    }
+  }
+
+  roadCenter(depth) {
+    const t = Math.max(0, Math.min(1, depth));
+    const bend = Math.sin(this.elapsed * 0.34 + t * 3.65 + this.distance * 0.0007) * 112 * Math.sin(Math.PI * t);
+    const secondary = Math.sin(this.elapsed * 0.12 + t * 7.2) * 18 * Math.sin(Math.PI * t);
+    return this.width / 2 + bend + secondary;
+  }
+
+  roadHalfWidth(depth) {
+    const t = Math.max(0, Math.min(1, depth));
+    return 12 + Math.pow(t, 1.55) * 354;
+  }
+
+  roadY(depth) {
+    const t = Math.max(0, Math.min(1, depth));
+    return this.horizon + Math.pow(t, 1.48) * (this.height - this.horizon + 22);
+  }
+
+  obstacleScreenPosition(obstacle) {
+    const z = Math.max(0, Math.min(1.08, obstacle.z));
+    const lane = obstacle.lane + Math.sin(obstacle.wobble) * 0.035;
+    return { x: this.roadCenter(z) + lane * this.roadHalfWidth(z) * 0.78, y: this.roadY(z), scale: 0.12 + Math.pow(z, 1.72) * 1.18 };
+  }
+
+  draw() {
+    const ctx = this.ctx;
+    this.drawSky(ctx);
+    this.drawRoad(ctx);
+    const sorted = [...this.obstacles].sort((a,b) => a.z - b.z);
+    for (const obstacle of sorted) this.drawObstacle(ctx, obstacle);
+    if (this.state === GAME_STATES.PLAYING || this.state === GAME_STATES.GAME_OVER) this.drawPlayer(ctx);
+    this.drawParticles(ctx);
+    this.drawHud(ctx);
+    if (this.state === GAME_STATES.MENU) this.drawMenu(ctx);
+    if (this.state === GAME_STATES.GAME_OVER) this.drawGameOver(ctx);
+  }
+
+  drawSky(ctx) {
+    const gradient = ctx.createLinearGradient(0, 0, 0, this.horizon + 60);
+    gradient.addColorStop(0, "#070013"); gradient.addColorStop(.58, "#2b0750"); gradient.addColorStop(1, "#ff356d");
+    ctx.fillStyle = gradient; ctx.fillRect(0, 0, this.width, this.horizon + 58);
+    const sunY = 118; ctx.save(); ctx.shadowColor = "#ffcf36"; ctx.shadowBlur = 4; ctx.fillStyle = "#ffcf36"; ctx.beginPath(); ctx.arc(400, sunY, 58, Math.PI, 0); ctx.fill();
+    ctx.globalCompositeOperation = "destination-out";
+    for (let y = sunY - 42; y < sunY + 2; y += 11) ctx.fillRect(337, y, 126, 4);
+    ctx.restore();
+    ctx.fillStyle = "#120124"; ctx.beginPath(); ctx.moveTo(0, this.horizon + 20);
+    for (let x = 0; x <= this.width; x += 58) ctx.lineTo(x, this.horizon - 10 - Math.abs(Math.sin(x * .027 + this.elapsed * .05)) * 62);
+    ctx.lineTo(this.width, this.horizon + 45); ctx.lineTo(0, this.horizon + 45); ctx.closePath(); ctx.fill();
+    ctx.strokeStyle = "rgba(0,255,255,.34)"; ctx.lineWidth = 1;
+    for (let x = 0; x < this.width; x += 80) { ctx.beginPath(); ctx.moveTo(x, this.horizon + 15); ctx.lineTo(400, this.horizon); ctx.stroke(); }
+  }
+
+  drawRoad(ctx) {
+    const slices = this.engine.lowPowerMode ? 34 : 46;
+    for (let index = 0; index < slices; index += 1) {
+      const t0 = index / slices; const t1 = (index + 1) / slices;
+      const y0 = this.roadY(t0), y1 = this.roadY(t1); const c0 = this.roadCenter(t0), c1 = this.roadCenter(t1); const w0 = this.roadHalfWidth(t0), w1 = this.roadHalfWidth(t1);
+      const stripe = (index + Math.floor(this.distance * .025)) % 2 === 0;
+      ctx.fillStyle = stripe ? "#17071f" : "#0c0413";
+      this.fillQuad(ctx,c0-w0,y0,c0+w0,y0,c1+w1,y1,c1-w1,y1);
+      ctx.fillStyle = stripe ? "#00ffff" : "#ff007f";
+      const shoulder0 = Math.max(2,w0*.055), shoulder1 = Math.max(3,w1*.055);
+      this.fillQuad(ctx,c0-w0-shoulder0,y0,c0-w0,y0,c1-w1,y1,c1-w1-shoulder1,y1);
+      this.fillQuad(ctx,c0+w0,y0,c0+w0+shoulder0,y0,c1+w1+shoulder1,y1,c1+w1,y1);
+      if ((index + Math.floor(this.distance * .04)) % 5 < 2) {
+        ctx.fillStyle = "rgba(255,255,255,.78)";
+        for (const lane of [-.33,.33]) {
+          const lx0=c0+lane*w0, lx1=c1+lane*w1, line0=Math.max(1,w0*.012), line1=Math.max(1,w1*.012);
+          this.fillQuad(ctx,lx0-line0,y0,lx0+line0,y0,lx1+line1,y1,lx1-line1,y1);
+        }
+      }
+    }
+    ctx.strokeStyle="#ff007f";ctx.shadowColor="#ff007f";ctx.shadowBlur=4;ctx.lineWidth=2.5;
+    for(const side of [-1,1]){ctx.beginPath();for(let i=0;i<=26;i++){const t=i/26,x=this.roadCenter(t)+side*this.roadHalfWidth(t),y=this.roadY(t);if(i===0)ctx.moveTo(x,y);else ctx.lineTo(x,y)}ctx.stroke()}
+    ctx.shadowBlur=0;
+  }
+
+  fillQuad(ctx,x1,y1,x2,y2,x3,y3,x4,y4){ctx.beginPath();ctx.moveTo(Math.floor(x1),Math.floor(y1));ctx.lineTo(Math.floor(x2),Math.floor(y2));ctx.lineTo(Math.floor(x3),Math.floor(y3));ctx.lineTo(Math.floor(x4),Math.floor(y4));ctx.closePath();ctx.fill()}
+
+  drawObstacle(ctx, obstacle) {
+    const p = this.obstacleScreenPosition(obstacle); const scale=p.scale; const w=42*scale, h=30*scale;
+    ctx.save(); ctx.translate(Math.floor(p.x),Math.floor(p.y-h*.62)); ctx.shadowColor="#ffe75b";ctx.shadowBlur=4;ctx.fillStyle=obstacle.hit?"#ff416d":"#ffe75b";
+    ctx.fillRect(Math.floor(-w*.5),Math.floor(-h*.25),Math.floor(w),Math.floor(h*.48));
+    ctx.fillStyle="#ff7a00";ctx.fillRect(Math.floor(-w*.37),Math.floor(-h*.52),Math.floor(w*.74),Math.floor(h*.34));
+    ctx.fillStyle="#17031e";ctx.fillRect(Math.floor(-w*.26),Math.floor(-h*.45),Math.floor(w*.52),Math.floor(h*.18));
+    ctx.fillStyle="#ffffff";ctx.fillRect(Math.floor(-w*.43),Math.floor(h*.03),Math.max(2,Math.floor(w*.15)),Math.max(2,Math.floor(h*.11)));ctx.fillRect(Math.floor(w*.28),Math.floor(h*.03),Math.max(2,Math.floor(w*.15)),Math.max(2,Math.floor(h*.11)));
+    ctx.restore();
+  }
+
+  drawPlayer(ctx) {
+    const roadCenter=this.roadCenter(1), roadWidth=this.roadHalfWidth(1); const x=roadCenter+this.player.offset*roadWidth*.78; const y=this.height-62;
+    if(this.player.invulnerable>0 && Math.floor(this.elapsed*14)%2===0)return;
+    ctx.save();ctx.translate(Math.floor(x),Math.floor(y));ctx.shadowColor=this.player.flash>0?"#ffffff":"#ff007f";ctx.shadowBlur=4;
+    ctx.fillStyle=this.player.flash>0?"#ffffff":"#ff007f";ctx.fillRect(-34,-15,68,25);ctx.fillRect(-24,-28,48,16);ctx.fillRect(-40,2,80,12);
+    ctx.fillStyle="#00ffff";ctx.fillRect(-18,-23,36,9);ctx.fillStyle="#12021d";ctx.fillRect(-12,-21,24,6);
+    ctx.fillStyle="#ffe75b";ctx.fillRect(-31,5,12,7);ctx.fillRect(19,5,12,7);
+    ctx.fillStyle="#05020a";ctx.fillRect(-35,12,17,9);ctx.fillRect(18,12,17,9);
+    ctx.fillStyle="#ffffff";ctx.fillRect(-4,-34,8,8);ctx.restore();
+  }
+
+  drawParticles(ctx){ctx.save();ctx.globalCompositeOperation="lighter";for(const p of this.particles){ctx.globalAlpha=Math.max(0,p.life/p.maxLife);ctx.fillStyle=p.color;ctx.shadowColor=p.color;ctx.shadowBlur=4;ctx.save();ctx.translate(Math.floor(p.x),Math.floor(p.y));ctx.rotate(p.rotation);ctx.fillRect(-p.size/2,-p.size/2,p.size,p.size);ctx.restore()}ctx.restore()}
+
+  drawHud(ctx){ctx.save();ctx.fillStyle="rgba(2,0,5,.82)";ctx.fillRect(0,0,this.width,54);ctx.font='800 13px "Orbitron",sans-serif';ctx.textBaseline="middle";ctx.fillStyle="#ff007f";ctx.textAlign="left";ctx.fillText(`SCORE ${String(this.score).padStart(6,"0")}`,22,29);ctx.textAlign="center";ctx.fillStyle="#00ffff";ctx.fillText(`${Math.floor(this.speed)} KM/H`,this.width/2,29);ctx.textAlign="right";ctx.fillStyle="#ffe75b";ctx.fillText(`STAGE ${String(this.stage).padStart(2,"0")} · LIVES ${Math.max(0,this.lives)}`,this.width-22,29);this.combo.draw(ctx,305,62,190);ctx.restore()}
+
+  drawMenu(ctx){ctx.save();ctx.fillStyle="rgba(2,0,5,.54)";ctx.fillRect(0,0,this.width,this.height);ctx.textAlign="center";ctx.fillStyle="#ff007f";ctx.shadowColor="#ff007f";ctx.shadowBlur=4;ctx.font='900 42px "Orbitron",sans-serif';ctx.fillText("NEON-OUTRUN",400,270);ctx.shadowBlur=0;ctx.fillStyle="#00ffff";ctx.font='800 14px "Orbitron",sans-serif';ctx.fillText("SYNTH HIGHWAY PROTOCOL",400,307);ctx.fillStyle="rgba(255,255,255,.72)";ctx.font='700 14px "Rajdhani",sans-serif';ctx.fillText("PRESS SPACE OR ENTER TO START",400,354);ctx.restore()}
+
+  drawGameOver(ctx){ctx.save();ctx.fillStyle="rgba(2,0,5,.76)";ctx.fillRect(0,0,this.width,this.height);ctx.textAlign="center";ctx.fillStyle="#ff416d";ctx.shadowColor="#ff416d";ctx.shadowBlur=4;ctx.font='900 39px "Orbitron",sans-serif';ctx.fillText("HIGHWAY TERMINATED",400,255);ctx.shadowBlur=0;ctx.fillStyle="rgba(255,255,255,.74)";ctx.font='700 15px "Rajdhani",sans-serif';ctx.fillText(`FINAL SCORE ${String(this.score).padStart(6,"0")} · DISTANCE ${Math.floor(this.distance)} M`,400,298);ctx.fillStyle="#00ffff";ctx.font='800 13px "Orbitron",sans-serif';ctx.fillText("PRESS SPACE TO RETRY",400,350);ctx.restore()}
+
+  getTelemetry(){return{state:this.state===GAME_STATES.GAME_OVER?"GAME OVER":this.state,score:String(this.score).padStart(6,"0"),primaryMetric:`${Math.max(0,this.lives)} / 3`,secondaryMetric:`${Math.floor(this.speed)} KM/H · ST ${String(this.stage).padStart(2,"0")}`,primaryButton:this.state===GAME_STATES.PLAYING?"ABORT RACE":this.state===GAME_STATES.GAME_OVER?"RETRY OUTRUN":"START OUTRUN"}}
 }
 
 class CRTVisualController {
@@ -12352,7 +12755,8 @@ const SCORE_INTEGRITY_RULES = Object.freeze({
   "pac-man": Object.freeze({ maxFrameDelta: 40000, baseAllowance: 10000, maxPerSecond: 36000, absoluteMaximum: 50000000 }),
   asteroids: Object.freeze({ maxFrameDelta: 50000, baseAllowance: 10000, maxPerSecond: 40000, absoluteMaximum: 50000000 }),
   tron: Object.freeze({ maxFrameDelta: 5000, baseAllowance: 3000, maxPerSecond: 6000, absoluteMaximum: 50000000 }),
-  galaga: Object.freeze({ maxFrameDelta: 80000, baseAllowance: 12000, maxPerSecond: 52000, absoluteMaximum: 50000000 })
+  galaga: Object.freeze({ maxFrameDelta: 80000, baseAllowance: 12000, maxPerSecond: 52000, absoluteMaximum: 50000000 }),
+  outrun: Object.freeze({ maxFrameDelta: 50000, baseAllowance: 10000, maxPerSecond: 42000, absoluteMaximum: 50000000 })
 });
 
 class ScoreIntegrityGuard {
@@ -12463,6 +12867,7 @@ class ArcadeEngine {
     this.toastPulseCooldown = 0;
     this.lastReportedScore = 0;
     this.sessionStartHighScore = this.scoreStore.get(this.activeGame.id);
+    this.cheatSession = false;
 
     this.loop = this.loop.bind(this);
     this.resizeCanvas = this.resizeCanvas.bind(this);
@@ -12580,8 +12985,10 @@ class ArcadeEngine {
       this.module = new NeonTronGame(this);
     } else if (gameConfig.id === "galaga") {
       this.module = new CyberGalagaGame(this);
+    } else if (gameConfig.id === "outrun") {
+      this.module = new NeonOutrunGame(this);
     } else {
-      this.module = new PlaceholderGame(this, gameConfig);
+      throw new Error(`Unsupported arcade module: ${gameConfig.id}`);
     }
     this.createStarField();
     this.resizeCanvas();
@@ -12810,6 +13217,9 @@ class ArcadeEngine {
       if (module.player?.visible) rect(module.player.x-module.player.width/2,module.player.y-module.player.height/2,module.player.width,module.player.height);
       for (const enemy of module.enemies || []) rect(enemy.x-enemy.width/2,enemy.y-enemy.height/2,enemy.width,enemy.height);
       for (const bullet of [...(module.playerBullets||[]),...(module.enemyBullets||[])]) circle(bullet.x,bullet.y,bullet.radius||3);
+    } else if (this.activeGame.id === "outrun") {
+      const px=module.roadCenter(1)+module.player.offset*module.roadHalfWidth(1)*.78; rect(px-40,module.height-90,80,50);
+      for(const obstacle of module.obstacles||[]){const p=module.obstacleScreenPosition(obstacle),w=42*p.scale,h=30*p.scale;rect(p.x-w/2,p.y-h,w,h)}
     }
     ctx.restore();
   }
@@ -12899,6 +13309,7 @@ class ArcadeEngine {
 
   resetToMenu() {
     this.isPaused = false;
+    this.cheatSession = false;
     this.audio.interruptionMuted = false;
     this.audio.stopAllLoops(0.035);
     this.module.resetToMenu();
@@ -12938,6 +13349,7 @@ class ArcadeEngine {
 
   onGameStart() {
     this.audio.unlock();
+    this.cheatSession = false;
     this.visualEffects.requestHardClear();
     this.visualEffects.triggerGlitch(0.12, 0.48);
     this.floatingMessages.splice(0, this.floatingMessages.length);
@@ -12968,9 +13380,13 @@ class ArcadeEngine {
     const normalizedScore = integrity.score;
     this.triggerScreenShake(0.46, 17);
     this.triggerGlitch(0.52, 1.65);
-    const isNewRecord = normalizedScore > this.sessionStartHighScore;
-    this.scoreStore.submit(this.activeGame.id, normalizedScore);
-    this.refreshHighScoreUi();
+    const isNewRecord = !this.cheatSession && normalizedScore > this.sessionStartHighScore;
+    if (!this.cheatSession) {
+      this.scoreStore.submit(this.activeGame.id, normalizedScore);
+      this.refreshHighScoreUi();
+    } else {
+      this.showCanvasMessage("CHEAT SESSION · SCORE NOT SAVED", { y: this.height * 0.61, color: "#ffe75b", size: 10, duration: 3.1, blink: 8, fixed: true });
+    }
     this.showCanvasMessage("GAME OVER", {
       y: this.height * 0.43,
       color: "#ff416d",
@@ -12994,7 +13410,7 @@ class ArcadeEngine {
     this.audio.stopAllLoops(0.04);
     if (this.activeGame.id !== "pac-man") this.audio.playArcadeSound(this.activeGame.id, "game_over");
 
-    this.achievements.evaluateScore(this.activeGame.id, normalizedScore);
+    if (!this.cheatSession) this.achievements.evaluateScore(this.activeGame.id, normalizedScore);
   }
 
   handleIntegrityFailure(reason) {
@@ -13315,6 +13731,32 @@ function injectGalagaCatalogCard() {
 
 injectGalagaCatalogCard();
 
+
+function injectOutrunCatalogCard() {
+  const grid = document.querySelector(".catalog-game-grid");
+  if (!grid || grid.querySelector('[data-dynamic-game-card="outrun"]')) return;
+  const article = document.createElement("article");
+  article.className = "arcade-card outrun-card flex flex-col justify-between h-full bg-[#0f051d]/60 backdrop-blur-md border border-cyan-500/30 rounded-xl p-5 text-center transition-all duration-300 hover:scale-[1.02] hover:border-cyan-400";
+  article.dataset.dynamicGameCard = "outrun";
+  article.style.cssText = "--card-accent:#ff007f;--card-accent-rgb:255,0,127";
+  article.innerHTML = `
+    <div class="game-art aspect-[16/10] rounded-[1.25rem] border border-fuchsia-300/15">
+      <svg aria-label="Ilustración de Neon-Outrun" class="h-full w-full" fill="none" role="img" viewBox="0 0 640 400">
+        <defs><filter id="outrunGlow"><feGaussianBlur result="b" stdDeviation="5"></feGaussianBlur><feMerge><feMergeNode in="b"></feMergeNode><feMergeNode in="SourceGraphic"></feMergeNode></feMerge></filter><linearGradient id="outrunSky" x1="0" x2="0" y1="0" y2="1"><stop stop-color="#160026"></stop><stop offset="1" stop-color="#ff356d"></stop></linearGradient></defs>
+        <rect width="640" height="400" fill="url(#outrunSky)"></rect><path d="M0 212 72 142l62 58 75-91 62 91 72-73 82 83 77-59 138 61v188H0Z" fill="#0a0314"></path>
+        <g filter="url(#outrunGlow)"><path d="M320 180 80 400h480L320 180Z" fill="#10051a" stroke="#ff007f" stroke-width="5"></path><path d="M320 180 265 400M320 180l55 220" stroke="#00ffff" stroke-dasharray="20 17" stroke-width="4"></path><path d="M245 328h28v-24h24v-18h46v18h24v24h28v36H245v-36Z" fill="#ff007f"></path><path d="M286 304h68v22h-68z" fill="#00ffff"></path><path d="M258 344h24v17h-24zM358 344h24v17h-24z" fill="#ffe75b"></path><path d="M395 235h12v-10h18v10h12v17h-42v-17Z" fill="#ffe75b"></path></g>
+      </svg>
+    </div>
+    <div class="card-body p-4 sm:p-5"><div class="card-heading-row flex items-start justify-between gap-4"><div><p class="font-display text-[10px] font-bold tracking-[0.22em] text-fuchsia-300/70">TERMINAL 06</p><h3 class="card-glitch-title font-display mt-2 text-xl font-black text-white" data-glitch-text="NEON-OUTRUN">NEON-OUTRUN</h3></div><span class="rounded-full border border-fuchsia-300/20 bg-fuchsia-300/5 px-3 py-1 text-[10px] font-bold tracking-[0.14em] text-fuchsia-200">SYNTH RACING</span></div>
+      <p class="card-description line-clamp-2 mt-4 min-h-14 text-sm font-medium leading-relaxed text-white/50">Carretera pseudo-3D, curvas sinusoidales, velocidad progresiva y tráfico de neón emergiendo del horizonte.</p>
+      <div aria-label="Récord local de Neon-Outrun" class="high-score-strip"><span class="font-display text-[9px] font-bold tracking-[0.18em] text-white/38">LOCAL HIGH SCORE</span><span class="high-score-value" data-high-score="outrun">000000</span></div>
+      <button class="play-button font-display mt-6 flex w-full items-center justify-between rounded-xl px-4 py-3 text-xs font-bold tracking-[0.18em]" data-open-game="outrun" type="button">START<span aria-hidden="true">↗</span></button>
+    </div>`;
+  grid.appendChild(article);
+}
+
+injectOutrunCatalogCard();
+
 const modal = document.getElementById("gameModal");
 const dialog = document.getElementById("gameDialog");
 const modalTitle = document.getElementById("modalGameTitle");
@@ -13336,6 +13778,8 @@ const controlsConfigPanel = document.getElementById("controlsConfigPanel");
 const simulationPauseOverlay = document.getElementById("simulationPauseOverlay");
 const fullscreenButton = document.getElementById("fullscreenButton");
 const debugHitboxButton = document.getElementById("debugHitboxButton");
+const snapshotButton = document.getElementById("snapshotButton");
+const cheatTerminal = document.getElementById("cheatTerminal");
 
 const ui = {
   stateChip: document.getElementById("stateChip"),
@@ -13426,8 +13870,9 @@ function calculatePilotRank() {
   const asteroids = engine.scoreStore.get("asteroids");
   const tron = engine.scoreStore.get("tron");
   const galaga = engine.scoreStore.get("galaga");
-  const total = invaders + pacman + asteroids + tron + galaga;
-  const peak = Math.max(invaders, pacman, asteroids, tron, galaga);
+  const outrun = engine.scoreStore.get("outrun");
+  const total = invaders + pacman + asteroids + tron + galaga + outrun;
+  const peak = Math.max(invaders, pacman, asteroids, tron, galaga, outrun);
   if (total >= 100000 || peak >= 60000) return "LEGEND";
   if (total >= 40000 || peak >= 25000) return "ELITE";
   if (total >= 15000 || peak >= 9000) return "VETERAN";
@@ -13437,7 +13882,7 @@ function calculatePilotRank() {
 }
 
 function updatePilotHud() {
-  if (systemStatusText) systemStatusText.textContent = "CORE_V5.8 // ONLINE";
+  if (systemStatusText) systemStatusText.textContent = "CORE_V6.0 // ONLINE";
   if (pilotRankText) pilotRankText.textContent = `PILOTO RANGO: ${calculatePilotRank()}`;
 }
 
@@ -13446,6 +13891,57 @@ window.addEventListener("online", updatePilotHud);
 window.addEventListener("offline", updatePilotHud);
 updatePilotHud();
 
+
+
+function captureArcadeSnapshot() {
+  const timestamp = new Date().toISOString().replace(/[:.]/g, "-");
+  const filename = `neon-nexus-${engine.activeGame.id}-${timestamp}.png`;
+  const downloadBlob = (blob) => {
+    if (!blob) return;
+    const url = URL.createObjectURL(blob);
+    const anchor = document.createElement("a");
+    anchor.href = url; anchor.download = filename; document.body.appendChild(anchor); anchor.click(); anchor.remove();
+    window.setTimeout(() => URL.revokeObjectURL(url), 1200);
+    engine.showToast("SNAPSHOT SAVED · PNG 800×600");
+  };
+  if (canvas.toBlob) canvas.toBlob(downloadBlob, "image/png");
+  else {
+    const anchor = document.createElement("a"); anchor.href = canvas.toDataURL("image/png"); anchor.download = filename; anchor.click();
+    engine.showToast("SNAPSHOT SAVED · PNG 800×600");
+  }
+}
+
+function setCheatTerminalVisible(visible) {
+  if (!cheatTerminal) return;
+  cheatTerminal.hidden = !visible;
+  cheatTerminal.setAttribute("aria-hidden", visible ? "false" : "true");
+  if (visible) cheatTerminal.querySelector("button")?.focus({ preventScroll: true });
+  else focusGameInput();
+}
+
+function applyCheatCommand(command) {
+  const module = engine.module;
+  if (!module) return;
+  engine.cheatSession = true;
+  if (command === "life" && Number.isFinite(Number(module.lives))) module.lives = Math.min(9, Math.max(0, Math.floor(module.lives)) + 1);
+  if (command === "combo" && module.combo) { module.combo.count = 8; module.combo.timer = 30; module.combo.multiplier = 4; module.combo.pulse = 1; }
+  if (command === "score" && Number.isFinite(Number(module.score))) { module.score = Math.max(0, Math.floor(module.score)) + 1000; engine.scoreIntegrity.reset(engine.activeGame.id, module.score); engine.lastReportedScore = module.score; }
+  if (command === "purge") {
+    for (const key of ["enemyBullets","obstacles","asteroids","bullets"]) if (Array.isArray(module[key])) module[key].splice(0, module[key].length);
+  }
+  engine.triggerGlitch(.18,.8); engine.audio.playSynthSound("power_up",{type:"generic"}); engine.syncUi(true);
+  engine.showToast(`CHEAT COMMAND · ${String(command).toUpperCase()} · SCORE STORAGE OFF`);
+}
+
+const KONAMI_SEQUENCE = ["ArrowUp","ArrowUp","ArrowDown","ArrowDown","ArrowLeft","ArrowRight","ArrowLeft","ArrowRight","KeyB","KeyA"];
+let konamiIndex = 0;
+document.addEventListener("keydown", (event) => {
+  if (event.code === KONAMI_SEQUENCE[konamiIndex]) konamiIndex += 1;
+  else konamiIndex = event.code === KONAMI_SEQUENCE[0] ? 1 : 0;
+  if (konamiIndex === KONAMI_SEQUENCE.length) { konamiIndex = 0; setCheatTerminalVisible(true); engine.audio.playSynthSound("achievement",{volume:1}); engine.showToast("KONAMI ACCESS GRANTED"); }
+}, { capture: true });
+cheatTerminal?.querySelectorAll("[data-cheat-command]").forEach((button) => button.addEventListener("click", () => applyCheatCommand(button.dataset.cheatCommand)));
+cheatTerminal?.querySelectorAll("[data-cheat-close]").forEach((button) => button.addEventListener("click", () => setCheatTerminalVisible(false)));
 
 function focusGameInput() {
   if (!modal.classList.contains("is-open")) return;
@@ -13475,6 +13971,7 @@ function openGame(gameId) {
   engine.audio.unlock();
   engine.setGame(game);
   if (game.id === "galaga") engine.audio.playArcadeSound("galaga", "galaga_intro", { volume: 0.95 });
+  if (game.id === "outrun") engine.audio.playArcadeSound("outrun", "outrun_intro", { volume: 0.9 });
   modal.classList.add("is-open");
   modal.setAttribute("aria-hidden", "false");
   document.body.classList.add("modal-open");
@@ -13492,6 +13989,10 @@ function openGame(gameId) {
 
 function closeGame() {
   if (!modal.classList.contains("is-open")) return;
+  setCheatTerminalVisible(false);
+  const catalogGrid = document.querySelector(".catalog-game-grid");
+  catalogGrid?.classList.remove("has-active-card");
+  catalogGrid?.querySelectorAll(".arcade-card").forEach((card) => card.classList.remove("is-catalog-active"));
   focusPauseController.reset();
   if (fullscreenElement()) exitArcadeFullscreen();
   modal.classList.remove("is-open");
@@ -13584,6 +14085,7 @@ primaryGameButton.addEventListener("click", () => {
 if (audioToggleButton) audioToggleButton.addEventListener("click", () => engine.toggleAudio());
 if (fullscreenButton) fullscreenButton.addEventListener("click", () => fullscreenElement() ? exitArcadeFullscreen() : requestArcadeFullscreen());
 if (debugHitboxButton) debugHitboxButton.addEventListener("click", () => engine.toggleDebugHitboxes());
+if (snapshotButton) snapshotButton.addEventListener("click", captureArcadeSnapshot);
 document.addEventListener("fullscreenchange", syncFullscreenUi);
 document.addEventListener("webkitfullscreenchange", syncFullscreenUi);
 if (turboToggleButton) turboToggleButton.addEventListener("click", () => engine.toggleTurboMode());
