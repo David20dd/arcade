@@ -5,7 +5,7 @@
 <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
 <meta content="#05020a" name="theme-color"/>
 <meta content="strict-origin-when-cross-origin" name="referrer"/>
-<meta content="Arcade Virtual local de bajo consumo con Space Invaders, Pac-Man, Asteroids y TRON Lightcycles." name="description"/>
+<meta content="Arcade Virtual local de bajo consumo con Space Invaders, Pac-Man, Asteroids, TRON Lightcycles y Cyber-Galaga Neón." name="description"/>
 <title>Neon Nexus — Low Resource Arcade</title>
 <style id="neonArcadeStyles">/*! tailwindcss v4.1.10 | MIT License | https://tailwindcss.com */
 @layer properties;
@@ -3753,51 +3753,112 @@ body::before{content:"";position:fixed;inset:0;z-index:-2;pointer-events:none;ba
 @media(max-width:680px){.catalog-game-grid{grid-template-columns:1fr}.achievement-medal-grid{grid-template-columns:1fr 1fr}.arcade-card{max-width:440px;margin-inline:auto}.fullscreen-mode-button{font-size:.48rem;padding:.58rem .62rem}}
 @media(pointer:coarse) and (orientation:landscape){#gameSidebar{display:none!important}#gameLayout{display:flex!important;align-items:center;justify-content:center;height:calc(100vh - 66px);padding:4px!important}.modal-panel{width:100vw!important;height:100vh!important;max-width:none!important;max-height:none!important;border-radius:0!important;overflow:hidden!important}.canvas-frame{margin:auto}.virtual-joystick{width:88px;height:88px}.virtual-joystick-knob{width:40px;height:40px;margin:-20px}.virtual-action-cluster{width:104px;height:90px}.virtual-action-button{width:52px;height:52px}.virtual-action-b{width:44px;height:44px}}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important;transition-duration:.001ms!important}}
+
+/* Five-terminal catalog: compact, responsive and GPU-friendly. */
+.catalog-game-grid{grid-template-columns:repeat(auto-fit,minmax(225px,1fr))!important}
+.galaga-card .game-art{background:radial-gradient(circle at 50% 35%,rgba(0,255,255,.10),transparent 55%),#05020a}
+.galaga-card .play-button{box-shadow:inset 0 0 0 1px rgba(0,255,255,.18)}
+@media(max-width:560px){.catalog-game-grid{grid-template-columns:1fr!important}}
+
+
+/* ========================================================================== 
+   MATRIX_CORE v5.5 — PREMIUM POLYCARBONATE CABINET / FINAL OVERRIDES
+   Static CSS-only exterior. No cursor tracking, gyroscope or 3D tilt.
+   ========================================================================== */
+:root{
+  --phosphor-black:#020005;
+  --ultra-violet:#0d061a;
+  --cabinet-line:rgba(255,255,255,.105);
+  --cabinet-panel:rgba(8,3,15,.94);
+  --eco-shadow-scale:1;
+}
+html,body{background:#020005!important}
+body{min-height:100vh;background:radial-gradient(circle at 50% 38%,#0d061a 0,#08030f 34%,#020005 76%)!important;background-attachment:fixed!important}
+body::before{z-index:-1!important;opacity:.16!important;background-image:linear-gradient(rgba(255,255,255,.022) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.018) 1px,transparent 1px)!important;background-size:52px 52px!important;animation:none!important}
+body::after{opacity:.2!important;animation:none!important}
+main#top>section:first-child{display:none!important}
+#catalog{padding-top:clamp(2rem,5vw,5rem)!important}
+#system{background:rgba(255,255,255,.012)!important}
+
+.tactical-header{position:sticky;top:0;z-index:90;border-bottom:1px solid rgba(0,234,255,.15);background:rgba(2,0,5,.94);box-shadow:0 12px 38px rgba(0,0,0,.48);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
+.tactical-header-inner{width:min(1480px,100%);margin:auto;min-height:78px;padding:10px clamp(14px,2.2vw,34px);display:grid;grid-template-columns:minmax(220px,.9fr) minmax(330px,1.2fr) minmax(420px,1.25fr);align-items:center;gap:18px}
+.tactical-brand{display:flex;align-items:center;gap:12px;min-width:0}
+.tactical-brand-mark{position:relative;width:42px;height:42px;display:grid;place-items:center;border:1px solid rgba(0,234,255,.44);clip-path:polygon(18% 0,82% 0,100% 18%,100% 82%,82% 100%,18% 100%,0 82%,0 18%);background:linear-gradient(145deg,rgba(0,234,255,.13),rgba(255,43,214,.055));box-shadow:0 0 18px rgba(0,234,255,.18)}
+.tactical-brand-mark i{position:absolute;width:6px;height:19px;background:#00eaff;box-shadow:0 0 7px rgba(0,234,255,.8)}
+.tactical-brand-mark i:nth-child(1){transform:translateX(-9px) skewY(-24deg)}.tactical-brand-mark i:nth-child(2){height:25px}.tactical-brand-mark i:nth-child(3){transform:translateX(9px) skewY(24deg)}
+.tactical-brand strong,.matrix-diagnostic strong,.pilot-rank-panel strong{display:block;font:900 clamp(.68rem,1vw,.88rem)/1.15 Orbitron,system-ui,sans-serif;letter-spacing:.16em;color:#f7fbff;white-space:nowrap}
+.tactical-brand small,.matrix-diagnostic small,.pilot-rank-panel small{display:block;margin-top:5px;font:700 .48rem/1.2 "Press Start 2P",monospace;letter-spacing:.12em;color:rgba(255,255,255,.38);white-space:nowrap}
+.matrix-diagnostic{min-width:0;display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:11px;border:1px solid rgba(57,255,136,.2);border-radius:12px;padding:10px 12px;background:linear-gradient(180deg,rgba(57,255,136,.045),rgba(0,0,0,.16));box-shadow:inset 0 0 20px rgba(57,255,136,.025)}
+.matrix-diagnostic strong{color:#8dffb9;text-shadow:0 0 9px rgba(57,255,136,.35)}
+.matrix-status-led{width:9px;height:9px;border-radius:50%;background:#39ff88;box-shadow:0 0 0 4px rgba(57,255,136,.08),0 0 12px rgba(57,255,136,.8)}
+#systemClock{font:900 .76rem/1 Orbitron,system-ui,sans-serif;letter-spacing:.12em;color:#00eaff;text-shadow:0 0 9px rgba(0,234,255,.5)}
+.tactical-actions{display:flex;align-items:center;justify-content:flex-end;gap:9px;min-width:0}
+.pilot-rank-panel{min-width:174px;border-left:2px solid rgba(255,43,214,.42);padding-left:11px}.pilot-rank-panel strong{margin-top:5px;font-size:.61rem;color:#ff8bf0}
+.eco-mode-button,.cabinet-comfort{min-height:48px;display:flex;align-items:center;gap:9px;border:1px solid rgba(255,255,255,.12);border-radius:11px;padding:7px 10px;background:rgba(255,255,255,.025);transition:transform .2s ease,border-color .2s ease,background-color .2s ease;transform:translateZ(0)}
+.eco-mode-button:hover,.cabinet-comfort:hover{transform:translate3d(0,-1px,0);border-color:rgba(0,234,255,.42);background:rgba(0,234,255,.055)}
+.eco-mode-button small,.eco-mode-button strong{display:block;font-family:Orbitron,system-ui,sans-serif;letter-spacing:.1em}.eco-mode-button small{font-size:.48rem;color:rgba(255,255,255,.44)}.eco-mode-button strong{margin-top:4px;font-size:.56rem;color:#39ff88}
+.cabinet-switch-track{position:relative;width:32px;height:16px;border:1px solid rgba(57,255,136,.42);border-radius:999px;background:rgba(57,255,136,.09)}.cabinet-switch-track span{position:absolute;top:2px;left:17px;width:10px;height:10px;border-radius:50%;background:#39ff88;box-shadow:0 0 8px rgba(57,255,136,.8);transition:transform .2s ease,background-color .2s ease}.eco-mode-button[aria-pressed="false"] .cabinet-switch-track span{transform:translateX(-15px);background:#ff416d;box-shadow:0 0 8px rgba(255,65,109,.65)}
+
+.catalog-game-grid{display:grid!important;grid-template-columns:repeat(5,minmax(0,1fr))!important;gap:clamp(10px,1.15vw,18px)!important;align-items:stretch}
+.arcade-card{position:relative!important;isolation:isolate!important;min-width:0!important;border:1px solid rgba(var(--card-accent-rgb),.48)!important;border-radius:17px!important;padding:8px!important;background:linear-gradient(155deg,rgba(18,8,30,.9),rgba(3,1,7,.97))!important;box-shadow:inset 0 0 0 1px rgba(255,255,255,.045),inset 0 0 26px rgba(var(--card-accent-rgb),.025),0 14px 30px rgba(0,0,0,.32)!important;transition:transform .2s ease-out,border-color .2s ease-out,box-shadow .2s ease-out,opacity .2s ease-out,filter .2s ease-out!important;transform:translate3d(0,0,0);will-change:transform,opacity;contain:layout paint style}
+.arcade-card::before{inset:9px!important;border-radius:13px!important;background:radial-gradient(ellipse at 50% 20%,rgba(var(--card-accent-rgb),.18),transparent 66%)!important;opacity:.45!important;filter:none!important}
+.arcade-card::after{content:""!important;position:absolute!important;inset:14px 18px -13px!important;z-index:-3!important;width:auto!important;height:auto!important;left:18px!important;top:14px!important;border-radius:20px!important;background:var(--card-accent)!important;opacity:0!important;filter:blur(22px)!important;transform:translate3d(0,10px,0)!important;transition:opacity .2s ease-out!important;pointer-events:none!important}
+.arcade-card:hover,.arcade-card:focus-within,.arcade-card.is-catalog-active{transform:translate3d(0,-4px,0) scale(1.02)!important;border-color:var(--card-accent)!important;box-shadow:inset 0 0 0 1px rgba(255,255,255,.08),inset 0 0 26px rgba(var(--card-accent-rgb),.055),0 0 0 1px rgba(var(--card-accent-rgb),.25),0 18px 42px rgba(0,0,0,.5)!important;filter:brightness(1.08) saturate(1.08)!important;z-index:3}
+.arcade-card:hover::after,.arcade-card:focus-within::after,.arcade-card.is-catalog-active::after{opacity:.42!important}
+.catalog-game-grid:has(.arcade-card:hover) .arcade-card:not(:hover),.catalog-game-grid.has-active-card .arcade-card:not(.is-catalog-active){opacity:.25!important;filter:saturate(.38) brightness(.55)!important}
+.game-art{border:1px solid rgba(var(--card-accent-rgb),.32)!important;border-radius:12px!important;background:#020005!important;box-shadow:inset 0 0 24px rgba(0,0,0,.88)}
+.arcade-card .p-4,.arcade-card .sm\:p-5{padding:13px!important}.arcade-card h3{font-size:clamp(.78rem,1vw,1rem)!important;line-height:1.25!important;min-height:2.5em}.arcade-card p{font-size:.74rem!important}.arcade-card .play-button{border-color:rgba(var(--card-accent-rgb),.32)!important;color:var(--card-accent)!important;background:rgba(var(--card-accent-rgb),.055)!important}.arcade-card .play-button:hover{background:var(--card-accent)!important;color:#020005!important}
+
+.modal-shell{background:rgba(0,0,0,.48)}
+.modal-panel{border:1px solid rgba(var(--modal-accent-rgb),.36)!important;border-radius:22px!important;background:linear-gradient(180deg,rgba(15,8,24,.98),rgba(3,1,7,.985))!important;box-shadow:0 0 calc(54px * var(--eco-shadow-scale)) rgba(var(--modal-accent-rgb),.34),0 25px 90px rgba(0,0,0,.82)!important;transition:box-shadow .16s linear,filter .16s linear}
+.canvas-frame{position:relative!important;overflow:visible!important;border:18px solid #17121e!important;border-radius:42px!important;background:#010003!important;box-shadow:inset 0 0 0 2px #302839,inset 0 0 0 7px #08060c,inset 0 0 62px rgba(0,0,0,.98),0 0 calc(50px * var(--eco-shadow-scale)) rgba(var(--modal-accent-rgb),.31),0 20px 50px rgba(0,0,0,.78)!important;transform:translate3d(0,0,0);transition:box-shadow .12s linear,filter .12s linear}
+.canvas-frame::before{content:"";position:absolute;inset:-10px;z-index:-1;border-radius:38px;background:radial-gradient(ellipse at 50% 43%,rgba(var(--modal-accent-rgb),.36),rgba(var(--modal-accent-rgb),.08) 42%,transparent 72%);filter:blur(26px);opacity:.7;pointer-events:none}
+.canvas-frame::after{inset:0!important;border-radius:22px!important;background:radial-gradient(ellipse at center,transparent 52%,rgba(0,0,0,.32) 74%,rgba(0,0,0,.88) 100%),linear-gradient(rgba(255,255,255,.018) 50%,rgba(0,0,0,.025) 50%)!important;background-size:auto,100% 4px!important;box-shadow:inset 0 0 55px rgba(0,0,0,.88),inset 0 0 0 1px rgba(255,255,255,.055)!important}
+#gameCanvas{border-radius:22px!important;image-rendering:pixelated;image-rendering:crisp-edges}
+.modal-panel.life-impact,.modal-panel.life-impact .canvas-frame{animation:cabinetLifeImpact .46s cubic-bezier(.15,.8,.25,1) both}
+.modal-panel.life-impact{box-shadow:0 0 82px rgba(255,20,63,.72),0 25px 90px rgba(0,0,0,.82)!important}
+.modal-panel.life-impact .canvas-frame::before{background:rgba(255,20,63,.52)!important;opacity:1!important}
+@keyframes cabinetLifeImpact{0%{transform:translate3d(0,0,0);filter:none}18%{transform:translate3d(-7px,2px,0);filter:brightness(1.32)}34%{transform:translate3d(6px,-2px,0)}50%{transform:translate3d(-4px,1px,0)}70%{transform:translate3d(2px,0,0)}100%{transform:translate3d(0,0,0);filter:none}}
+
+html.eco-mode{--eco-shadow-scale:.58}html.eco-mode body::after{display:none!important}html.eco-mode .arcade-card::after{filter:blur(15px)!important}html.eco-mode .modal-panel,html.eco-mode .canvas-frame{backdrop-filter:none!important}html.eco-mode .canvas-frame::before{filter:blur(18px);opacity:.48}html.eco-mode .arcade-card{will-change:auto}
+html.comfort-mode .canvas-frame::after{background:radial-gradient(ellipse at center,transparent 61%,rgba(0,0,0,.52) 100%)!important}
+
+.combo-meter{pointer-events:none}
+@media(max-width:1320px){.tactical-header-inner{grid-template-columns:1fr 1.25fr}.tactical-actions{grid-column:1/-1;justify-content:center}.catalog-game-grid{grid-template-columns:repeat(3,minmax(0,1fr))!important}}
+@media(max-width:820px){.tactical-header{position:relative}.tactical-header-inner{grid-template-columns:1fr}.matrix-diagnostic,.tactical-actions{width:100%;justify-content:center}.pilot-rank-panel{display:none}.catalog-game-grid{grid-template-columns:repeat(2,minmax(0,1fr))!important}}
+@media(max-width:540px){.tactical-actions{display:grid;grid-template-columns:1fr 1fr}.eco-mode-button,.cabinet-comfort{justify-content:center}.catalog-game-grid{grid-template-columns:1fr!important}.arcade-card{max-width:430px;margin-inline:auto}.matrix-diagnostic{grid-template-columns:auto 1fr}.matrix-diagnostic time{grid-column:2}.canvas-frame{border-width:10px!important;border-radius:25px!important}.canvas-frame::after,#gameCanvas{border-radius:14px!important}}
+@media(prefers-reduced-motion:reduce){.modal-panel.life-impact,.modal-panel.life-impact .canvas-frame{animation:none!important}}
+
 </style><meta content="default-src 'self' data: blob:; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; connect-src 'none'; media-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self'" http-equiv="Content-Security-Policy"/></head>
 <body class="antialiased">
-<header class="relative z-10 border-b border-white/8 bg-[#05020a]/55 backdrop-blur-xl">
-<div class="mx-auto flex max-w-7xl items-center justify-between gap-5 px-5 py-4 sm:px-8 lg:px-10">
-<a aria-label="Ir al inicio" class="group flex items-center gap-3" href="#top">
-<span class="grid size-10 place-items-center rounded-xl border border-cyan-300/30 bg-cyan-300/5 shadow-[0_0_24px_rgba(66,245,255,.12)]">
-<svg aria-hidden="true" class="size-5 text-cyan-300 transition-transform duration-300 group-hover:rotate-12" fill="none" viewbox="0 0 24 24">
-<path d="M4 8.5 8.5 4h7L20 8.5v7L15.5 20h-7L4 15.5v-7Z" stroke="currentColor" stroke-width="1.5"></path>
-<path d="m8.5 8.5 3.5-2 3.5 2v4L12 15l-3.5-2.5v-4Z" fill="currentColor" opacity=".75"></path>
-</svg>
-</span>
-<span>
-<span class="font-display block text-sm font-black tracking-[0.24em] text-white sm:text-base">NEON NEXUS</span>
-<span class="block text-[10px] font-semibold tracking-[0.34em] text-cyan-300/70">VIRTUAL ARCADE</span>
-</span>
-</a>
-<div class="hidden items-center gap-8 md:flex">
-<a class="text-sm font-semibold tracking-[0.18em] text-white/60 transition hover:text-cyan-300" href="#catalog">CATÁLOGO</a>
-<a class="text-sm font-semibold tracking-[0.18em] text-white/60 transition hover:text-cyan-300" href="#system">SISTEMA</a>
-</div>
-<div class="header-accessibility-cluster">
-<button aria-label="Activar modo confort" aria-pressed="false" class="comfort-mode-button" id="comfortModeButton" type="button">
-<span aria-hidden="true" class="comfort-mode-icon">◉</span>
-<span class="comfort-mode-copy">
-<span>MODO CONFORT</span>
-<strong data-comfort-status="">CONFORT: OFF</strong>
-</span>
-</button>
-<div class="system-hud flex items-center gap-3 rounded-2xl border border-lime-300/15 bg-[#071008]/70 px-3 py-2">
-<span class="status-dot size-2 shrink-0 rounded-full bg-lime-300"></span>
-<div class="min-w-0 leading-tight">
-<span class="font-display block text-[8px] font-black tracking-[0.15em] text-lime-200 sm:text-[9px]" id="systemStatusText">SISTEMA: ONLINE</span>
-<span class="font-display mt-1 block truncate text-[7px] font-bold tracking-[0.13em] text-cyan-200/70 sm:text-[8px]" id="pilotRankText">PILOTO RANGO: ROOKIE</span>
-</div>
-<span class="font-display hidden text-[9px] text-white/42 xl:inline" id="systemClock">--:--:--</span>
-</div>
-</div>
-</div>
+<header class="tactical-header" id="tacticalHeader">
+  <div class="tactical-header-inner">
+    <a aria-label="Ir al catálogo" class="tactical-brand" href="#catalog">
+      <span class="tactical-brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>
+      <span><strong>NEON NEXUS</strong><small>PREMIUM ARCADE CABINET</small></span>
+    </a>
+    <section class="matrix-diagnostic" aria-label="Diagnóstico del sistema">
+      <span class="matrix-status-led" aria-hidden="true"></span>
+      <div><strong id="systemStatusText">MATRIX_CORE v5.5 // STABLE</strong><small>LOCAL RUNTIME · ECO GPU PIPELINE</small></div>
+      <time id="systemClock" aria-label="Reloj digital">--:--:--</time>
+    </section>
+    <div class="tactical-actions">
+      <div class="pilot-rank-panel"><small>PILOT PROFILE</small><strong id="pilotRankText">PILOTO RANGO: ROOKIE</strong></div>
+      <button aria-label="Activar Eco-Mode" aria-pressed="false" class="eco-mode-button" id="ecoModeButton" type="button">
+        <span class="cabinet-switch-track" aria-hidden="true"><span></span></span><span><small>ECO-MODE</small><strong data-eco-status>ON</strong></span>
+      </button>
+      <button aria-label="Activar modo confort" aria-pressed="false" class="comfort-mode-button cabinet-comfort" id="comfortModeButton" type="button">
+        <span class="comfort-mode-icon" aria-hidden="true">◉</span><span class="comfort-mode-copy"><span>MODO CONFORT</span><strong data-comfort-status>CONFORT: OFF</strong></span>
+      </button>
+    </div>
+  </div>
 </header>
 <main class="relative z-10" id="top">
 <section class="mx-auto grid min-h-[76vh] max-w-7xl items-center gap-12 px-5 py-20 sm:px-8 lg:grid-cols-[1.12fr_.88fr] lg:px-10 lg:py-24">
 <div>
 <div class="mb-7 inline-flex items-center gap-3 rounded-full border border-fuchsia-300/20 bg-fuchsia-300/5 px-4 py-2 text-xs font-bold tracking-[0.22em] text-fuchsia-200">
 <span class="size-1.5 animate-pulse rounded-full bg-fuchsia-300 shadow-[0_0_12px_rgba(255,60,247,.8)]"></span>
-          MODO OPTIMIZADO · GAMEPAD READY
+          MATRIX_CORE v5.5 · FIVE TERMINALS · ECO GPU
         </div>
 <h1 class="font-display max-w-4xl text-4xl font-black leading-[1.02] tracking-[-0.03em] text-white sm:text-6xl lg:text-7xl">
           EL PASADO
@@ -3816,7 +3877,7 @@ body::before{content:"";position:fixed;inset:0;z-index:-2;pointer-events:none;ba
 </div>
 <div class="mt-12 grid max-w-2xl grid-cols-3 gap-3 sm:gap-4">
 <div class="glass-panel rounded-2xl px-3 py-4 sm:px-5">
-<p class="font-display text-xl font-bold text-white sm:text-2xl">04</p>
+<p class="font-display text-xl font-bold text-white sm:text-2xl">05</p>
 <p class="mt-1 text-[10px] font-bold tracking-[0.18em] text-white/42 sm:text-xs">TERMINALES</p>
 </div>
 <div class="glass-panel rounded-2xl px-3 py-4 sm:px-5">
@@ -4093,6 +4154,7 @@ body::before{content:"";position:fixed;inset:0;z-index:-2;pointer-events:none;ba
 <article class="achievement-medal" data-achievement-id="ghost-hunter" data-title="Cazador de Fantasmas"><span class="achievement-medal-icon">✦</span><div><strong>CAZADOR DE FANTASMAS</strong><small data-medal-state="">LOCKED</small></div></article>
 <article class="achievement-medal" data-achievement-id="asteroid-ace" data-title="As del Cinturón"><span class="achievement-medal-icon">✧</span><div><strong>AS DEL CINTURÓN</strong><small data-medal-state="">LOCKED</small></div></article>
 <article class="achievement-medal" data-achievement-id="grid-survivor" data-title="Superviviente Grid"><span class="achievement-medal-icon">⬡</span><div><strong>SUPERVIVIENTE GRID</strong><small data-medal-state="">LOCKED</small></div></article>
+<article class="achievement-medal" data-achievement-id="dual-rescuer" data-title="Piloto Dual"><span class="achievement-medal-icon">♢</span><div><strong>PILOTO DUAL</strong><small data-medal-state="">LOCKED</small></div></article>
 </div>
 </aside>
 </section>
@@ -4114,8 +4176,8 @@ body::before{content:"";position:fixed;inset:0;z-index:-2;pointer-events:none;ba
 </section>
 </main>
 <footer class="relative z-10 mx-auto flex max-w-7xl flex-col gap-4 px-5 py-9 text-xs font-semibold tracking-[0.13em] text-white/35 sm:flex-row sm:items-center sm:justify-between sm:px-8 lg:px-10">
-<p>NEON NEXUS / LOW-RESOURCE CORE v20.0</p>
-<p>CANVAS 800×600 · KEYBOARD · TOUCH · GAMEPAD · TURBO 1.5X</p>
+<p>NEON NEXUS / MATRIX_CORE v5.5 // STABLE</p>
+<p>5 GAMES · CANVAS 800×600 · KEYBOARD · TOUCH · GAMEPAD · TURBO 1.5X</p>
 </footer>
 <div aria-hidden="true" class="modal-shell fixed inset-0 z-[100] flex items-center justify-center p-3 sm:p-6 lg:p-10" id="gameModal">
 <div class="modal-backdrop absolute inset-0 bg-[#020105]/88" data-close-modal=""></div>
@@ -4206,6 +4268,7 @@ body::before{content:"";position:fixed;inset:0;z-index:-2;pointer-events:none;ba
 <li class="flex gap-2"><span class="text-lime-300">✓</span><span>Alien Invaders completo</span></li>
 <li class="flex gap-2"><span class="text-lime-300">✓</span><span>Neon Pac-Man completo</span></li>
 <li class="flex gap-2"><span class="text-lime-300">✓</span><span>TRON Lightcycles completo</span></li>
+<li class="flex gap-2"><span class="text-lime-300">✓</span><span>Cyber-Galaga Neón completo</span></li>
 <li class="flex gap-2"><span class="text-lime-300">✓</span><span>Récords con localStorage</span></li>
 <li class="flex gap-2"><span class="text-lime-300">✓</span><span>Audio Web API por juego</span></li>
 <li class="flex gap-2"><span class="text-lime-300">✓</span><span>Canvas lógico fijo 800×600</span></li>
@@ -4234,9 +4297,9 @@ const GAME_CATALOG = Object.freeze({
     id: "space-invaders",
     title: "ALIEN INVADERS",
     genre: "NEON ORBITAL DEFENSE",
-    accent: "#42f5ff",
-    accentRgb: "66, 245, 255",
-    secondary: "#ff3cf7",
+    accent: "#39ff88",
+    accentRgb: "57, 255, 136",
+    secondary: "#b7ff3c",
     symbol: "INVADER GRID",
     hint: "Flechas izquierda/derecha para moverte. Mantén Espacio para disparar.",
     controls: "← → MOVER / SPACE DISPARAR / GAMEPAD STICK + A / ENTER INICIAR",
@@ -4248,9 +4311,9 @@ const GAME_CATALOG = Object.freeze({
     id: "pac-man",
     title: "NEON PAC-MAN",
     genre: "NEON MAZE",
-    accent: "#ffbd3c",
-    accentRgb: "255, 189, 60",
-    secondary: "#7055ff",
+    accent: "#00eaff",
+    accentRgb: "0, 234, 255",
+    secondary: "#275dff",
     symbol: "MAZE CORE",
     hint: "Usa las cuatro flechas para moverte. Las píldoras grandes activan 7 segundos de poder.",
     controls: "FLECHAS O GAMEPAD: MOVER / POWER PELLET: 7s / A O SPACE: INICIAR",
@@ -4262,9 +4325,9 @@ const GAME_CATALOG = Object.freeze({
     id: "asteroids",
     title: "NEON ASTEROIDS",
     genre: "VECTOR SURVIVAL",
-    accent: "#00ff7f",
-    accentRgb: "0, 255, 127",
-    secondary: "#ff3cf7",
+    accent: "#ff2bd6",
+    accentRgb: "255, 43, 214",
+    secondary: "#8a5cff",
     symbol: "VECTOR FIELD",
     hint: "Gira con izquierda/derecha, acelera con arriba y dispara con Espacio.",
     controls: "STICK O ← → ROTAR / ↑ EMPUJE / A O SPACE DISPARAR / START INICIAR",
@@ -4276,12 +4339,26 @@ const GAME_CATALOG = Object.freeze({
     id: "tron",
     title: "TRON LIGHTCYCLES",
     genre: "NEON GRID DUEL",
-    accent: "#00ffff",
-    accentRgb: "0, 255, 255",
-    secondary: "#ffa500",
+    accent: "#ff8a18",
+    accentRgb: "255, 138, 24",
+    secondary: "#00eaff",
     symbol: "LIGHT GRID",
     hint: "La moto avanza automáticamente. Usa las flechas o el D-Pad para girar exactamente 90 grados.",
     controls: "FLECHAS / STICK / D-PAD: GIRAR 90° / A, SPACE O START: INICIAR",
+    canvasWidth: 800,
+    canvasHeight: 600,
+    playable: true
+  },
+  "galaga": {
+    id: "galaga",
+    title: "CYBER-GALAGA NEÓN",
+    genre: "FORMATION DIVE SHOOTER",
+    accent: "#168cff",
+    accentRgb: "22, 140, 255",
+    secondary: "#00ffff",
+    symbol: "TRACTOR FORMATION",
+    hint: "Muévete con izquierda/derecha, dispara con Espacio y rescata tu nave capturada para activar Dual Fighter.",
+    controls: "← → MOVER / SPACE DISPARAR / GAMEPAD STICK + A / ENTER INICIAR",
     canvasWidth: 800,
     canvasHeight: 600,
     playable: true
@@ -4378,6 +4455,7 @@ class HighScoreStore {
     this.storageKey = storageKey;
     this.asteroidsStorageKey = "arcade_asteroids_highscore";
     this.tronStorageKey = "arcade_tron_highscore";
+    this.galagaStorageKey = "arcade_galaga_highscore";
     this.scores = this.load();
     this.listeners = new Set();
     this.save();
@@ -4395,6 +4473,10 @@ class HighScoreStore {
       if (Number.isFinite(tronScore) && tronScore > Number(scores.tron || 0)) {
         scores.tron = Math.floor(tronScore);
       }
+      const galagaScore = Number(window.localStorage.getItem("arcade_galaga_highscore"));
+      if (Number.isFinite(galagaScore) && galagaScore > Number(scores.galaga || 0)) {
+        scores.galaga = Math.floor(galagaScore);
+      }
       return scores;
     } catch (error) {
       return {};
@@ -4406,6 +4488,7 @@ class HighScoreStore {
       window.localStorage.setItem(this.storageKey, JSON.stringify(this.scores));
       window.localStorage.setItem(this.asteroidsStorageKey, String(Math.max(0, Math.floor(Number(this.scores.asteroids) || 0))));
       window.localStorage.setItem(this.tronStorageKey, String(Math.max(0, Math.floor(Number(this.scores.tron) || 0))));
+      window.localStorage.setItem(this.galagaStorageKey, String(Math.max(0, Math.floor(Number(this.scores.galaga) || 0))));
     } catch (error) {
       // The in-memory score still works when storage is unavailable.
     }
@@ -4538,6 +4621,7 @@ class RetroAudio {
 
   normalizeGame(game) {
     const value = String(game || "").toLowerCase().replace(/_/g, "-");
+    if (value.includes("galaga")) return "galaga";
     if (value.includes("pac")) return "pac-man";
     if (value.includes("invader") || value.includes("alien")) return "space-invaders";
     if (value.includes("asteroid")) return "asteroids";
@@ -4689,6 +4773,13 @@ class RetroAudio {
     const normalizedGame = this.normalizeGame(game);
     const normalizedAction = String(action || "").toLowerCase().replace(/-/g, "_");
 
+    if (normalizedGame === "galaga") {
+      if (normalizedAction === "galaga_intro" || normalizedAction === "intro") return this.galagaIntro(detail);
+      if (normalizedAction === "galaga_laser" || normalizedAction === "player_laser") return this.galagaLaser(detail);
+      if (normalizedAction === "galaga_explosion" || normalizedAction === "enemy_explosion") return this.galagaExplosion(detail);
+      if (normalizedAction === "tractor_beam") return this.galagaTractorBeam(detail);
+    }
+
     if (normalizedGame === "pac-man") {
       if (normalizedAction === "pacman_intro" || normalizedAction === "intro") return this.pacmanIntro(detail);
       if (normalizedAction === "waka_waka") return this.pacmanWaka(detail);
@@ -4708,6 +4799,7 @@ class RetroAudio {
       if (normalizedAction === "player_laser") return this.genericLaser(detail);
     }
 
+    if (normalizedAction === "combo") return this.comboTone(detail);
     if (normalizedAction === "boot" || normalizedAction === "boot_sequence" || normalizedAction === "system_ready") return this.bootChime(detail);
     if (normalizedAction === "achievement" || normalizedAction === "achievement_unlocked" || normalizedAction === "reward") return this.achievementReward(detail);
     if (normalizedAction === "power_up" || normalizedAction === "powerup" || normalizedAction === "upgraded") return this.powerUpUpgrade(detail);
@@ -4719,6 +4811,34 @@ class RetroAudio {
 
   playSynthSound(action, detail = {}) {
     return this.playArcadeSound("global", action, detail);
+  }
+
+
+  comboTone(detail = {}) {
+    const multiplier = Math.max(1, Math.min(4, Number(detail.multiplier) || 1));
+    if (!this.canPlay(`global:combo:${multiplier}`, 0.045)) return false;
+    const context = this.context;
+    const start = context.currentTime + 0.003;
+    const oscillator = context.createOscillator();
+    const overtone = context.createOscillator();
+    const gain = context.createGain();
+    const overtoneGain = context.createGain();
+    const base = 420 * (multiplier === 4 ? 1.72 : multiplier === 2 ? 1.35 : 1);
+    oscillator.type = "triangle";
+    overtone.type = "square";
+    oscillator.frequency.setValueAtTime(base, start);
+    oscillator.frequency.exponentialRampToValueAtTime(base * 1.36, start + 0.075);
+    overtone.frequency.setValueAtTime(base * 2.02, start);
+    gain.gain.setValueAtTime(0.0001, start);
+    gain.gain.exponentialRampToValueAtTime(0.065, start + 0.006);
+    gain.gain.exponentialRampToValueAtTime(0.0001, start + 0.095);
+    overtoneGain.gain.setValueAtTime(0.0001, start);
+    overtoneGain.gain.exponentialRampToValueAtTime(0.018, start + 0.004);
+    overtoneGain.gain.exponentialRampToValueAtTime(0.0001, start + 0.07);
+    oscillator.connect(gain); overtone.connect(overtoneGain); gain.connect(this.masterGain); overtoneGain.connect(this.masterGain);
+    oscillator.start(start); overtone.start(start); oscillator.stop(start + 0.105); overtone.stop(start + 0.082);
+    this.trackTransient([oscillator, overtone, gain, overtoneGain], start + 0.11);
+    return true;
   }
 
   achievementReward(detail = {}) {
@@ -5125,6 +5245,179 @@ class RetroAudio {
     metallic.start(now);
     metallic.stop(now + duration + 0.01);
     this.trackTransient([noise, noiseFilter, noiseGain, metallic, metallicGain], now + duration + 0.03);
+    return true;
+  }
+
+
+  galagaIntro(detail = {}) {
+    if (!this.canPlay("galaga:intro", 0.75)) return false;
+    const context = this.context;
+    const start = context.currentTime + 0.018;
+    const tempo = Math.max(0.8, Math.min(1.7, this.tempoMultiplier || 1));
+    const step = 0.075 / tempo;
+    const notes = [523.25, 659.25, 783.99, 1046.5, 783.99, 987.77, 1174.66, 1318.51, 1046.5];
+    const bus = context.createGain();
+    const filter = context.createBiquadFilter();
+    filter.type = "highpass";
+    filter.frequency.setValueAtTime(280, start);
+    bus.gain.setValueAtTime(0.78 * Math.max(0.7, Math.min(1.15, Number(detail.volume) || 1)), start);
+    filter.connect(bus);
+    bus.connect(this.masterGain);
+    const nodes = [filter, bus];
+    notes.forEach((frequency, index) => {
+      const noteStart = start + index * step;
+      const noteEnd = noteStart + step * 0.64;
+      const oscillator = context.createOscillator();
+      const gain = context.createGain();
+      oscillator.type = "triangle";
+      oscillator.frequency.setValueAtTime(frequency, noteStart);
+      oscillator.frequency.exponentialRampToValueAtTime(frequency * 1.018, noteEnd);
+      gain.gain.setValueAtTime(0.0001, noteStart);
+      gain.gain.exponentialRampToValueAtTime(0.12, noteStart + 0.006);
+      gain.gain.exponentialRampToValueAtTime(0.0001, noteEnd);
+      oscillator.connect(gain);
+      gain.connect(filter);
+      oscillator.start(noteStart);
+      oscillator.stop(noteEnd + 0.008);
+      nodes.push(oscillator, gain);
+    });
+    this.trackTransient(nodes, start + notes.length * step + 0.08);
+    return true;
+  }
+
+  galagaLaser() {
+    if (!this.canPlay("galaga:laser", 0.045)) return false;
+    const context = this.context;
+    const now = context.currentTime;
+    const end = now + 0.075;
+    const oscillator = context.createOscillator();
+    const metallic = context.createOscillator();
+    const gain = context.createGain();
+    const metallicGain = context.createGain();
+    oscillator.type = "square";
+    oscillator.frequency.setValueAtTime(920, now);
+    oscillator.frequency.exponentialRampToValueAtTime(2250, end);
+    metallic.type = "triangle";
+    metallic.frequency.setValueAtTime(1840, now);
+    metallic.frequency.exponentialRampToValueAtTime(3100, end);
+    gain.gain.setValueAtTime(0.0001, now);
+    gain.gain.exponentialRampToValueAtTime(0.21, now + 0.004);
+    gain.gain.exponentialRampToValueAtTime(0.0001, end);
+    metallicGain.gain.setValueAtTime(0.0001, now);
+    metallicGain.gain.exponentialRampToValueAtTime(0.07, now + 0.003);
+    metallicGain.gain.exponentialRampToValueAtTime(0.0001, end);
+    oscillator.connect(gain);
+    metallic.connect(metallicGain);
+    gain.connect(this.masterGain);
+    metallicGain.connect(this.masterGain);
+    oscillator.start(now);
+    metallic.start(now);
+    oscillator.stop(end + 0.01);
+    metallic.stop(end + 0.01);
+    this.trackTransient([oscillator, metallic, gain, metallicGain], end + 0.03);
+    return true;
+  }
+
+  galagaExplosion(detail = {}) {
+    const commander = Boolean(detail.commander);
+    if (!this.canPlay(`galaga:explosion:${commander ? "commander" : "alien"}`, commander ? 0.055 : 0.028)) return false;
+    const context = this.context;
+    const now = context.currentTime;
+    const duration = commander ? 0.29 : 0.13;
+    const end = now + duration;
+    const snap = context.createOscillator();
+    const snapGain = context.createGain();
+    const noise = context.createBufferSource();
+    const filter = context.createBiquadFilter();
+    const noiseGain = context.createGain();
+    snap.type = commander ? "sawtooth" : "square";
+    snap.frequency.setValueAtTime(commander ? 420 : 1280, now);
+    snap.frequency.exponentialRampToValueAtTime(commander ? 52 : 150, end);
+    snapGain.gain.setValueAtTime(commander ? 0.34 : 0.22, now);
+    snapGain.gain.exponentialRampToValueAtTime(0.0001, end);
+    noise.buffer = this.createNoiseBuffer(duration);
+    filter.type = "lowpass";
+    filter.frequency.setValueAtTime(commander ? 1600 : 3600, now);
+    filter.frequency.exponentialRampToValueAtTime(commander ? 90 : 520, end);
+    filter.Q.value = commander ? 1.2 : 4.5;
+    noiseGain.gain.setValueAtTime(commander ? 0.38 : 0.18, now);
+    noiseGain.gain.exponentialRampToValueAtTime(0.0001, end);
+    snap.connect(snapGain);
+    snapGain.connect(this.masterGain);
+    noise.connect(filter);
+    filter.connect(noiseGain);
+    noiseGain.connect(this.masterGain);
+    snap.start(now);
+    noise.start(now);
+    snap.stop(end + 0.01);
+    noise.stop(end + 0.01);
+    this.trackTransient([snap, snapGain, noise, filter, noiseGain], end + 0.04);
+    return true;
+  }
+
+  galagaTractorBeam(detail = {}) {
+    const key = "galaga:tractor-beam";
+    const active = detail.active !== false;
+    if (!active || !this.enabled) {
+      this.stopLoop(key, Number(detail.fade) || 0.07);
+      return false;
+    }
+    const context = this.unlock();
+    if (!context) return false;
+    const now = context.currentTime;
+    const existing = this.activeLoops.get(key);
+    if (existing) {
+      existing.output.gain.cancelScheduledValues(now);
+      existing.output.gain.setTargetAtTime(0.13, now, 0.035);
+      return true;
+    }
+    const carrier = context.createOscillator();
+    const overtone = context.createOscillator();
+    const lfo = context.createOscillator();
+    const lfoDepth = context.createGain();
+    const carrierGain = context.createGain();
+    const overtoneGain = context.createGain();
+    const shaper = context.createWaveShaper();
+    const filter = context.createBiquadFilter();
+    const output = context.createGain();
+    const curve = new Float32Array(256);
+    for (let index = 0; index < curve.length; index += 1) {
+      const x = index * 2 / (curve.length - 1) - 1;
+      curve[index] = Math.tanh(x * 3.4);
+    }
+    shaper.curve = curve;
+    shaper.oversample = "2x";
+    carrier.type = "sawtooth";
+    carrier.frequency.setValueAtTime(54, now);
+    overtone.type = "square";
+    overtone.frequency.setValueAtTime(108, now);
+    lfo.type = "sine";
+    lfo.frequency.setValueAtTime(6.2, now);
+    lfoDepth.gain.setValueAtTime(17, now);
+    carrierGain.gain.setValueAtTime(0.19, now);
+    overtoneGain.gain.setValueAtTime(0.055, now);
+    filter.type = "lowpass";
+    filter.frequency.setValueAtTime(760, now);
+    filter.Q.setValueAtTime(7.5, now);
+    output.gain.setValueAtTime(0.0001, now);
+    output.gain.exponentialRampToValueAtTime(0.13, now + 0.08);
+    lfo.connect(lfoDepth);
+    lfoDepth.connect(carrier.frequency);
+    carrier.connect(carrierGain);
+    overtone.connect(overtoneGain);
+    carrierGain.connect(shaper);
+    overtoneGain.connect(shaper);
+    shaper.connect(filter);
+    filter.connect(output);
+    output.connect(this.masterGain);
+    carrier.start(now);
+    overtone.start(now);
+    lfo.start(now);
+    this.activeLoops.set(key, {
+      output,
+      sources: [carrier, overtone, lfo],
+      nodes: [carrier, overtone, lfo, lfoDepth, carrierGain, overtoneGain, shaper, filter, output]
+    });
     return true;
   }
 
@@ -6046,6 +6339,13 @@ const ACHIEVEMENT_DEFINITIONS = Object.freeze([
     description: "Superaste 5,000 puntos en TRON Lightcycles.",
     icon: "⬡",
     accent: "#ffa500"
+  }),
+  Object.freeze({
+    id: "dual-rescuer",
+    title: "PILOTO DUAL",
+    description: "Rescataste una nave capturada y activaste Dual Fighter en Cyber-Galaga Neón.",
+    icon: "♢",
+    accent: "#00ffff"
   })
 ]);
 
@@ -6539,7 +6839,7 @@ class TouchArcadeControls {
     if (this.knob) this.knob.style.transform = `translate3d(${dx.toFixed(1)}px,${dy.toFixed(1)}px,0)`;
     const dead = maxDistance * 0.28;
     const gameId = this.activeGameId;
-    if (gameId === "space-invaders") {
+    if (gameId === "space-invaders" || gameId === "galaga") {
       this.setDirection("ArrowLeft", dx < -dead); this.setDirection("ArrowRight", dx > dead); this.setDirection("ArrowUp", false); this.setDirection("ArrowDown", false);
     } else if (gameId === "asteroids") {
       this.setDirection("ArrowLeft", dx < -dead); this.setDirection("ArrowRight", dx > dead); this.setDirection("ArrowUp", dy < -dead); this.setDirection("ArrowDown", false);
@@ -7109,6 +7409,93 @@ class NeonPowerUpSystem {
 }
 
 
+
+class ArcadeComboSystem {
+  constructor(engine, gameId, accent = "#00ffff") {
+    this.engine = engine;
+    this.gameId = gameId;
+    this.accent = accent;
+    this.count = 0;
+    this.timer = 0;
+    this.window = 1.55;
+    this.multiplier = 1;
+    this.pulse = 0;
+  }
+
+  reset() {
+    this.count = 0;
+    this.timer = 0;
+    this.multiplier = 1;
+    this.pulse = 0;
+  }
+
+  breakChain() {
+    this.reset();
+  }
+
+  update(deltaTime) {
+    this.timer = Math.max(0, this.timer - deltaTime);
+    this.pulse = Math.max(0, this.pulse - deltaTime * 4.2);
+    if (this.timer <= 0 && this.count > 0) this.reset();
+  }
+
+  register(basePoints, label = "CHAIN") {
+    const normalized = Math.max(0, Math.floor(Number(basePoints) || 0));
+    this.count = this.timer > 0 ? this.count + 1 : 1;
+    this.timer = this.window;
+    const previous = this.multiplier;
+    this.multiplier = this.count >= 8 ? 4 : this.count >= 3 ? 2 : 1;
+    this.pulse = 1;
+    const awarded = normalized * this.multiplier;
+    this.engine.audio.playArcadeSound("global", "combo", { multiplier: this.multiplier, count: this.count });
+    if (this.multiplier > previous || this.count === 3 || this.count === 8) {
+      this.engine.showCanvasMessage(`COMBO X${this.multiplier}`, {
+        y: 104,
+        color: this.accent,
+        size: this.multiplier >= 4 ? 20 : 16,
+        duration: 0.9,
+        blink: 12,
+        fixed: true
+      });
+    }
+    return awarded;
+  }
+
+  draw(ctx, x, y, width = 190) {
+    if (this.timer <= 0 || this.count < 2) return;
+    const px = Math.floor(x);
+    const py = Math.floor(y);
+    const w = Math.floor(width);
+    const progress = Math.max(0, Math.min(1, this.timer / this.window));
+    const glow = 0.62 + Math.abs(Math.sin(performance.now() * 0.012)) * 0.38;
+    ctx.save();
+    ctx.globalCompositeOperation = "source-over";
+    ctx.fillStyle = "rgba(2,0,5,.76)";
+    ctx.fillRect(px, py, w, 28);
+    ctx.strokeStyle = this.accent;
+    ctx.globalAlpha = 0.42 + this.pulse * 0.4;
+    ctx.lineWidth = 1;
+    ctx.strokeRect(px + .5, py + .5, w - 1, 27);
+    ctx.globalAlpha = 1;
+    ctx.fillStyle = "rgba(255,255,255,.09)";
+    ctx.fillRect(px + 7, py + 20, w - 14, 3);
+    ctx.fillStyle = this.accent;
+    ctx.shadowColor = this.accent;
+    ctx.shadowBlur = 4;
+    ctx.fillRect(px + 7, py + 20, Math.floor((w - 14) * progress), 3);
+    ctx.font = '900 11px "Orbitron", sans-serif';
+    ctx.textAlign = "left";
+    ctx.textBaseline = "middle";
+    ctx.globalAlpha = glow;
+    ctx.fillText(`COMBO X${this.multiplier}`, px + 8, py + 10);
+    ctx.textAlign = "right";
+    ctx.fillStyle = "rgba(255,255,255,.7)";
+    ctx.shadowBlur = 0;
+    ctx.fillText(`${this.count} HIT`, px + w - 8, py + 10);
+    ctx.restore();
+  }
+}
+
 class AlienInvadersGame {
   constructor(engine) {
     this.engine = engine;
@@ -7141,6 +7528,7 @@ class AlienInvadersGame {
     this.aliens = [];
     this.particles = [];
     this.powerUps = new NeonPowerUpSystem(engine, "space-invaders");
+    this.combo = new ArcadeComboSystem(engine, "space-invaders", "#39ff88");
     this.player = {
       x: this.width / 2,
       y: this.height - 58,
@@ -7174,6 +7562,7 @@ class AlienInvadersGame {
     this.enemyBullets.splice(0, this.enemyBullets.length);
     this.particles.splice(0, this.particles.length);
     this.powerUps.reset();
+    this.combo.reset();
     this.spawnWave();
     this.engine.onGameStart();
   }
@@ -7202,6 +7591,7 @@ class AlienInvadersGame {
     this.aliens.splice(0, this.aliens.length);
     this.particles.splice(0, this.particles.length);
     this.powerUps.reset();
+    this.combo.reset();
   }
 
   endGame() {
@@ -7269,8 +7659,7 @@ class AlienInvadersGame {
     this.updateParticles(deltaTime);
     this.screenShake = Math.max(0, this.screenShake - deltaTime * 38);
     this.damageFlash = Math.max(0, this.damageFlash - deltaTime * 2.8);
-    this.comboTimer = Math.max(0, this.comboTimer - deltaTime);
-    if (this.comboTimer === 0) this.comboCount = 0;
+    this.combo.update(deltaTime);
 
     if (this.state === GAME_STATES.MENU) {
       this.alienAnimationTimer += deltaTime;
@@ -7478,22 +7867,9 @@ class AlienInvadersGame {
   destroyAlien(alien, source = "bullet") {
     if (!alien || !alien.alive) return;
     alien.alive = false;
-    this.score += alien.type === 2 ? 220 : 100;
-    this.comboCount = this.comboTimer > 0 ? this.comboCount + 1 : 1;
-    this.comboTimer = 1.25;
-    if (this.comboCount >= 3) {
-      const comboBonus = 100 * (this.comboCount - 2);
-      this.score += comboBonus;
-      this.engine.showCanvasMessage(`+${comboBonus} COMBO`, {
-        x: alien.x,
-        y: alien.y - 12,
-        color: alien.type === 2 ? "#ff66f7" : "#b7ff3c",
-        size: 16,
-        duration: 1.05,
-        rise: 42,
-        blink: 12
-      });
-    }
+    const basePoints = alien.type === 2 ? 220 : 100;
+    const awardedPoints = this.combo.register(basePoints, "INVADER");
+    this.score += awardedPoints;
     this.createExplosion(alien.x, alien.y, alien.type === 2 ? "#ff3cf7" : "#9dff5a");
     this.engine.audio.playArcadeSound("space-invaders", "invader_death", {
       intensity: alien.type === 2 ? 1.18 : 0.92
@@ -7756,96 +8132,39 @@ class AlienInvadersGame {
   }
 
   drawPlayerShip(ctx, x, y, scale = 1, thrusterActive = true) {
-    const flicker = 13 + Math.random() * 12;
+    const ship = [
+      ".......W.......",
+      "......WWW......",
+      ".....WCCCW.....",
+      "....WCCCCCW....",
+      "..WWCCCCCCCWW..",
+      ".WCCWWCCCWWCCW.",
+      "WCCW.CCCCC.WCCW",
+      "WCCWCCCCCCCWCCW",
+      ".WWCCCCCCCCCWW.",
+      "...WWCCCCCWW...",
+      ".....CCCCC.....",
+      ".....C...C....."
+    ];
+    const pixel = Math.max(1, Math.floor(2 * scale));
+    const originX = Math.floor(x - ship[0].length * pixel / 2);
+    const originY = Math.floor(y - ship.length * pixel / 2);
+    const palette = { W: "#ffffff", C: "#00ffff" };
     ctx.save();
-    ctx.translate(x, y);
-    ctx.scale(scale, scale);
-    ctx.lineJoin = "round";
-    ctx.lineCap = "round";
-
-    if (thrusterActive) {
-      const flameGradient = ctx.createLinearGradient(0, 13, 0, 13 + flicker);
-      flameGradient.addColorStop(0, "rgba(255,255,255,.95)");
-      flameGradient.addColorStop(0.35, "rgba(66,245,255,.95)");
-      flameGradient.addColorStop(1, "rgba(66,245,255,0)");
-      ctx.fillStyle = flameGradient;
-      ctx.shadowColor = "#42f5ff";
-      ctx.shadowBlur = 20;
-      ctx.beginPath();
-      ctx.moveTo(-7, 13);
-      ctx.quadraticCurveTo(-4, 21 + flicker * 0.45, 0, 15 + flicker);
-      ctx.quadraticCurveTo(4, 21 + flicker * 0.45, 7, 13);
-      ctx.closePath();
-      ctx.fill();
+    ctx.globalCompositeOperation = "lighter";
+    for (let row = 0; row < ship.length; row += 1) {
+      for (let column = 0; column < ship[row].length; column += 1) {
+        const color = palette[ship[row][column]];
+        if (!color) continue;
+        ctx.fillStyle = color; ctx.shadowColor = color; ctx.shadowBlur = 4;
+        ctx.fillRect(originX + column * pixel, originY + row * pixel, pixel, pixel);
+      }
     }
-
-    ctx.shadowColor = "#42f5ff";
-    ctx.shadowBlur = 18;
-    ctx.fillStyle = "rgba(29, 22, 65, .92)";
-    ctx.strokeStyle = "#42f5ff";
-    ctx.lineWidth = 2.3;
-
-    ctx.beginPath();
-    ctx.moveTo(-7, -21);
-    ctx.lineTo(-27, 15);
-    ctx.lineTo(-11, 10);
-    ctx.lineTo(-4, -4);
-    ctx.closePath();
-    ctx.fill();
-    ctx.stroke();
-
-    ctx.beginPath();
-    ctx.moveTo(7, -21);
-    ctx.lineTo(27, 15);
-    ctx.lineTo(11, 10);
-    ctx.lineTo(4, -4);
-    ctx.closePath();
-    ctx.fill();
-    ctx.stroke();
-
-    const hullGradient = ctx.createLinearGradient(0, -27, 0, 18);
-    hullGradient.addColorStop(0, "rgba(214,252,255,.98)");
-    hullGradient.addColorStop(0.24, "rgba(66,245,255,.8)");
-    hullGradient.addColorStop(1, "rgba(26,16,63,.95)");
-    ctx.fillStyle = hullGradient;
-    ctx.beginPath();
-    ctx.moveTo(0, -27);
-    ctx.quadraticCurveTo(10, -13, 10, 7);
-    ctx.lineTo(6, 17);
-    ctx.lineTo(-6, 17);
-    ctx.lineTo(-10, 7);
-    ctx.quadraticCurveTo(-10, -13, 0, -27);
-    ctx.closePath();
-    ctx.fill();
-    ctx.stroke();
-
-    ctx.fillStyle = "#ff3cf7";
-    ctx.shadowColor = "#ff3cf7";
-    ctx.shadowBlur = 14;
-    ctx.beginPath();
-    ctx.ellipse(0, -6, 5.4, 8.5, 0, 0, Math.PI * 2);
-    ctx.fill();
-
-    ctx.fillStyle = "rgba(255,255,255,.92)";
-    ctx.shadowColor = "#42f5ff";
-    ctx.shadowBlur = 12;
-    ctx.beginPath();
-    ctx.moveTo(-2.2, -31);
-    ctx.lineTo(2.2, -31);
-    ctx.lineTo(3.4, -18);
-    ctx.lineTo(-3.4, -18);
-    ctx.closePath();
-    ctx.fill();
-
-    ctx.strokeStyle = "rgba(255,255,255,.76)";
-    ctx.lineWidth = 1.3;
-    ctx.shadowBlur = 0;
-    ctx.beginPath();
-    ctx.moveTo(-18, 7);
-    ctx.lineTo(-10, 5);
-    ctx.moveTo(18, 7);
-    ctx.lineTo(10, 5);
-    ctx.stroke();
+    if (thrusterActive) {
+      const flame = Math.floor(this.sessionTime * 18) % 2 === 0 ? 8 : 5;
+      ctx.fillStyle = "#00ffff"; ctx.shadowColor = "#00ffff"; ctx.shadowBlur = 4;
+      ctx.fillRect(Math.floor(x - pixel), originY + ship.length * pixel, pixel * 2, flame);
+    }
     ctx.restore();
   }
 
@@ -7861,121 +8180,29 @@ class AlienInvadersGame {
   }
 
   drawAlienType1(ctx, x, y, scale = 1, frame = 0, color = "#9dff5a") {
-    ctx.save();
-    ctx.translate(x, y);
-    ctx.scale(scale, scale);
-    ctx.lineJoin = "round";
-    ctx.lineCap = "round";
-    ctx.strokeStyle = color;
-    ctx.fillStyle = "rgba(12, 32, 25, .9)";
-    ctx.lineWidth = 2.2;
-    ctx.shadowColor = color;
-    ctx.shadowBlur = 15;
-
-    ctx.beginPath();
-    ctx.moveTo(-18, 5);
-    ctx.quadraticCurveTo(-20, -10, -10, -15);
-    ctx.quadraticCurveTo(0, -21, 10, -15);
-    ctx.quadraticCurveTo(20, -10, 18, 5);
-    ctx.lineTo(12, 12);
-    ctx.lineTo(-12, 12);
-    ctx.closePath();
-    ctx.fill();
-    ctx.stroke();
-
-    ctx.fillStyle = color;
-    ctx.beginPath();
-    ctx.arc(-7, -4, 2.6, 0, Math.PI * 2);
-    ctx.arc(7, -4, 2.6, 0, Math.PI * 2);
-    ctx.fill();
-
-    ctx.strokeStyle = color;
-    ctx.lineWidth = 3;
-    const outerDrop = frame === 0 ? 10 : 16;
-    const innerDrop = frame === 0 ? 16 : 10;
-    ctx.beginPath();
-    ctx.moveTo(-13, 10);
-    ctx.lineTo(-18, outerDrop + 9);
-    ctx.lineTo(-23, outerDrop + 6);
-    ctx.moveTo(-6, 11);
-    ctx.lineTo(-8, innerDrop + 8);
-    ctx.lineTo(-3, innerDrop + 12);
-    ctx.moveTo(6, 11);
-    ctx.lineTo(8, innerDrop + 8);
-    ctx.lineTo(3, innerDrop + 12);
-    ctx.moveTo(13, 10);
-    ctx.lineTo(18, outerDrop + 9);
-    ctx.lineTo(23, outerDrop + 6);
-    ctx.stroke();
-
-    ctx.strokeStyle = "rgba(255,255,255,.55)";
-    ctx.lineWidth = 1;
-    ctx.shadowBlur = 0;
-    ctx.beginPath();
-    ctx.moveTo(-10, -12);
-    ctx.quadraticCurveTo(0, -17, 10, -12);
-    ctx.stroke();
+    const frames = [
+      ["..XX....XX..","...XX..XX...","..XXXXXXXX..",".XX.XXXX.XX.","XXXXXXXXXXXX","X.XXXXXXXX.X","X.X......X.X","...XX..XX..."],
+      ["..XX....XX..","X..XX..XX..X","X.XXXXXXXX.X","XXX.XXXX.XXX",".XXXXXXXXXX.","XXXXXXXXXXXX","..X......X..",".X........X."]
+    ];
+    const matrix = frames[frame & 1];
+    const pixel = Math.max(2, Math.floor(3 * scale));
+    const originX = Math.floor(x - matrix[0].length * pixel / 2);
+    const originY = Math.floor(y - matrix.length * pixel / 2);
+    ctx.save(); ctx.fillStyle = color; ctx.shadowColor = color; ctx.shadowBlur = 4;
+    for (let row = 0; row < matrix.length; row += 1) for (let column = 0; column < matrix[row].length; column += 1) if (matrix[row][column] === "X") ctx.fillRect(originX + column * pixel, originY + row * pixel, pixel, pixel);
     ctx.restore();
   }
 
   drawAlienType2(ctx, x, y, scale = 1, color = "#ff3cf7") {
-    const pulse = 0.75 + Math.sin(performance.now() * 0.006 + x * 0.01) * 0.2;
-    ctx.save();
-    ctx.translate(x, y);
-    ctx.scale(scale, scale);
-    ctx.lineJoin = "round";
-    ctx.strokeStyle = color;
-    ctx.lineWidth = 2.2;
-    ctx.shadowColor = color;
-    ctx.shadowBlur = 18;
-
-    ctx.fillStyle = "rgba(42, 12, 54, .9)";
-    ctx.beginPath();
-    ctx.moveTo(-24, 3);
-    ctx.lineTo(-13, -8);
-    ctx.quadraticCurveTo(0, -18, 13, -8);
-    ctx.lineTo(24, 3);
-    ctx.lineTo(15, 12);
-    ctx.lineTo(-15, 12);
-    ctx.closePath();
-    ctx.fill();
-    ctx.stroke();
-
-    ctx.fillStyle = "rgba(255,255,255,.12)";
-    ctx.beginPath();
-    ctx.ellipse(0, -6, 10, 8, 0, Math.PI, Math.PI * 2);
-    ctx.fill();
-    ctx.stroke();
-
-    ctx.strokeStyle = color;
-    ctx.lineWidth = 3;
-    ctx.beginPath();
-    ctx.moveTo(-24, 3);
-    ctx.lineTo(-31, 8);
-    ctx.lineTo(-19, 13);
-    ctx.moveTo(24, 3);
-    ctx.lineTo(31, 8);
-    ctx.lineTo(19, 13);
-    ctx.stroke();
-
-    const coreGradient = ctx.createRadialGradient(0, 4, 1, 0, 4, 9);
-    coreGradient.addColorStop(0, "rgba(255,255,255,1)");
-    coreGradient.addColorStop(0.32, color);
-    coreGradient.addColorStop(1, "rgba(255,60,247,0)");
-    ctx.globalAlpha = pulse;
-    ctx.fillStyle = coreGradient;
-    ctx.shadowBlur = 24;
-    ctx.beginPath();
-    ctx.arc(0, 4, 9, 0, Math.PI * 2);
-    ctx.fill();
-
-    ctx.globalAlpha = 1;
-    ctx.fillStyle = "rgba(255,255,255,.88)";
-    ctx.shadowBlur = 8;
-    ctx.beginPath();
-    ctx.arc(-14, 5, 2, 0, Math.PI * 2);
-    ctx.arc(14, 5, 2, 0, Math.PI * 2);
-    ctx.fill();
+    const matrix = ["....MM....","..MMMMMM..",".MMWWWWMM.","MMMWMMWMMM","MMMMMMMMMM","..MM..MM..",".MM.MM.MM.","MM......MM"];
+    const pixel = Math.max(2, Math.floor(3 * scale));
+    const originX = Math.floor(x - matrix[0].length * pixel / 2);
+    const originY = Math.floor(y - matrix.length * pixel / 2);
+    ctx.save(); ctx.shadowBlur = 4;
+    for (let row = 0; row < matrix.length; row += 1) for (let column = 0; column < matrix[row].length; column += 1) {
+      const token = matrix[row][column]; const pixelColor = token === "W" ? "#ffffff" : token === "M" ? color : null;
+      if (!pixelColor) continue; ctx.fillStyle = pixelColor; ctx.shadowColor = pixelColor; ctx.fillRect(originX + column * pixel, originY + row * pixel, pixel, pixel);
+    }
     ctx.restore();
   }
 
@@ -8065,6 +8292,7 @@ class AlienInvadersGame {
       this.drawMiniShip(ctx, 690 + life * 34, 41);
     }
     this.powerUps.drawHud(ctx, 22, 76, 360);
+    this.combo.draw(ctx, 570, 76, 205);
     ctx.restore();
   }
 
@@ -8212,6 +8440,7 @@ class NeonPacmanGame {
     this.particles = [];
     this.energyPulses = [];
     this.powerUps = new NeonPowerUpSystem(engine, "pac-man");
+    this.combo = new ArcadeComboSystem(engine, "pac-man", "#00eaff");
     this.playerSpawn = { column: 15, row: 17 };
     this.ghostSpawns = new Map();
     this.player = this.createPlayer();
@@ -8301,6 +8530,7 @@ class NeonPacmanGame {
     this.particles.splice(0, this.particles.length);
     this.energyPulses.splice(0, this.energyPulses.length);
     this.powerUps.reset();
+    this.combo.reset();
     this.loadLevel();
     this.player.invulnerable = 2.2;
     this.engine.onGameStart();
@@ -8323,6 +8553,7 @@ class NeonPacmanGame {
     this.particles.splice(0, this.particles.length);
     this.energyPulses.splice(0, this.energyPulses.length);
     this.powerUps.reset();
+    this.combo.reset();
     this.loadLevel();
   }
 
@@ -8350,6 +8581,7 @@ class NeonPacmanGame {
   update(deltaTime) {
     this.gameTime += deltaTime;
     this.damageFlash = Math.max(0, this.damageFlash - deltaTime * 2.8);
+    this.combo.update(deltaTime);
     this.spreadPulseCooldown = Math.max(0, this.spreadPulseCooldown - deltaTime);
     this.updateParticles(deltaTime);
 
@@ -8673,14 +8905,15 @@ class NeonPacmanGame {
     this.maze[row][column] = 0;
     this.pelletsRemaining -= 1;
     if (tile === 2) {
-      this.score += 10;
+      const pelletPoints = this.combo.register(10, "PELLET");
+      this.score += pelletPoints;
       this.createPelletSpark(column, row, source === "pulse" ? "#ff66f7" : "#ffe75b", source === "pulse" ? 5 : 3);
       this.engine.audio.playArcadeSound("pac-man", "waka_waka", {
         brightness: source === "pulse" ? 1.12 : 0.86 + (this.score % 40) / 200
       });
       return true;
     }
-    this.score += 50;
+    this.score += this.combo.register(50, "POWER PELLET");
     this.frightenedTimer = 7;
     this.frightenedChain = 0;
     for (const ghost of this.ghosts) {
@@ -8697,11 +8930,12 @@ class NeonPacmanGame {
   }
 
   captureGhost(ghost, points, label = "CAPTURED") {
-    this.score += points;
+    const awardedPoints = this.combo.register(points, "GHOST");
+    this.score += awardedPoints;
     this.createBurst(ghost.gridX, ghost.gridY, ghost.color, 20, 0.95);
     this.engine.audio.explosion(0.52);
     this.engine.triggerScreenShake(0.08, 3.5);
-    this.engine.showCanvasMessage(`+${points} ${label}`, {
+    this.engine.showCanvasMessage(`+${awardedPoints} ${label}`, {
       x: this.gridToWorldX(ghost.gridX),
       y: this.gridToWorldY(ghost.gridY) - 8,
       color: ghost.color,
@@ -8772,6 +9006,7 @@ class NeonPacmanGame {
 
   loseLife() {
     if (this.powerUps.isActive("shield")) return;
+    this.combo.breakChain();
     this.lives -= 1;
     this.damageFlash = 1;
     this.createBurst(this.player.gridX, this.player.gridY, "#ffd83d", 26, 1.05);
@@ -9055,8 +9290,8 @@ class NeonPacmanGame {
 
     ctx.strokeStyle = "#2c6bff";
     ctx.shadowColor = "#2477ff";
-    ctx.shadowBlur = 10;
-    ctx.lineWidth = 1.65;
+    ctx.shadowBlur = 4;
+    ctx.lineWidth = 2.5;
     ctx.lineCap = "round";
 
     for (let row = 0; row < this.rows; row += 1) {
@@ -9305,6 +9540,7 @@ class NeonPacmanGame {
       ctx.fillRect(139, 57, 522 * ratio, 3);
     }
     this.powerUps.drawHud(ctx, 139, 63, 522);
+    this.combo.draw(ctx, 555, 98, 220);
     ctx.restore();
   }
 
@@ -9396,6 +9632,7 @@ class NeonAsteroidsGame {
     this.asteroids = [];
     this.particles = [];
     this.powerUps = new NeonPowerUpSystem(engine, "asteroids");
+    this.combo = new ArcadeComboSystem(engine, "asteroids", "#ff2bd6");
     this.highScoreStorageKey = "arcade_asteroids_highscore";
     this.highScore = this.loadHighScore();
     this.ship = this.createShip();
@@ -9462,6 +9699,7 @@ class NeonAsteroidsGame {
     this.asteroids.splice(0, this.asteroids.length);
     this.particles.splice(0, this.particles.length);
     this.powerUps.reset();
+    this.combo.reset();
     this.resetShip(3);
     this.spawnWave();
     this.engine.onGameStart();
@@ -9483,6 +9721,7 @@ class NeonAsteroidsGame {
     this.asteroids.splice(0, this.asteroids.length);
     this.particles.splice(0, this.particles.length);
     this.powerUps.reset();
+    this.combo.reset();
     this.ship = this.createShip();
   }
 
@@ -9596,8 +9835,7 @@ class NeonAsteroidsGame {
     this.updateParticles(deltaTime);
     this.screenShake = Math.max(0, this.screenShake - deltaTime * 36);
     this.damageFlash = Math.max(0, this.damageFlash - deltaTime * 2.2);
-    this.comboTimer = Math.max(0, this.comboTimer - deltaTime);
-    if (this.comboTimer === 0) this.comboCount = 0;
+    this.combo.update(deltaTime);
 
     if (this.state === GAME_STATES.MENU) {
       this.engine.audio.playArcadeSound("asteroids", "ship_thrust", { active: false, fade: 0.02 });
@@ -9770,7 +10008,8 @@ class NeonAsteroidsGame {
 
   destroyAsteroid(asteroid) {
     const profile = this.asteroidProfiles[asteroid.size];
-    this.score += profile.points;
+    const awardedPoints = this.combo.register(profile.points, "ASTEROID");
+    this.score += awardedPoints;
     this.createExplosion(
       asteroid.x,
       asteroid.y,
@@ -9793,22 +10032,6 @@ class NeonAsteroidsGame {
         life: 11,
         wrap: true,
         bob: 4
-      });
-    }
-
-    this.comboCount = this.comboTimer > 0 ? this.comboCount + 1 : 1;
-    this.comboTimer = 1.15;
-    if (this.comboCount >= 3) {
-      const comboBonus = this.comboCount * 25;
-      this.score += comboBonus;
-      this.engine.showCanvasMessage(`+${comboBonus} COMBO`, {
-        x: asteroid.x,
-        y: asteroid.y,
-        color: "#ffe75b",
-        size: 13,
-        duration: 1.05,
-        rise: 30,
-        blink: 9
       });
     }
 
@@ -9855,6 +10078,7 @@ class NeonAsteroidsGame {
 
   hitShip() {
     if (this.powerUps.isActive("shield")) return;
+    this.combo.breakChain();
     this.lives -= 1;
     this.createExplosion(this.ship.x, this.ship.y, "#42f5ff", 15, 210);
     this.createExplosion(this.ship.x, this.ship.y, "#ff3cf7", 11, 145);
@@ -10246,6 +10470,7 @@ class NeonAsteroidsGame {
         : "SHIELD OFF";
     ctx.fillText(shieldText, this.width - 28, this.height - 30);
     this.powerUps.drawHud(ctx, 28, 76, 370);
+    this.combo.draw(ctx, 574, 76, 198);
     ctx.restore();
   }
 
@@ -10316,6 +10541,7 @@ class NeonTronGame {
     this.playerTrail = [];
     this.cpuTrail = [];
     this.particles = [];
+    this.combo = new ArcadeComboSystem(engine, "tron", "#ff8a18");
     this.player = this.createBike(14, 32, TRON_DIRECTIONS.RIGHT, "#00ffff", 1);
     this.cpu = this.createBike(65, 27, TRON_DIRECTIONS.LEFT, "#ffa500", 2);
   }
@@ -10365,6 +10591,7 @@ class NeonTronGame {
     this.damageFlash = 0;
     this.screenShake = 0;
     this.particles.splice(0, this.particles.length);
+    this.combo.reset();
     this.beginRound(1.1, "ROUND 01");
     this.engine.onGameStart();
   }
@@ -10390,6 +10617,7 @@ class NeonTronGame {
     this.particles.splice(0, this.particles.length);
     this.player = this.createBike(14, 32, TRON_DIRECTIONS.RIGHT, "#00ffff", 1);
     this.cpu = this.createBike(65, 27, TRON_DIRECTIONS.LEFT, "#ffa500", 2);
+    this.combo.reset();
   }
 
   handlePrimaryAction() {
@@ -10460,6 +10688,7 @@ class NeonTronGame {
     this.damageFlash = Math.max(0, this.damageFlash - deltaTime * 2.8);
     this.screenShake = Math.max(0, this.screenShake - deltaTime * 38);
     this.roundMessageTimer = Math.max(0, this.roundMessageTimer - deltaTime);
+    this.combo.update(deltaTime);
     this.updateParticles(deltaTime);
 
     if (this.state === GAME_STATES.MENU) {
@@ -10591,6 +10820,7 @@ class NeonTronGame {
 
   handlePlayerCrash() {
     this.player.alive = false;
+    this.combo.breakChain();
     this.lives -= 1;
     this.damageFlash = 0.82;
     this.screenShake = 15;
@@ -10616,13 +10846,14 @@ class NeonTronGame {
 
   handleCpuCrash() {
     this.cpu.alive = false;
-    this.score += 1000;
+    const awardedPoints = this.combo.register(1000, "GRID VICTORY");
+    this.score += awardedPoints;
     this.level += 1;
     this.round += 1;
     this.screenShake = 9;
     this.spawnExplosion(this.cpu.column, this.cpu.row, "#ffa500", 14);
     this.engine.audio.playSynthSound("explosion", { intensity: 0.78 });
-    this.engine.showCanvasMessage("+1000 GRID VICTORY", {
+    this.engine.showCanvasMessage(`+${awardedPoints} GRID VICTORY`, {
       y: this.height * 0.42,
       color: "#00ffff",
       size: 16,
@@ -10872,6 +11103,7 @@ class NeonTronGame {
     ctx.fillText(`GRID SPEED ${this.speedCellsPerSecond.toFixed(1)} CPS`, 28, this.height - 27);
     ctx.textAlign = "right";
     ctx.fillText(`ROUND ${String(this.round).padStart(2, "0")}`, this.width - 28, this.height - 27);
+    this.combo.draw(ctx, 302, 68, 196);
     ctx.restore();
   }
 
@@ -10916,6 +11148,897 @@ class NeonTronGame {
       secondaryMetric: `LV ${String(this.level).padStart(2, "0")}`,
       primaryButton: this.state === GAME_STATES.PLAYING ? "ABORT GRID" : this.state === GAME_STATES.GAME_OVER ? "RETRY GRID" : "START GRID"
     };
+  }
+}
+
+
+const GALAGA_PIXEL_SPRITES = Object.freeze({
+  fighter: Object.freeze([
+    "......C......",
+    ".....CCC.....",
+    "....CWCWC....",
+    "..CCWWWWWCC..",
+    ".CCWWWWWWWCC.",
+    "CCCWWWWWWWCCC",
+    "...CCWWWCC...",
+    "....CCWCC....",
+    ".....FFF....."
+  ]),
+  bee: Object.freeze([
+    "..B...B..",
+    ".BBB.BBB.",
+    "BBBBBBBBB",
+    "BBYBBBYBB",
+    ".BYYYYYB.",
+    "..BYBYB..",
+    ".B.B.B.B.",
+    "B.......B"
+  ]),
+  butterfly: Object.freeze([
+    "R..C.C..R",
+    "RR.CCC.RR",
+    ".RRCCC RR".replace(" ", ""),
+    "RRRCCCRRR",
+    ".RCCCCC R".replace(" ", ""),
+    "..RCCCR..",
+    ".R.R.R.R.",
+    "R.......R"
+  ]),
+  commander: Object.freeze([
+    "..G.M.G..",
+    ".GGMMM GG".replace(" ", ""),
+    "GGMMMMMGG",
+    "GMMGGGMMG",
+    "MMMGGGMMM",
+    ".MMGGGMM.",
+    "..MGGGM..",
+    ".M.M.M.M."
+  ])
+});
+
+class CyberGalagaGame {
+  constructor(engine) {
+    this.engine = engine;
+    this.ctx = engine.ctx;
+    this.input = engine.input;
+    this.width = engine.width;
+    this.height = engine.height;
+    this.state = GAME_STATES.MENU;
+    this.score = 0;
+    this.lives = 3;
+    this.wave = 1;
+    this.time = 0;
+    this.waveTransition = 0;
+    this.diveTimer = 2.6;
+    this.playerBullets = [];
+    this.enemyBullets = [];
+    this.enemies = [];
+    this.particles = [];
+    this.capturedCommanderId = null;
+    this.tractorSoundActive = false;
+    this.nextEnemyId = 1;
+    this.combo = new ArcadeComboSystem(engine, "galaga", "#168cff");
+    this.player = {
+      x: this.width / 2,
+      y: this.height - 58,
+      width: 42,
+      height: 30,
+      speed: 380,
+      shotCooldown: 0,
+      invulnerable: 0,
+      respawnTimer: 0,
+      visible: true,
+      dual: false,
+      captureFlash: 0
+    };
+  }
+
+  start() {
+    this.state = GAME_STATES.PLAYING;
+    this.score = 0;
+    this.lives = 3;
+    this.wave = 1;
+    this.time = 0;
+    this.waveTransition = 0;
+    this.diveTimer = 2.8;
+    this.capturedCommanderId = null;
+    this.player.x = this.width / 2;
+    this.player.y = this.height - 58;
+    this.player.shotCooldown = 0;
+    this.player.invulnerable = 1.5;
+    this.player.respawnTimer = 0;
+    this.player.visible = true;
+    this.player.dual = false;
+    this.player.captureFlash = 0;
+    this.playerBullets.splice(0, this.playerBullets.length);
+    this.enemyBullets.splice(0, this.enemyBullets.length);
+    this.particles.splice(0, this.particles.length);
+    this.combo.reset();
+    this.spawnWave();
+    this.engine.onGameStart();
+  }
+
+  resetToMenu() {
+    this.state = GAME_STATES.MENU;
+    this.score = 0;
+    this.lives = 3;
+    this.wave = 1;
+    this.time = 0;
+    this.waveTransition = 0;
+    this.diveTimer = 2.6;
+    this.capturedCommanderId = null;
+    this.player.x = this.width / 2;
+    this.player.y = this.height - 58;
+    this.player.shotCooldown = 0;
+    this.player.invulnerable = 0;
+    this.player.respawnTimer = 0;
+    this.player.visible = true;
+    this.player.dual = false;
+    this.player.captureFlash = 0;
+    this.playerBullets.splice(0, this.playerBullets.length);
+    this.enemyBullets.splice(0, this.enemyBullets.length);
+    this.enemies.splice(0, this.enemies.length);
+    this.particles.splice(0, this.particles.length);
+    this.combo.reset();
+    this.setTractorAudio(false);
+  }
+
+  handlePrimaryAction() {
+    if (this.state === GAME_STATES.MENU || this.state === GAME_STATES.GAME_OVER) this.start();
+    else this.endGame();
+  }
+
+  endGame() {
+    if (this.state !== GAME_STATES.PLAYING) return;
+    this.state = GAME_STATES.GAME_OVER;
+    this.setTractorAudio(false);
+    this.playerBullets.splice(0, this.playerBullets.length);
+    this.enemyBullets.splice(0, this.enemyBullets.length);
+    if (this.player.visible) this.createExplosion(this.player.x, this.player.y, ["#ffffff", "#00ffff", "#ff2bd6"], 15);
+    this.engine.triggerScreenShake(0.42, 15);
+    this.engine.triggerGlitch(0.38, 1.2);
+    this.engine.onGameOver(this.score);
+  }
+
+  spawnWave() {
+    this.enemies.splice(0, this.enemies.length);
+    this.playerBullets.splice(0, this.playerBullets.length);
+    this.enemyBullets.splice(0, this.enemyBullets.length);
+    this.waveTransition = 0;
+    this.diveTimer = Math.max(1.7, 3.1 - this.wave * 0.08);
+    this.capturedCommanderId = null;
+    this.player.dual = false;
+    const slots = [];
+    const spacingX = 66;
+    const startX = this.width / 2 - spacingX * 3.5;
+    for (let column = 2; column <= 5; column += 1) slots.push({ type: "commander", row: 0, col: column, x: startX + column * spacingX, y: 92 });
+    for (let row = 1; row <= 4; row += 1) {
+      for (let column = 0; column < 8; column += 1) {
+        slots.push({
+          type: row <= 2 ? "butterfly" : "bee",
+          row,
+          col: column,
+          x: startX + column * spacingX,
+          y: 92 + row * 44
+        });
+      }
+    }
+    slots.forEach((slot, index) => {
+      const fromLeft = index % 2 === 0;
+      const hp = slot.type === "commander" ? 2 : 1;
+      this.enemies.push({
+        id: this.nextEnemyId++,
+        type: slot.type,
+        row: slot.row,
+        col: slot.col,
+        hp,
+        maxHp: hp,
+        width: slot.type === "commander" ? 38 : 34,
+        height: 28,
+        slotX: slot.x,
+        slotY: slot.y,
+        x: fromLeft ? -45 : this.width + 45,
+        y: 24 + (index % 5) * 5,
+        mode: "entering",
+        entryDelay: index * 0.052,
+        entryTime: 0,
+        entryDuration: 1.2 + (index % 4) * 0.07,
+        startX: fromLeft ? -45 : this.width + 45,
+        startY: 24 + (index % 5) * 5,
+        cp1X: fromLeft ? 210 : 590,
+        cp1Y: 18 + (index % 3) * 24,
+        cp2X: slot.x + (fromLeft ? -125 : 125),
+        cp2Y: slot.y + 92,
+        phase: Math.random() * Math.PI * 2,
+        diveTime: 0,
+        diveDuration: 2.35,
+        diveStartX: slot.x,
+        diveStartY: slot.y,
+        targetX: this.width / 2,
+        curveSide: fromLeft ? 1 : -1,
+        willTractor: false,
+        tractorTime: 0,
+        returnTime: 0,
+        returnStartX: slot.x,
+        returnStartY: slot.y,
+        shotFlags: 0,
+        hitFlash: 0,
+        capturedShip: null,
+        rescueArmed: false
+      });
+    });
+  }
+
+  update(deltaTime) {
+    this.updateParticles(deltaTime);
+    this.combo.update(deltaTime);
+    if (this.state === GAME_STATES.MENU || this.state === GAME_STATES.GAME_OVER) {
+      if (this.input.wasPressed("Space") || this.input.wasPressed("Enter")) this.start();
+      return;
+    }
+    this.time += deltaTime;
+    this.player.shotCooldown = Math.max(0, this.player.shotCooldown - deltaTime);
+    this.player.invulnerable = Math.max(0, this.player.invulnerable - deltaTime);
+    this.player.captureFlash = Math.max(0, this.player.captureFlash - deltaTime);
+    this.updatePlayer(deltaTime);
+    this.updateBullets(deltaTime);
+    this.updateEnemies(deltaTime);
+    this.resolveCollisions();
+
+    if (this.enemies.length === 0 && this.waveTransition <= 0) {
+      this.waveTransition = 2.0;
+      this.score += 800 + this.wave * 150;
+      this.engine.showCanvasMessage("FORMATION CLEARED", { y: 285, color: "#00ffff", size: 18, duration: 1.7, fixed: true });
+    }
+    if (this.waveTransition > 0) {
+      this.waveTransition -= deltaTime;
+      if (this.waveTransition <= 0) {
+        this.wave += 1;
+        this.player.invulnerable = 1.2;
+        this.spawnWave();
+      }
+    }
+  }
+
+  updatePlayer(deltaTime) {
+    if (this.player.respawnTimer > 0) {
+      this.player.respawnTimer -= deltaTime;
+      if (this.player.respawnTimer <= 0 && this.lives > 0) {
+        this.player.visible = true;
+        this.player.x = this.width / 2;
+        this.player.invulnerable = 1.55;
+      }
+      return;
+    }
+    if (!this.player.visible) return;
+    let direction = 0;
+    if (this.input.isDown("ArrowLeft")) direction -= 1;
+    if (this.input.isDown("ArrowRight")) direction += 1;
+    this.player.x += direction * this.player.speed * deltaTime;
+    const halfWidth = this.player.dual ? 33 : 22;
+    this.player.x = Math.max(halfWidth + 12, Math.min(this.width - halfWidth - 12, this.player.x));
+    if ((this.input.isDown("Space") || this.input.wasPressed("Space")) && this.player.shotCooldown <= 0) this.firePlayerShot();
+  }
+
+  firePlayerShot() {
+    if (!this.player.visible) return;
+    const offsets = this.player.dual ? [-12, 12] : [0];
+    for (const offset of offsets) {
+      this.playerBullets.push({ x: this.player.x + offset, y: this.player.y - 22, vy: -520, radius: 3 });
+    }
+    this.player.shotCooldown = this.player.dual ? 0.16 : 0.145;
+    this.engine.audio.playArcadeSound("galaga", "galaga_laser");
+    this.engine.haptics.shot();
+  }
+
+  updateBullets(deltaTime) {
+    for (let index = this.playerBullets.length - 1; index >= 0; index -= 1) {
+      const bullet = this.playerBullets[index];
+      bullet.y += bullet.vy * deltaTime;
+      if (bullet.y < -18) this.playerBullets.splice(index, 1);
+    }
+    for (let index = this.enemyBullets.length - 1; index >= 0; index -= 1) {
+      const bullet = this.enemyBullets[index];
+      bullet.x += bullet.vx * deltaTime;
+      bullet.y += bullet.vy * deltaTime;
+      bullet.phase += deltaTime * 12;
+      if (bullet.y > this.height + 25 || bullet.x < -25 || bullet.x > this.width + 25) this.enemyBullets.splice(index, 1);
+    }
+  }
+
+  updateEnemies(deltaTime) {
+    this.diveTimer -= deltaTime;
+    const allEntered = this.enemies.every((enemy) => enemy.mode !== "entering");
+    if (allEntered && this.diveTimer <= 0 && this.waveTransition <= 0) {
+      this.launchDiveAttack();
+      this.diveTimer = Math.max(1.5, 3.35 - this.wave * 0.1) + Math.random() * 1.25;
+    }
+    let tractorActive = false;
+    for (const enemy of this.enemies) {
+      enemy.hitFlash = Math.max(0, enemy.hitFlash - deltaTime);
+      if (enemy.mode === "entering") this.updateEnteringEnemy(enemy, deltaTime);
+      else if (enemy.mode === "formation") this.updateFormationEnemy(enemy);
+      else if (enemy.mode === "diving") this.updateDivingEnemy(enemy, deltaTime);
+      else if (enemy.mode === "tractor") {
+        tractorActive = true;
+        this.updateTractorEnemy(enemy, deltaTime);
+      } else if (enemy.mode === "returning") this.updateReturningEnemy(enemy, deltaTime);
+      this.updateCapturedShip(enemy, deltaTime);
+    }
+    this.setTractorAudio(tractorActive);
+  }
+
+  updateEnteringEnemy(enemy, deltaTime) {
+    enemy.entryTime += deltaTime;
+    if (enemy.entryTime < enemy.entryDelay) return;
+    const t = Math.min(1, (enemy.entryTime - enemy.entryDelay) / enemy.entryDuration);
+    const eased = t * t * (3 - 2 * t);
+    enemy.x = this.cubicBezier(enemy.startX, enemy.cp1X, enemy.cp2X, enemy.slotX, eased);
+    enemy.y = this.cubicBezier(enemy.startY, enemy.cp1Y, enemy.cp2Y, enemy.slotY, eased);
+    if (t >= 1) {
+      enemy.mode = "formation";
+      enemy.x = enemy.slotX;
+      enemy.y = enemy.slotY;
+    }
+  }
+
+  updateFormationEnemy(enemy) {
+    enemy.x = enemy.slotX + Math.sin(this.time * 0.92 + enemy.phase + enemy.row * 0.3) * 8;
+    enemy.y = enemy.slotY + Math.sin(this.time * 1.55 + enemy.phase) * 2.5;
+  }
+
+  launchDiveAttack() {
+    const formation = this.enemies.filter((enemy) => enemy.mode === "formation");
+    if (formation.length === 0) return;
+    const rescueCandidate = formation.find((enemy) => enemy.capturedShip && enemy.rescueArmed);
+    const count = rescueCandidate ? 1 : (this.wave >= 3 && Math.random() < 0.34 ? 2 : 1);
+    const selected = [];
+    if (rescueCandidate) selected.push(rescueCandidate);
+    while (selected.length < count && formation.length > selected.length) {
+      const candidate = formation[Math.floor(Math.random() * formation.length)];
+      if (!selected.includes(candidate)) selected.push(candidate);
+    }
+    selected.forEach((enemy, index) => {
+      enemy.mode = "diving";
+      enemy.diveTime = -index * 0.18;
+      enemy.diveDuration = Math.max(1.65, 2.45 - this.wave * 0.035);
+      enemy.diveStartX = enemy.x;
+      enemy.diveStartY = enemy.y;
+      enemy.targetX = this.player.visible ? this.player.x : this.width / 2;
+      enemy.curveSide = enemy.x < this.width / 2 ? 1 : -1;
+      enemy.shotFlags = 0;
+      enemy.willTractor = enemy.type === "commander" && !enemy.capturedShip && this.capturedCommanderId === null && Math.random() < 0.34;
+    });
+  }
+
+  updateDivingEnemy(enemy, deltaTime) {
+    enemy.diveTime += deltaTime;
+    if (enemy.diveTime < 0) return;
+    const t = Math.min(1, enemy.diveTime / enemy.diveDuration);
+    const cp1X = enemy.diveStartX + enemy.curveSide * 155;
+    const cp1Y = enemy.diveStartY + 88;
+    const cp2X = enemy.targetX - enemy.curveSide * 150;
+    const cp2Y = this.height * 0.72;
+    enemy.x = this.cubicBezier(enemy.diveStartX, cp1X, cp2X, enemy.targetX, t);
+    enemy.y = this.cubicBezier(enemy.diveStartY, cp1Y, cp2Y, this.height + 52, t);
+    if (enemy.willTractor && t >= 0.43 && enemy.y < 345) {
+      enemy.mode = "tractor";
+      enemy.tractorTime = 0;
+      enemy.willTractor = false;
+      this.engine.showCanvasMessage("TRACTOR BEAM", { x: enemy.x, y: enemy.y - 34, color: "#00bfff", size: 12, duration: 1.0 });
+      return;
+    }
+    if (t >= 0.34 && (enemy.shotFlags & 1) === 0) {
+      enemy.shotFlags |= 1;
+      this.fireEnemyShot(enemy);
+    }
+    if (t >= 0.64 && (enemy.shotFlags & 2) === 0) {
+      enemy.shotFlags |= 2;
+      if (Math.random() < 0.72) this.fireEnemyShot(enemy);
+    }
+    if (t >= 1) {
+      enemy.x = Math.max(45, Math.min(this.width - 45, enemy.targetX));
+      enemy.y = -38;
+      this.beginReturn(enemy);
+    }
+  }
+
+  updateTractorEnemy(enemy, deltaTime) {
+    enemy.tractorTime += deltaTime;
+    enemy.x += Math.sin(this.time * 3.4 + enemy.phase) * 0.45;
+    enemy.y += Math.sin(this.time * 4.1 + enemy.phase) * 0.16;
+    if (this.player.visible && this.player.invulnerable <= 0 && this.playerInsideTractorBeam(enemy)) this.capturePlayer(enemy);
+    if (enemy.mode === "tractor" && enemy.tractorTime >= 2.45) this.beginReturn(enemy);
+  }
+
+  beginReturn(enemy) {
+    enemy.mode = "returning";
+    enemy.returnTime = 0;
+    enemy.returnStartX = enemy.x;
+    enemy.returnStartY = enemy.y;
+  }
+
+  updateReturningEnemy(enemy, deltaTime) {
+    enemy.returnTime += deltaTime;
+    const duration = 1.35;
+    const t = Math.min(1, enemy.returnTime / duration);
+    const cp1X = enemy.returnStartX + (enemy.slotX < this.width / 2 ? -160 : 160);
+    const cp1Y = Math.min(enemy.returnStartY - 120, 110);
+    const cp2X = enemy.slotX + (enemy.slotX < this.width / 2 ? 110 : -110);
+    const cp2Y = enemy.slotY - 115;
+    enemy.x = this.cubicBezier(enemy.returnStartX, cp1X, cp2X, enemy.slotX, t);
+    enemy.y = this.cubicBezier(enemy.returnStartY, cp1Y, cp2Y, enemy.slotY, t);
+    if (t >= 1) {
+      enemy.mode = "formation";
+      enemy.x = enemy.slotX;
+      enemy.y = enemy.slotY;
+      if (enemy.capturedShip) enemy.rescueArmed = true;
+    }
+  }
+
+  updateCapturedShip(enemy, deltaTime) {
+    if (!enemy.capturedShip) return;
+    const targetX = enemy.x;
+    const targetY = enemy.y + 30;
+    const factor = Math.min(1, deltaTime * 5.2);
+    enemy.capturedShip.x += (targetX - enemy.capturedShip.x) * factor;
+    enemy.capturedShip.y += (targetY - enemy.capturedShip.y) * factor;
+    enemy.capturedShip.docked = Math.abs(enemy.capturedShip.x - targetX) < 2 && Math.abs(enemy.capturedShip.y - targetY) < 2;
+  }
+
+  fireEnemyShot(enemy) {
+    if (!this.player.visible) return;
+    const dx = this.player.x - enemy.x;
+    const dy = Math.max(80, this.player.y - enemy.y);
+    const length = Math.hypot(dx, dy) || 1;
+    const speed = 235 + this.wave * 9;
+    this.enemyBullets.push({
+      x: enemy.x,
+      y: enemy.y + 12,
+      vx: dx / length * speed,
+      vy: dy / length * speed,
+      radius: 4,
+      phase: 0
+    });
+  }
+
+  resolveCollisions() {
+    for (let bulletIndex = this.playerBullets.length - 1; bulletIndex >= 0; bulletIndex -= 1) {
+      const bullet = this.playerBullets[bulletIndex];
+      let consumed = false;
+      for (let enemyIndex = this.enemies.length - 1; enemyIndex >= 0; enemyIndex -= 1) {
+        const enemy = this.enemies[enemyIndex];
+        if (!this.pointInsideEnemy(bullet.x, bullet.y, enemy)) continue;
+        this.playerBullets.splice(bulletIndex, 1);
+        consumed = true;
+        enemy.hp -= 1;
+        enemy.hitFlash = 0.12;
+        if (enemy.hp <= 0) this.destroyEnemy(enemyIndex, enemy);
+        else {
+          this.score += 25;
+          this.engine.audio.playArcadeSound("galaga", "enemy_explosion", { commander: false });
+        }
+        break;
+      }
+      if (consumed) continue;
+    }
+
+    if (!this.player.visible || this.player.invulnerable > 0) return;
+    for (let index = this.enemyBullets.length - 1; index >= 0; index -= 1) {
+      const bullet = this.enemyBullets[index];
+      if (!this.circleHitsPlayer(bullet.x, bullet.y, bullet.radius)) continue;
+      this.enemyBullets.splice(index, 1);
+      this.damagePlayer();
+      return;
+    }
+    for (const enemy of this.enemies) {
+      if (enemy.mode !== "diving" && enemy.mode !== "returning") continue;
+      if (!this.rectanglesOverlap(
+        enemy.x - enemy.width / 2, enemy.y - enemy.height / 2, enemy.width, enemy.height,
+        this.player.x - this.player.width / 2, this.player.y - this.player.height / 2, this.player.width, this.player.height
+      )) continue;
+      this.damagePlayer();
+      return;
+    }
+  }
+
+  destroyEnemy(index, enemy) {
+    const flyingRescue = Boolean(enemy.capturedShip && enemy.rescueArmed && (enemy.mode === "diving" || enemy.mode === "returning"));
+    const points = enemy.type === "commander" ? 220 : enemy.type === "butterfly" ? 100 : 70;
+    const diveBonus = enemy.mode === "diving" || enemy.mode === "returning" || enemy.mode === "tractor" ? 2 : 1;
+    const awardedPoints = this.combo.register(points * diveBonus, "DIVE");
+    this.score += awardedPoints;
+    this.createExplosion(enemy.x, enemy.y, this.enemyPalette(enemy.type), enemy.type === "commander" ? 15 : 12 + Math.floor(Math.random() * 4));
+    this.engine.audio.playArcadeSound("galaga", "galaga_explosion", { commander: enemy.type === "commander" });
+    this.engine.triggerScreenShake(enemy.type === "commander" ? 0.22 : 0.1, enemy.type === "commander" ? 8 : 4);
+    if (flyingRescue) {
+      this.player.dual = true;
+      this.capturedCommanderId = null;
+      this.score += this.combo.register(1200, "RESCUE");
+      this.engine.achievements.unlock("dual-rescuer");
+      this.engine.showCanvasMessage("DUAL FIGHTER", { y: 340, color: "#00ffff", size: 23, duration: 2.1, fixed: true, priority: true });
+      this.engine.audio.playSynthSound("power_up", { type: "spreadShot" });
+    } else if (enemy.capturedShip) {
+      this.capturedCommanderId = null;
+      this.engine.showCanvasMessage("CAPTURED FIGHTER LOST", { y: 320, color: "#ff416d", size: 12, duration: 1.5, fixed: true });
+    }
+    this.enemies.splice(index, 1);
+  }
+
+  damagePlayer() {
+    if (!this.player.visible || this.player.invulnerable > 0) return;
+    this.createExplosion(this.player.x, this.player.y, ["#ffffff", "#00ffff", "#ff2bd6"], 15);
+    this.engine.audio.playArcadeSound("galaga", "galaga_explosion", { commander: true });
+    this.engine.haptics.damage();
+    this.engine.triggerScreenShake(0.35, 14);
+    this.player.visible = false;
+    this.player.dual = false;
+    this.lives -= 1;
+    this.combo.breakChain();
+    if (this.lives <= 0) {
+      this.endGame();
+      return;
+    }
+    this.player.respawnTimer = 1.25;
+    this.engine.showCanvasMessage("FIGHTER LOST", { y: 350, color: "#ff416d", size: 17, duration: 1.3, fixed: true });
+  }
+
+  capturePlayer(enemy) {
+    if (!this.player.visible || this.player.invulnerable > 0 || enemy.capturedShip || this.capturedCommanderId !== null) return;
+    enemy.capturedShip = { x: this.player.x, y: this.player.y, docked: false };
+    enemy.rescueArmed = false;
+    this.capturedCommanderId = enemy.id;
+    this.player.captureFlash = 0.65;
+    this.player.visible = false;
+    this.player.dual = false;
+    this.lives -= 1;
+    this.combo.breakChain();
+    this.setTractorAudio(false);
+    this.engine.haptics.damage();
+    this.engine.triggerScreenShake(0.28, 10);
+    this.engine.showCanvasMessage("FIGHTER CAPTURED", { y: 340, color: "#ff304f", size: 20, duration: 2.0, fixed: true, priority: true });
+    this.engine.audio.playSynthSound("power_up", { type: "shield" });
+    this.beginReturn(enemy);
+    if (this.lives <= 0) {
+      this.endGame();
+      return;
+    }
+    this.player.respawnTimer = 1.55;
+  }
+
+  playerInsideTractorBeam(enemy) {
+    const top = enemy.y + 14;
+    const bottom = this.height - 34;
+    const centerY = this.player.y;
+    if (centerY < top || centerY > bottom) return false;
+    const ratio = (centerY - top) / Math.max(1, bottom - top);
+    const halfWidth = 12 + ratio * 78;
+    return Math.abs(this.player.x - enemy.x) <= halfWidth + this.player.width * 0.28;
+  }
+
+  setTractorAudio(active) {
+    const normalized = Boolean(active);
+    if (normalized === this.tractorSoundActive) {
+      if (normalized) this.engine.audio.playArcadeSound("galaga", "tractor_beam", { active: true });
+      return;
+    }
+    this.tractorSoundActive = normalized;
+    this.engine.audio.playArcadeSound("galaga", "tractor_beam", { active: normalized, fade: 0.06 });
+  }
+
+  updateParticles(deltaTime) {
+    for (let index = this.particles.length - 1; index >= 0; index -= 1) {
+      const particle = this.particles[index];
+      particle.life -= deltaTime;
+      if (particle.life <= 0) {
+        this.particles.splice(index, 1);
+        continue;
+      }
+      particle.x += particle.vx * deltaTime;
+      particle.y += particle.vy * deltaTime;
+      particle.vx *= Math.pow(0.985, deltaTime * 60);
+      particle.vy *= Math.pow(0.985, deltaTime * 60);
+      particle.rotation += particle.spin * deltaTime;
+    }
+  }
+
+  createExplosion(x, y, colors, count = 13) {
+    const palette = Array.isArray(colors) ? colors : [String(colors || "#00ffff")];
+    const particleCount = Math.max(12, Math.min(15, Math.floor(count)));
+    for (let index = 0; index < particleCount; index += 1) {
+      const angle = Math.PI * 2 * index / particleCount + Math.random() * 0.26;
+      const speed = 75 + Math.random() * 165;
+      this.particles.push({
+        x: Math.floor(x),
+        y: Math.floor(y),
+        vx: Math.cos(angle) * speed,
+        vy: Math.sin(angle) * speed,
+        life: 0.42 + Math.random() * 0.38,
+        maxLife: 0.8,
+        size: 2 + Math.floor(Math.random() * 3),
+        color: palette[index % palette.length],
+        rotation: Math.random() * Math.PI,
+        spin: (Math.random() - 0.5) * 12
+      });
+    }
+  }
+
+  draw() {
+    const ctx = this.ctx;
+    this.drawBattleGrid(ctx);
+    if (this.state === GAME_STATES.MENU) {
+      this.drawMenu(ctx);
+      return;
+    }
+    for (const enemy of this.enemies) {
+      if (enemy.mode === "tractor") this.drawTractorBeam(ctx, enemy);
+    }
+    for (const enemy of this.enemies) this.drawEnemy(ctx, enemy);
+    this.drawBullets(ctx);
+    this.drawParticles(ctx);
+    if (this.player.visible) this.drawPlayer(ctx);
+    this.drawHud(ctx);
+    if (this.waveTransition > 0) this.drawWaveTransition(ctx);
+    if (this.state === GAME_STATES.GAME_OVER) this.drawGameOver(ctx);
+  }
+
+  drawBattleGrid(ctx) {
+    ctx.save();
+    ctx.strokeStyle = "rgba(0,255,255,.055)";
+    ctx.lineWidth = 1;
+    for (let x = 0; x <= this.width; x += 40) {
+      ctx.beginPath();
+      ctx.moveTo(Math.floor(x) + 0.5, 58);
+      ctx.lineTo(Math.floor(x) + 0.5, this.height);
+      ctx.stroke();
+    }
+    for (let y = 58; y <= this.height; y += 40) {
+      ctx.beginPath();
+      ctx.moveTo(0, Math.floor(y) + 0.5);
+      ctx.lineTo(this.width, Math.floor(y) + 0.5);
+      ctx.stroke();
+    }
+    ctx.fillStyle = "rgba(0,255,255,.08)";
+    ctx.fillRect(0, 54, this.width, 2);
+    ctx.restore();
+  }
+
+  drawMenu(ctx) {
+    ctx.save();
+    ctx.textAlign = "center";
+    ctx.fillStyle = "#00ffff";
+    ctx.shadowColor = "#00ffff";
+    ctx.shadowBlur = 20;
+    ctx.font = '900 38px "Orbitron", sans-serif';
+    ctx.fillText("CYBER-GALAGA", this.width / 2, 150);
+    ctx.fillStyle = "#ff2bd6";
+    ctx.font = '800 17px "Orbitron", sans-serif';
+    ctx.fillText("FORMATION DIVE PROTOCOL", this.width / 2, 181);
+    ctx.shadowBlur = 0;
+    this.drawPixelSprite(ctx, GALAGA_PIXEL_SPRITES.bee, 280, 245, 3, { B: "#168cff", Y: "#ffe54a" });
+    this.drawPixelSprite(ctx, GALAGA_PIXEL_SPRITES.butterfly, 400, 245, 3, { R: "#ff304f", C: "#00ffff" });
+    this.drawPixelSprite(ctx, GALAGA_PIXEL_SPRITES.commander, 520, 245, 3, { G: "#58ff76", M: "#ff2bd6" });
+    this.drawFighter(ctx, this.width / 2, 370, false, false);
+    ctx.fillStyle = "rgba(255,255,255,.66)";
+    ctx.font = '700 15px "Rajdhani", sans-serif';
+    ctx.fillText("ENTER / SPACE PARA INICIAR · ← → MOVER · SPACE DISPARAR", this.width / 2, 445);
+    ctx.fillStyle = "rgba(0,255,255,.72)";
+    ctx.font = '700 11px "Orbitron", sans-serif';
+    ctx.fillText("RESCATA TU NAVE CAPTURADA PARA ACTIVAR DUAL FIGHTER", this.width / 2, 480);
+    ctx.restore();
+  }
+
+  drawEnemy(ctx, enemy) {
+    const x = Math.floor(enemy.x);
+    const y = Math.floor(enemy.y);
+    ctx.save();
+    const pulse = enemy.hitFlash > 0 ? 0.45 + Math.abs(Math.sin(this.time * 65)) * 0.55 : 1;
+    ctx.globalAlpha = pulse;
+    const flap = Math.floor((Math.sin(this.time * 12 + enemy.phase) + 1) * 0.5);
+    if (enemy.type === "bee") {
+      this.drawPixelSprite(ctx, GALAGA_PIXEL_SPRITES.bee, x, y, 3, { B: "#168cff", Y: "#ffe54a" });
+      ctx.fillStyle = "#168cff"; ctx.shadowColor = "#168cff"; ctx.shadowBlur = 4;
+      ctx.fillRect(x - 23, y + (flap ? -6 : 4), 6, 9); ctx.fillRect(x + 17, y + (flap ? -6 : 4), 6, 9);
+    } else if (enemy.type === "butterfly") {
+      this.drawPixelSprite(ctx, GALAGA_PIXEL_SPRITES.butterfly, x, y, 3, { R: "#ff304f", C: "#00ffff" });
+      ctx.fillStyle = flap ? "#00ffff" : "#ff304f"; ctx.shadowColor = ctx.fillStyle; ctx.shadowBlur = 4;
+      ctx.fillRect(x - 26, y + (flap ? -9 : 5), 7, 7); ctx.fillRect(x + 19, y + (flap ? -9 : 5), 7, 7);
+    } else {
+      const damaged = enemy.hp === 1;
+      this.drawPixelSprite(ctx, GALAGA_PIXEL_SPRITES.commander, x, y, 3, { G: damaged ? "#ffffff" : "#58ff76", M: "#ff2bd6" });
+      ctx.fillStyle = "#ff2bd6"; ctx.shadowColor = "#ff2bd6"; ctx.shadowBlur = 4;
+      ctx.fillRect(x - 20, y + (flap ? 9 : 13), 5, 8); ctx.fillRect(x + 15, y + (flap ? 9 : 13), 5, 8);
+    }
+    ctx.restore();
+    if (enemy.capturedShip) this.drawFighter(ctx, enemy.capturedShip.x, enemy.capturedShip.y, false, true);
+  }
+
+  drawPlayer(ctx) {
+    const blink = this.player.invulnerable > 0 && Math.floor(this.player.invulnerable * 12) % 2 === 0;
+    if (blink) return;
+    if (this.player.dual) {
+      this.drawFighter(ctx, this.player.x - 13, this.player.y, true, false);
+      this.drawFighter(ctx, this.player.x + 13, this.player.y, true, false);
+    } else {
+      this.drawFighter(ctx, this.player.x, this.player.y, true, false);
+    }
+  }
+
+  drawFighter(ctx, x, y, engineOn, captured) {
+    const palette = captured
+      ? { C: "#ff304f", W: "#ff304f", F: "#ff765f" }
+      : { C: "#00ffff", W: "#ffffff", F: engineOn && Math.floor(this.time * 18) % 2 === 0 ? "#00ffff" : "#167dff" };
+    this.drawPixelSprite(ctx, GALAGA_PIXEL_SPRITES.fighter, Math.floor(x), Math.floor(y), 2, palette);
+  }
+
+  drawPixelSprite(ctx, matrix, centerX, centerY, scale, palette) {
+    const rows = matrix.length;
+    const columns = Math.max(...matrix.map((row) => row.length));
+    const originX = Math.floor(centerX - columns * scale / 2);
+    const originY = Math.floor(centerY - rows * scale / 2);
+    ctx.save();
+    ctx.globalCompositeOperation = "lighter";
+    for (let row = 0; row < rows; row += 1) {
+      const line = matrix[row];
+      for (let column = 0; column < line.length; column += 1) {
+        const token = line[column];
+        const color = palette[token];
+        if (!color) continue;
+        ctx.fillStyle = color;
+        ctx.shadowColor = color;
+        ctx.shadowBlur = 5;
+        ctx.fillRect(originX + column * scale, originY + row * scale, scale, scale);
+      }
+    }
+    ctx.restore();
+  }
+
+  drawTractorBeam(ctx, enemy) {
+    const topY = Math.floor(enemy.y + 14);
+    const bottomY = Math.floor(this.height - 34);
+    const flicker = 0.22 + Math.abs(Math.sin(this.time * 14)) * 0.17;
+    ctx.save();
+    ctx.globalCompositeOperation = "lighter";
+    const gradient = ctx.createLinearGradient(0, topY, 0, bottomY);
+    gradient.addColorStop(0, `rgba(0,191,255,${flicker + 0.12})`);
+    gradient.addColorStop(1, "rgba(0,255,255,.035)");
+    ctx.fillStyle = gradient;
+    ctx.beginPath();
+    ctx.moveTo(Math.floor(enemy.x - 9), topY);
+    ctx.lineTo(Math.floor(enemy.x + 9), topY);
+    ctx.lineTo(Math.floor(enemy.x + 90), bottomY);
+    ctx.lineTo(Math.floor(enemy.x - 90), bottomY);
+    ctx.closePath();
+    ctx.fill();
+    ctx.strokeStyle = `rgba(0,255,255,${0.35 + Math.abs(Math.sin(this.time * 19)) * 0.45})`;
+    ctx.lineWidth = 2;
+    for (let offset = -60; offset <= 60; offset += 30) {
+      ctx.beginPath();
+      ctx.moveTo(Math.floor(enemy.x + offset * 0.14), topY);
+      ctx.lineTo(Math.floor(enemy.x + offset), bottomY);
+      ctx.stroke();
+    }
+    ctx.restore();
+  }
+
+  drawBullets(ctx) {
+    ctx.save();
+    ctx.globalCompositeOperation = "lighter";
+    ctx.fillStyle = "#ffffff";
+    ctx.shadowColor = "#00ffff";
+    ctx.shadowBlur = 8;
+    for (const bullet of this.playerBullets) ctx.fillRect(Math.floor(bullet.x - 2), Math.floor(bullet.y - 8), 4, 12);
+    for (const bullet of this.enemyBullets) {
+      const color = Math.sin(bullet.phase) > 0 ? "#ff2bd6" : "#ffcf36";
+      ctx.fillStyle = color;
+      ctx.shadowColor = color;
+      ctx.fillRect(Math.floor(bullet.x - 3), Math.floor(bullet.y - 5), 6, 10);
+    }
+    ctx.restore();
+  }
+
+  drawParticles(ctx) {
+    ctx.save();
+    ctx.globalCompositeOperation = "lighter";
+    for (const particle of this.particles) {
+      const alpha = Math.max(0, particle.life / particle.maxLife);
+      ctx.globalAlpha = alpha;
+      ctx.fillStyle = particle.color;
+      ctx.shadowColor = particle.color;
+      ctx.shadowBlur = 7;
+      ctx.save();
+      ctx.translate(Math.floor(particle.x), Math.floor(particle.y));
+      ctx.rotate(particle.rotation);
+      ctx.fillRect(-particle.size / 2, -particle.size / 2, particle.size, particle.size);
+      ctx.restore();
+    }
+    ctx.restore();
+  }
+
+  drawHud(ctx) {
+    ctx.save();
+    ctx.fillStyle = "rgba(5,2,10,.78)";
+    ctx.fillRect(0, 0, this.width, 54);
+    ctx.fillStyle = "#00ffff";
+    ctx.font = '800 13px "Orbitron", sans-serif';
+    ctx.textAlign = "left";
+    ctx.fillText(`SCORE ${String(this.score).padStart(6, "0")}`, 24, 34);
+    ctx.textAlign = "center";
+    ctx.fillStyle = this.player.dual ? "#ffe54a" : "rgba(255,255,255,.72)";
+    ctx.fillText(this.player.dual ? "DUAL FIGHTER" : "SINGLE FIGHTER", this.width / 2, 34);
+    ctx.textAlign = "right";
+    ctx.fillStyle = "#ff2bd6";
+    ctx.fillText(`STAGE ${String(this.wave).padStart(2, "0")} · LIVES ${Math.max(0, this.lives)}`, this.width - 24, 34);
+    this.combo.draw(ctx, 300, 62, 200);
+    ctx.restore();
+  }
+
+  drawWaveTransition(ctx) {
+    ctx.save();
+    ctx.textAlign = "center";
+    ctx.fillStyle = "#00ffff";
+    ctx.shadowColor = "#00ffff";
+    ctx.shadowBlur = 18;
+    ctx.font = '900 27px "Orbitron", sans-serif';
+    ctx.fillText(`STAGE ${String(this.wave + 1).padStart(2, "0")}`, this.width / 2, 315);
+    ctx.restore();
+  }
+
+  drawGameOver(ctx) {
+    ctx.save();
+    ctx.fillStyle = "rgba(2,1,6,.84)";
+    ctx.fillRect(0, 0, this.width, this.height);
+    ctx.textAlign = "center";
+    ctx.fillStyle = "#ff304f";
+    ctx.shadowColor = "#ff304f";
+    ctx.shadowBlur = 24;
+    ctx.font = '900 42px "Orbitron", sans-serif';
+    ctx.fillText("GALAGA CORE LOST", this.width / 2, 245);
+    ctx.shadowBlur = 0;
+    ctx.fillStyle = "rgba(255,255,255,.68)";
+    ctx.font = '700 15px "Rajdhani", sans-serif';
+    ctx.fillText(`FINAL SCORE ${String(this.score).padStart(6, "0")} · STAGE ${String(this.wave).padStart(2, "0")}`, this.width / 2, 286);
+    ctx.fillStyle = "#00ffff";
+    ctx.font = '800 13px "Orbitron", sans-serif';
+    ctx.fillText("PRESS SPACE TO RETRY", this.width / 2, 345);
+    ctx.restore();
+  }
+
+  getTelemetry() {
+    return {
+      state: this.state === GAME_STATES.GAME_OVER ? "GAME OVER" : this.state,
+      score: String(this.score).padStart(6, "0"),
+      primaryMetric: `${Math.max(0, this.lives)} / 3${this.player.dual ? " · DUAL" : ""}`,
+      secondaryMetric: `ST ${String(this.wave).padStart(2, "0")}`,
+      primaryButton: this.state === GAME_STATES.PLAYING ? "ABORT MISSION" : this.state === GAME_STATES.GAME_OVER ? "RETRY GALAGA" : "START GALAGA"
+    };
+  }
+
+  enemyPalette(type) {
+    if (type === "commander") return ["#58ff76", "#ff2bd6", "#ffffff"];
+    if (type === "butterfly") return ["#ff304f", "#00ffff", "#ffffff"];
+    return ["#168cff", "#ffe54a", "#ffffff"];
+  }
+
+  cubicBezier(a, b, c, d, t) {
+    const inverse = 1 - t;
+    return inverse * inverse * inverse * a + 3 * inverse * inverse * t * b + 3 * inverse * t * t * c + t * t * t * d;
+  }
+
+  pointInsideEnemy(x, y, enemy) {
+    return x >= enemy.x - enemy.width / 2 && x <= enemy.x + enemy.width / 2 && y >= enemy.y - enemy.height / 2 && y <= enemy.y + enemy.height / 2;
+  }
+
+  circleHitsPlayer(x, y, radius) {
+    const nearestX = Math.max(this.player.x - this.player.width / 2, Math.min(x, this.player.x + this.player.width / 2));
+    const nearestY = Math.max(this.player.y - this.player.height / 2, Math.min(y, this.player.y + this.player.height / 2));
+    const dx = x - nearestX;
+    const dy = y - nearestY;
+    return dx * dx + dy * dy <= radius * radius;
+  }
+
+  rectanglesOverlap(ax, ay, aw, ah, bx, by, bw, bh) {
+    return ax < bx + bw && ax + aw > bx && ay < by + bh && ay + ah > by;
   }
 }
 
@@ -11028,7 +12151,8 @@ const SCORE_INTEGRITY_RULES = Object.freeze({
   "space-invaders": Object.freeze({ maxFrameDelta: 60000, baseAllowance: 10000, maxPerSecond: 42000, absoluteMaximum: 50000000 }),
   "pac-man": Object.freeze({ maxFrameDelta: 40000, baseAllowance: 10000, maxPerSecond: 36000, absoluteMaximum: 50000000 }),
   asteroids: Object.freeze({ maxFrameDelta: 50000, baseAllowance: 10000, maxPerSecond: 40000, absoluteMaximum: 50000000 }),
-  tron: Object.freeze({ maxFrameDelta: 5000, baseAllowance: 3000, maxPerSecond: 6000, absoluteMaximum: 50000000 })
+  tron: Object.freeze({ maxFrameDelta: 5000, baseAllowance: 3000, maxPerSecond: 6000, absoluteMaximum: 50000000 }),
+  galaga: Object.freeze({ maxFrameDelta: 80000, baseAllowance: 12000, maxPerSecond: 52000, absoluteMaximum: 50000000 })
 });
 
 class ScoreIntegrityGuard {
@@ -11245,6 +12369,7 @@ class ArcadeEngine {
     this.integrityAlertShown = false;
     this.scoreIntegrity.reset(gameConfig.id, 0);
     this.sessionStartHighScore = this.scoreStore.get(gameConfig.id);
+    this.lastCabinetLives = null;
     if (gameConfig.id === "space-invaders") {
       this.module = new AlienInvadersGame(this);
     } else if (gameConfig.id === "pac-man") {
@@ -11253,6 +12378,8 @@ class ArcadeEngine {
       this.module = new NeonAsteroidsGame(this);
     } else if (gameConfig.id === "tron") {
       this.module = new NeonTronGame(this);
+    } else if (gameConfig.id === "galaga") {
+      this.module = new CyberGalagaGame(this);
     } else {
       this.module = new PlaceholderGame(this, gameConfig);
     }
@@ -11479,6 +12606,10 @@ class ArcadeEngine {
       const size = module.cellSize || 10;
       if (module.player) rect(module.player.col*size,module.player.row*size,size,size);
       if (module.cpu) rect(module.cpu.col*size,module.cpu.row*size,size,size);
+    } else if (this.activeGame.id === "galaga") {
+      if (module.player?.visible) rect(module.player.x-module.player.width/2,module.player.y-module.player.height/2,module.player.width,module.player.height);
+      for (const enemy of module.enemies || []) rect(enemy.x-enemy.width/2,enemy.y-enemy.height/2,enemy.width,enemy.height);
+      for (const bullet of [...(module.playerBullets||[]),...(module.enemyBullets||[])]) circle(bullet.x,bullet.y,bullet.radius||3);
     }
     ctx.restore();
   }
@@ -11526,6 +12657,11 @@ class ArcadeEngine {
   }
 
   syncUi(force) {
+    const currentLives = Number(this.module?.lives);
+    if (Number.isFinite(currentLives)) {
+      if (Number.isFinite(this.lastCabinetLives) && currentLives < this.lastCabinetLives) this.triggerCabinetLifeImpact();
+      this.lastCabinetLives = currentLives;
+    }
     const telemetry = this.module.getTelemetry();
     this.ui.stateChip.textContent = telemetry.state;
     this.ui.telemetryState.textContent = telemetry.state;
@@ -11542,6 +12678,16 @@ class ArcadeEngine {
       this.ui.primaryButton.style.opacity = this.activeGame.playable ? "1" : ".5";
       this.ui.primaryButton.style.cursor = this.activeGame.playable ? "pointer" : "not-allowed";
     }
+  }
+
+  triggerCabinetLifeImpact() {
+    const dialog = this.ui.dialog;
+    if (!dialog) return;
+    dialog.classList.remove("life-impact");
+    void dialog.offsetWidth;
+    dialog.classList.add("life-impact");
+    window.clearTimeout(this.lifeImpactTimer);
+    this.lifeImpactTimer = window.setTimeout(() => dialog.classList.remove("life-impact"), 480);
   }
 
   handlePrimaryAction() {
@@ -11930,6 +13076,45 @@ class FocusPauseController {
   }
 }
 
+
+function injectGalagaCatalogCard() {
+  const grid = document.querySelector(".catalog-game-grid");
+  if (!grid || grid.querySelector('[data-dynamic-game-card="galaga"]')) return;
+  const article = document.createElement("article");
+  article.className = "arcade-card galaga-card glass-panel rounded-[1.7rem] border border-white/10 p-3 transition-all duration-300 ease-out hover:scale-[1.03] hover:shadow-[0_0_25px_rgba(0,255,255,0.6)]";
+  article.dataset.dynamicGameCard = "galaga";
+  article.style.cssText = "--card-accent:#168cff;--card-accent-rgb:22,140,255";
+  article.innerHTML = `
+    <div class="game-art aspect-[16/10] rounded-[1.25rem] border border-cyan-300/15">
+      <svg aria-label="Ilustración de Cyber-Galaga Neón" class="h-full w-full" fill="none" role="img" viewBox="0 0 640 400">
+        <defs>
+          <filter id="galagaCardGlow"><feGaussianBlur result="b" stdDeviation="6"></feGaussianBlur><feMerge><feMergeNode in="b"></feMergeNode><feMergeNode in="SourceGraphic"></feMergeNode></feMerge></filter>
+          <linearGradient id="galagaBeam" x1="0" x2="0" y1="0" y2="1"><stop stop-color="#00ffff" stop-opacity=".48"></stop><stop offset="1" stop-color="#00ffff" stop-opacity=".02"></stop></linearGradient>
+        </defs>
+        <g opacity=".42" stroke="#7055ff"><path d="M0 330H640M80 290h480M140 250h360M190 210h260"></path><path d="M320 180 60 400M320 180l260 220M320 180v220"></path></g>
+        <g filter="url(#galagaCardGlow)">
+          <path d="M276 95h18V77h18v18h16V77h18v18h18v54h-18v18h-52v-18h-18V95Z" fill="#58ff76"></path>
+          <path d="M294 113h52v18h-52z" fill="#ff2bd6"></path>
+          <path d="M302 157h36l70 165H232l70-165Z" fill="url(#galagaBeam)" opacity=".62"></path>
+          <path d="M289 305h12v-18h12v-16h14v16h12v18h18v18h-86v-18h18Z" fill="#ff304f"></path>
+          <path d="M118 126h18v-18h18v18h18v36h-18v18h-18v-18h-18v-36Z" fill="#168cff"></path>
+          <path d="M136 144h18v18h-18z" fill="#ffe54a"></path>
+          <path d="M470 126h18v-18h18v18h18v36h-18v18h-18v-18h-18v-36Z" fill="#ff304f"></path>
+          <path d="M488 144h18v18h-18z" fill="#00ffff"></path>
+        </g>
+      </svg>
+    </div>
+    <div class="p-4 sm:p-5">
+      <div class="flex items-start justify-between gap-4"><div><p class="font-display text-[10px] font-bold tracking-[0.22em] text-cyan-300/70">TERMINAL 05</p><h3 class="card-glitch-title font-display mt-2 text-xl font-black text-white" data-glitch-text="CYBER-GALAGA NEÓN">CYBER-GALAGA NEÓN</h3></div><span class="rounded-full border border-cyan-300/20 bg-cyan-300/5 px-3 py-1 text-[10px] font-bold tracking-[0.14em] text-cyan-200">DIVE SHOOTER</span></div>
+      <p class="mt-4 min-h-14 text-sm font-medium leading-relaxed text-white/50">Formaciones curvas, ataques de inmersión, comandantes de dos impactos y rescate táctico Dual Fighter.</p>
+      <div aria-label="Récord local de Cyber-Galaga Neón" class="high-score-strip"><span class="font-display text-[9px] font-bold tracking-[0.18em] text-white/38">LOCAL HIGH SCORE</span><span class="high-score-value" data-high-score="galaga">000000</span></div>
+      <button class="play-button font-display mt-6 flex w-full items-center justify-between rounded-xl px-4 py-3 text-xs font-bold tracking-[0.18em]" data-open-game="galaga" type="button">INICIAR TERMINAL<span aria-hidden="true">↗</span></button>
+    </div>`;
+  grid.appendChild(article);
+}
+
+injectGalagaCatalogCard();
+
 const modal = document.getElementById("gameModal");
 const dialog = document.getElementById("gameDialog");
 const modalTitle = document.getElementById("modalGameTitle");
@@ -11945,6 +13130,7 @@ const exploreButton = document.getElementById("exploreButton");
 const canvas = document.getElementById("gameCanvas");
 const controlDescription = document.getElementById("controlDescription");
 const comfortModeButton = document.getElementById("comfortModeButton");
+const ecoModeButton = document.getElementById("ecoModeButton");
 const controlsConfigButton = document.getElementById("controlsConfigButton");
 const controlsConfigPanel = document.getElementById("controlsConfigPanel");
 const simulationPauseOverlay = document.getElementById("simulationPauseOverlay");
@@ -11970,6 +13156,7 @@ const ui = {
 
 const input = new InputManager();
 const engine = new ArcadeEngine(canvas, input, ui);
+window.arcadeEngine = engine;
 document.body.classList.remove("boot-active");
 const crtVisuals = new CRTVisualController(document.getElementById("canvasFrame"));
 const touchControls = new TouchArcadeControls(input, modal, canvas, {
@@ -11979,6 +13166,52 @@ const touchControls = new TouchArcadeControls(input, modal, canvas, {
   onLayoutChange: () => engine.resizeVisualCanvas(true)
 });
 const comfortModeController = new ComfortModeController(comfortModeButton, engine);
+
+const ECO_MODE_STORAGE_KEY = "neonNexus.ecoMode.v1";
+function readEcoMode() {
+  try { return window.localStorage.getItem(ECO_MODE_STORAGE_KEY) !== "disabled"; } catch (error) { return true; }
+}
+function applyEcoMode(enabled, notify = false) {
+  const active = Boolean(enabled);
+  document.documentElement.classList.toggle("eco-mode", active);
+  if (ecoModeButton) {
+    ecoModeButton.setAttribute("aria-pressed", active ? "true" : "false");
+    ecoModeButton.setAttribute("aria-label", active ? "Desactivar Eco-Mode" : "Activar Eco-Mode");
+    const status = ecoModeButton.querySelector("[data-eco-status]");
+    if (status) status.textContent = active ? "ON" : "OFF";
+  }
+  try { window.localStorage.setItem(ECO_MODE_STORAGE_KEY, active ? "enabled" : "disabled"); } catch (error) {}
+  engine.lowPowerMode = active;
+  engine.visualEffects.lowPowerMode = active || RENDER_PREFERENCES.performanceReduced;
+  if (notify) engine.showToast(active ? "ECO-MODE ACTIVADO" : "ECO-MODE DESACTIVADO");
+}
+applyEcoMode(readEcoMode(), false);
+ecoModeButton?.addEventListener("click", () => applyEcoMode(!document.documentElement.classList.contains("eco-mode"), true));
+
+function bindPremiumCatalogCards() {
+  const grid = document.querySelector(".catalog-game-grid");
+  if (!grid) return;
+  for (const card of grid.querySelectorAll(".arcade-card")) {
+    if (card.dataset.premiumBound === "true") continue;
+    card.dataset.premiumBound = "true";
+    const activate = () => {
+      grid.classList.add("has-active-card");
+      grid.querySelectorAll(".arcade-card").forEach((item) => item.classList.toggle("is-catalog-active", item === card));
+    };
+    const clear = () => {
+      grid.classList.remove("has-active-card");
+      card.classList.remove("is-catalog-active");
+    };
+    card.addEventListener("pointerenter", activate, { passive: true });
+    card.addEventListener("focusin", activate);
+    card.addEventListener("pointerdown", activate, { passive: true });
+    card.addEventListener("pointerleave", clear, { passive: true });
+    card.addEventListener("focusout", (event) => { if (!card.contains(event.relatedTarget)) clear(); });
+  }
+}
+bindPremiumCatalogCards();
+new MutationObserver(bindPremiumCatalogCards).observe(document.querySelector(".catalog-game-grid"), { childList: true });
+
 const controlsRemappingPanel = new InputRemappingPanel(input, controlsConfigPanel, controlsConfigButton, (message) => showToast(message));
 const focusPauseController = new FocusPauseController(engine, input, simulationPauseOverlay, modal, () => focusGameInput());
 let lastFocusedElement = null;
@@ -11992,8 +13225,9 @@ function calculatePilotRank() {
   const pacman = engine.scoreStore.get("pac-man");
   const asteroids = engine.scoreStore.get("asteroids");
   const tron = engine.scoreStore.get("tron");
-  const total = invaders + pacman + asteroids + tron;
-  const peak = Math.max(invaders, pacman, asteroids, tron);
+  const galaga = engine.scoreStore.get("galaga");
+  const total = invaders + pacman + asteroids + tron + galaga;
+  const peak = Math.max(invaders, pacman, asteroids, tron, galaga);
   if (total >= 100000 || peak >= 60000) return "LEGEND";
   if (total >= 40000 || peak >= 25000) return "ELITE";
   if (total >= 15000 || peak >= 9000) return "VETERAN";
@@ -12003,7 +13237,7 @@ function calculatePilotRank() {
 }
 
 function updatePilotHud() {
-  if (systemStatusText) systemStatusText.textContent = navigator.onLine ? "SISTEMA: ONLINE" : "SISTEMA: OFFLINE";
+  if (systemStatusText) systemStatusText.textContent = "MATRIX_CORE v5.5 // STABLE";
   if (pilotRankText) pilotRankText.textContent = `PILOTO RANGO: ${calculatePilotRank()}`;
 }
 
@@ -12040,6 +13274,7 @@ function openGame(gameId) {
     : game.controls || game.hint;
   engine.audio.unlock();
   engine.setGame(game);
+  if (game.id === "galaga") engine.audio.playArcadeSound("galaga", "galaga_intro", { volume: 0.95 });
   modal.classList.add("is-open");
   modal.setAttribute("aria-hidden", "false");
   document.body.classList.add("modal-open");
