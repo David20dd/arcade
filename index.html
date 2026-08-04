@@ -4034,6 +4034,36 @@ html.eco-mode .crt-phosphor-overlay{animation-duration:3.2s;background:repeating
 @media(max-width:600px){.cheat-command-grid{grid-template-columns:1fr}.cheat-terminal{inset:64px 8px 8px}.arcade-card{min-height:30rem!important}}
 @media(prefers-reduced-motion:reduce){.crt-phosphor-overlay{animation:none!important;opacity:.995}}
 
+/* ==========================================================================
+   CORE_V6.1 — UNIVERSAL PIXEL-PERFECT HUD / PRECISION CRT BEZEL
+   ========================================================================== */
+.canvas-frame{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  margin-inline:auto!important;
+  overflow:hidden!important;
+  border:4px solid #0f051d!important;
+  border-radius:1rem!important;
+  background:#000!important;
+  box-shadow:inset 0 0 0 2px rgba(255,255,255,.055),inset 0 0 54px rgba(0,0,0,.96),0 0 30px rgba(0,255,255,.2),0 0 calc(44px * var(--eco-shadow-scale)) rgba(var(--modal-accent-rgb),.28)!important;
+}
+.canvas-frame::before{border-radius:calc(1rem - 4px)!important}
+.canvas-frame::after{
+  inset:0!important;
+  border-radius:calc(1rem - 4px)!important;
+  background:radial-gradient(circle,transparent 60%,rgba(0,0,0,.4) 100%)!important;
+  box-shadow:inset 0 0 36px rgba(0,0,0,.78)!important;
+  opacity:.86!important;
+}
+#gameCanvas,.crt-phosphor-overlay{border-radius:calc(1rem - 4px)!important}
+.crt-phosphor-overlay{
+  background:repeating-linear-gradient(to bottom,rgba(255,255,255,.027) 0,rgba(255,255,255,.027) 1px,rgba(0,0,0,.095) 2px,rgba(0,0,0,.095) 4px),radial-gradient(circle,transparent 60%,rgba(0,0,0,.4) 100%)!important;
+  mix-blend-mode:screen!important;
+  opacity:.965!important;
+}
+@media(max-width:540px){.canvas-frame{border-width:4px!important;border-radius:1rem!important}.canvas-frame::before,.canvas-frame::after,#gameCanvas,.crt-phosphor-overlay{border-radius:calc(1rem - 4px)!important}}
+
 </style><meta content="default-src 'self' data: blob:; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; connect-src 'none'; media-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self'" http-equiv="Content-Security-Policy"/></head>
 <body class="antialiased">
 <header class="tactical-header" id="tacticalHeader">
@@ -4414,7 +4444,7 @@ html.eco-mode .crt-phosphor-overlay{animation-duration:3.2s;background:repeating
 </div>
 <div class="grid gap-5 p-4 sm:p-6 lg:grid-cols-[1fr_238px]" id="gameLayout">
 <div class="min-w-0">
-<div class="canvas-frame rounded-2xl" id="canvasFrame">
+<div class="canvas-frame flex items-center justify-center mx-auto border-4 border-[#0f051d] bg-black shadow-[0_0_30px_rgba(0,255,255,0.2)] rounded-2xl" id="canvasFrame">
 <canvas aria-describedby="controlDescription" aria-label="Juego Arcade interactivo. Usa las flechas, Espacio y Enter." height="600" id="gameCanvas" role="application" tabindex="0" width="800"></canvas><div aria-hidden="true" class="crt-phosphor-overlay"></div>
 </div>
 <div class="mt-4 flex flex-col gap-3 rounded-2xl border modal-accent-border bg-white/[0.025] p-3 sm:flex-row sm:items-center sm:justify-between sm:p-4">
@@ -7875,6 +7905,167 @@ class ArcadeComboSystem {
   }
 }
 
+
+const UNIVERSAL_HUD_LAYOUT = Object.freeze({
+  paddingLeft: 40,
+  paddingRight: 40,
+  top: 8,
+  height: 60,
+  metricOffset: 92
+});
+
+function getUniversalHudHighScore(game, gameId) {
+  const stored = Number(game?.engine?.scoreStore?.get(gameId));
+  return Number.isFinite(stored) && stored > 0 ? Math.floor(stored) : 0;
+}
+
+function drawUniversalLifeIcon(ctx, gameId, x, y, color) {
+  const px = Math.floor(x);
+  const py = Math.floor(y);
+  ctx.save();
+  ctx.translate(px, py);
+  ctx.fillStyle = color;
+  ctx.strokeStyle = color;
+  ctx.shadowColor = color;
+  ctx.shadowBlur = 4;
+  ctx.lineWidth = 1;
+
+  if (gameId === "pac-man") {
+    ctx.beginPath();
+    ctx.moveTo(0, 0);
+    ctx.arc(0, 0, 6, 0.38, Math.PI * 2 - 0.38);
+    ctx.closePath();
+    ctx.fill();
+  } else if (gameId === "asteroids") {
+    ctx.beginPath();
+    ctx.moveTo(0, -7);
+    ctx.lineTo(6, 6);
+    ctx.lineTo(0, 3);
+    ctx.lineTo(-6, 6);
+    ctx.closePath();
+    ctx.stroke();
+  } else if (gameId === "tron") {
+    ctx.fillRect(-7, -2, 11, 5);
+    ctx.fillRect(1, -5, 5, 4);
+    ctx.fillStyle = "rgba(255,255,255,.9)";
+    ctx.fillRect(-6, 4, 4, 2);
+    ctx.fillRect(3, 4, 4, 2);
+  } else if (gameId === "outrun") {
+    ctx.fillRect(-8, -2, 16, 7);
+    ctx.fillRect(-5, -6, 10, 5);
+    ctx.fillStyle = "#00ffff";
+    ctx.fillRect(-3, -5, 6, 2);
+    ctx.fillStyle = "#05020a";
+    ctx.fillRect(-7, 5, 4, 2);
+    ctx.fillRect(3, 5, 4, 2);
+  } else {
+    const matrix = gameId === "galaga"
+      ? ["...X...", "..XXX..", ".XXXXX.", "XXXXXXX", ".X.X.X."]
+      : ["...X...", "..XXX..", ".XXXXX.", "XXXXXXX", "XX.X.XX"];
+    const size = 2;
+    const startX = -Math.floor(matrix[0].length * size / 2);
+    const startY = -Math.floor(matrix.length * size / 2);
+    for (let row = 0; row < matrix.length; row += 1) {
+      for (let column = 0; column < matrix[row].length; column += 1) {
+        if (matrix[row][column] === "X") ctx.fillRect(startX + column * size, startY + row * size, size, size);
+      }
+    }
+  }
+  ctx.restore();
+}
+
+function drawUniversalArcadeHud(ctx, game, options) {
+  const width = Math.floor(Number(game.width) || 800);
+  const score = Math.max(0, Math.floor(Number(game.score) || 0));
+  const lives = Math.max(0, Math.floor(Number(game.lives) || 0));
+  const gameId = options.gameId;
+  let paddingLeft = UNIVERSAL_HUD_LAYOUT.paddingLeft;
+  let paddingRight = UNIVERSAL_HUD_LAYOUT.paddingRight;
+  const rightEdge = width - paddingRight;
+  const centerX = Math.floor(width / 2);
+  const metricX = centerX - UNIVERSAL_HUD_LAYOUT.metricOffset;
+  const highScoreX = centerX + UNIVERSAL_HUD_LAYOUT.metricOffset;
+  const storedHighScore = getUniversalHudHighScore(game, gameId);
+  const displayedHighScore = Math.max(storedHighScore, score);
+  const settingRecord = game.state === GAME_STATES.PLAYING && score > 0 && score >= storedHighScore;
+  const frameBlink = Math.floor(performance.now() / 86) % 2 === 0;
+  const panelTop = UNIVERSAL_HUD_LAYOUT.top;
+  const panelHeight = UNIVERSAL_HUD_LAYOUT.height;
+  const combo = game.combo;
+
+  ctx.save();
+  ctx.globalCompositeOperation = "source-over";
+  ctx.fillStyle = "rgba(2,0,5,.84)";
+  ctx.strokeStyle = "rgba(255,255,255,.14)";
+  ctx.lineWidth = 1;
+  ctx.fillRect(18, panelTop, width - 36, panelHeight);
+  ctx.strokeRect(18, panelTop, width - 36, panelHeight);
+  ctx.textBaseline = "middle";
+  ctx.shadowBlur = 4;
+
+  ctx.textAlign = "left";
+  ctx.fillStyle = "rgba(255,255,255,.48)";
+  ctx.shadowColor = options.scoreColor;
+  ctx.font = '700 9px "Orbitron", sans-serif';
+  ctx.fillText("SCORE", paddingLeft, 19);
+  ctx.fillStyle = options.scoreColor;
+  ctx.font = '900 17px "Orbitron", sans-serif';
+  ctx.fillText(String(score).padStart(6, "0"), paddingLeft, 40);
+
+  ctx.textAlign = "center";
+  ctx.fillStyle = "rgba(255,255,255,.46)";
+  ctx.shadowColor = options.metricColor;
+  ctx.font = '700 8px "Orbitron", sans-serif';
+  ctx.fillText(options.metricLabel, metricX, 18);
+  ctx.fillStyle = options.metricColor;
+  ctx.font = '900 12px "Orbitron", sans-serif';
+  ctx.fillText(options.metricValue, metricX, 40);
+
+  ctx.globalAlpha = settingRecord ? (frameBlink ? 1 : .66) : 1;
+  ctx.fillStyle = settingRecord ? "#ffd700" : "rgba(255,255,255,.76)";
+  ctx.shadowColor = settingRecord ? "#ffd700" : options.metricColor;
+  ctx.font = '900 11px "Orbitron", sans-serif';
+  ctx.fillText(`HI-SCORE: ${String(displayedHighScore).padStart(6, "0")}`, highScoreX, 40);
+  ctx.globalAlpha = 1;
+
+  ctx.textAlign = "right";
+  ctx.fillStyle = "rgba(255,255,255,.48)";
+  ctx.shadowColor = options.lifeColor;
+  ctx.font = '700 9px "Orbitron", sans-serif';
+  ctx.fillText("LIVES", rightEdge, 19);
+  const visibleLives = Math.min(5, lives);
+  for (let index = 0; index < visibleLives; index += 1) {
+    drawUniversalLifeIcon(ctx, gameId, rightEdge - 7 - index * 20, 40, options.lifeColor);
+  }
+  if (lives > visibleLives) {
+    ctx.fillStyle = options.lifeColor;
+    ctx.font = '900 9px "Orbitron", sans-serif';
+    ctx.fillText(`×${lives}`, rightEdge - visibleLives * 20 - 5, 40);
+  }
+
+  const comboActive = combo && combo.timer > 0 && combo.count >= 2;
+  const comboText = comboActive ? `COMBO X${combo.multiplier} · ${combo.count} HIT` : "COMBO READY";
+  const comboProgress = comboActive ? Math.max(0, Math.min(1, combo.timer / combo.window)) : 0;
+  const comboWidth = 142;
+  const comboStart = rightEdge - comboWidth;
+  ctx.textAlign = "right";
+  ctx.fillStyle = comboActive ? combo.accent : "rgba(255,255,255,.24)";
+  ctx.shadowColor = comboActive ? combo.accent : options.lifeColor;
+  ctx.font = '800 8px "Orbitron", sans-serif';
+  ctx.fillText(comboText, rightEdge, 57);
+  ctx.shadowBlur = 0;
+  ctx.fillStyle = "rgba(255,255,255,.1)";
+  ctx.fillRect(comboStart, 63, comboWidth, 2);
+  if (comboActive) {
+    ctx.fillStyle = combo.accent;
+    ctx.shadowColor = combo.accent;
+    ctx.shadowBlur = 4;
+    ctx.fillRect(comboStart, 63, Math.floor(comboWidth * comboProgress), 2);
+  }
+
+  ctx.restore();
+}
+
 class AlienInvadersGame {
   constructor(engine) {
     this.engine = engine;
@@ -8645,34 +8836,15 @@ class AlienInvadersGame {
 
   drawHud(ctx) {
     const alive = this.getAliveAlienCount();
-    ctx.save();
-    ctx.fillStyle = "rgba(3,1,7,.72)";
-    ctx.strokeStyle = "rgba(66,245,255,.24)";
-    ctx.lineWidth = 1;
-    ctx.fillRect(18, 16, 764, 52);
-    ctx.strokeRect(18.5, 16.5, 763, 51);
-
-    ctx.fillStyle = "rgba(248,247,255,.42)";
-    ctx.font = "700 11px Rajdhani, sans-serif";
-    ctx.fillText("SCORE", 36, 38);
-    ctx.fillText("WAVE", 252, 38);
-    ctx.fillText("ALIENS", 382, 38);
-    ctx.fillText("LIVES", 620, 38);
-
-    ctx.fillStyle = "#42f5ff";
-    ctx.shadowColor = "#42f5ff";
-    ctx.shadowBlur = 10;
-    ctx.font = "800 17px Orbitron, sans-serif";
-    ctx.fillText(this.score.toString().padStart(6, "0"), 92, 42);
-    ctx.fillText(this.wave.toString().padStart(2, "0"), 303, 42);
-    ctx.fillText(alive.toString().padStart(2, "0"), 444, 42);
-
-    for (let life = 0; life < this.lives; life += 1) {
-      this.drawMiniShip(ctx, 690 + life * 34, 41);
-    }
-    this.powerUps.drawHud(ctx, 22, 76, 360);
-    this.combo.draw(ctx, 570, 76, 205);
-    ctx.restore();
+    drawUniversalArcadeHud(ctx, this, {
+      gameId: "space-invaders",
+      scoreColor: "#42f5ff",
+      metricColor: "#9dff5a",
+      lifeColor: "#42f5ff",
+      metricLabel: "WAVE · ALIENS",
+      metricValue: `${String(this.wave).padStart(2, "0")} · ${String(alive).padStart(2, "0")}`
+    });
+    this.powerUps.drawHud(ctx, 40, 76, 360);
   }
 
   drawMiniShip(ctx, x, y) {
@@ -9880,47 +10052,26 @@ class NeonPacmanGame {
   }
 
   drawHud(ctx) {
-    ctx.save();
-    ctx.fillStyle = "rgba(3,1,10,.84)";
-    ctx.strokeStyle = "rgba(45,108,255,.45)";
-    ctx.lineWidth = 1;
-    ctx.fillRect(139, 14, 682, 42);
-    ctx.strokeRect(139.5, 14.5, 681, 41);
-
-    ctx.font = "700 10px Rajdhani, sans-serif";
-    ctx.fillStyle = "rgba(248,247,255,.42)";
-    ctx.fillText("SCORE", 158, 32);
-    ctx.fillText("LEVEL", 365, 32);
-    ctx.fillText("PELLETS", 488, 32);
-    ctx.fillText("LIVES", 665, 32);
-
-    ctx.font = "800 15px Orbitron, sans-serif";
-    ctx.fillStyle = "#ffd83d";
-    ctx.shadowColor = "#ffd83d";
-    ctx.shadowBlur = 8;
-    ctx.fillText(this.score.toString().padStart(6, "0"), 205, 37);
-    ctx.fillStyle = "#36efff";
-    ctx.shadowColor = "#36efff";
-    ctx.fillText(this.level.toString().padStart(2, "0"), 413, 37);
-    ctx.fillText(this.pelletsRemaining.toString().padStart(3, "0"), 553, 37);
-
-    for (let life = 0; life < this.lives; life += 1) {
-      this.drawPacmanLife(ctx, 725 + life * 27, 35);
-    }
-
+    drawUniversalArcadeHud(ctx, this, {
+      gameId: "pac-man",
+      scoreColor: "#ffd83d",
+      metricColor: "#36efff",
+      lifeColor: "#ffd83d",
+      metricLabel: "LEVEL · PELLETS",
+      metricValue: `${String(this.level).padStart(2, "0")} · ${String(this.pelletsRemaining).padStart(3, "0")}`
+    });
     if (this.frightenedTimer > 0) {
-      const ratio = this.frightenedTimer / 7;
-      ctx.shadowBlur = 0;
+      const ratio = Math.max(0, Math.min(1, this.frightenedTimer / 7));
+      ctx.save();
       ctx.fillStyle = "rgba(255,255,255,.1)";
-      ctx.fillRect(139, 57, 522, 3);
+      ctx.fillRect(40, 70, 360, 3);
       ctx.fillStyle = "#275dff";
       ctx.shadowColor = "#275dff";
-      ctx.shadowBlur = 8;
-      ctx.fillRect(139, 57, 522 * ratio, 3);
+      ctx.shadowBlur = 4;
+      ctx.fillRect(40, 70, Math.floor(360 * ratio), 3);
+      ctx.restore();
     }
-    this.powerUps.drawHud(ctx, 139, 63, 522);
-    this.combo.draw(ctx, 555, 98, 220);
-    ctx.restore();
+    this.powerUps.drawHud(ctx, 40, 76, 360);
   }
 
   drawPacmanLife(ctx, x, y) {
@@ -10808,37 +10959,21 @@ class NeonAsteroidsGame {
 
   drawHud() {
     const ctx = this.ctx;
+    drawUniversalArcadeHud(ctx, this, {
+      gameId: "asteroids",
+      scoreColor: "#ffe75b",
+      metricColor: "#00ff7f",
+      lifeColor: "#42f5ff",
+      metricLabel: "WAVE · ROCKS",
+      metricValue: `${String(this.wave).padStart(2, "0")} · ${String(this.asteroids.length).padStart(2, "0")}`
+    });
     ctx.save();
     ctx.textBaseline = "top";
-    ctx.fillStyle = "rgba(248,247,255,0.48)";
-    ctx.font = '700 11px "Orbitron", sans-serif';
-    ctx.fillText("SCORE", 28, 24);
-    ctx.fillText("WAVE", this.width / 2 - 25, 24);
-    ctx.textAlign = "right";
-    ctx.fillText("LIVES", this.width - 28, 24);
-
-    ctx.textAlign = "left";
-    ctx.fillStyle = "#ffe75b";
-    ctx.shadowColor = "#ffe75b";
-    ctx.shadowBlur = 9;
-    ctx.font = '800 20px "Orbitron", sans-serif';
-    ctx.fillText(String(this.score).padStart(6, "0"), 28, 42);
-
-    ctx.textAlign = "center";
-    ctx.fillStyle = "#00ff7f";
-    ctx.shadowColor = "#00ff7f";
-    ctx.fillText(String(this.wave).padStart(2, "0"), this.width / 2, 42);
-
-    ctx.textAlign = "right";
-    ctx.fillStyle = "#42f5ff";
-    ctx.shadowColor = "#42f5ff";
-    ctx.fillText(String(this.lives), this.width - 28, 42);
-
     ctx.shadowBlur = 0;
     ctx.textAlign = "left";
-    ctx.fillStyle = "rgba(248,247,255,0.36)";
+    ctx.fillStyle = "rgba(248,247,255,.36)";
     ctx.font = '700 10px "Rajdhani", sans-serif';
-    ctx.fillText(`ROCKS ${String(this.asteroids.length).padStart(2, "0")}`, 28, this.height - 30);
+    ctx.fillText(`ROCKS ${String(this.asteroids.length).padStart(2, "0")}`, 40, this.height - 30);
     ctx.textAlign = "center";
     ctx.fillText(`BULLETS ${this.bullets.length}/5`, this.width / 2, this.height - 30);
     ctx.textAlign = "right";
@@ -10847,9 +10982,8 @@ class NeonAsteroidsGame {
       : this.ship.invulnerable > 0
         ? `RESPAWN SHIELD ${this.ship.invulnerable.toFixed(1)}s`
         : "SHIELD OFF";
-    ctx.fillText(shieldText, this.width - 28, this.height - 30);
-    this.powerUps.drawHud(ctx, 28, 76, 370);
-    this.combo.draw(ctx, 574, 76, 198);
+    ctx.fillText(shieldText, this.width - 40, this.height - 30);
+    this.powerUps.drawHud(ctx, 40, 76, 370);
     ctx.restore();
   }
 
@@ -11451,38 +11585,23 @@ class NeonTronGame {
   }
 
   drawHud(ctx) {
+    drawUniversalArcadeHud(ctx, this, {
+      gameId: "tron",
+      scoreColor: "#00ffff",
+      metricColor: "#ffa500",
+      lifeColor: "#00ff7f",
+      metricLabel: "LEVEL · ROUND",
+      metricValue: `${String(this.level).padStart(2, "0")} · ${String(this.round).padStart(2, "0")}`
+    });
     ctx.save();
     ctx.textBaseline = "top";
-    ctx.fillStyle = "rgba(248,247,255,.43)";
-    ctx.font = '700 10px "Orbitron", sans-serif';
-    ctx.fillText("SCORE", 28, 20);
-    ctx.textAlign = "center";
-    ctx.fillText("LEVEL", this.width / 2, 20);
-    ctx.textAlign = "right";
-    ctx.fillText("LIVES", this.width - 28, 20);
-
-    ctx.textAlign = "left";
-    ctx.fillStyle = "#00ffff";
-    ctx.shadowColor = "#00ffff";
-    ctx.shadowBlur = 9;
-    ctx.font = '900 20px "Orbitron", sans-serif';
-    ctx.fillText(String(this.score).padStart(6, "0"), 28, 39);
-    ctx.textAlign = "center";
-    ctx.fillStyle = "#ffa500";
-    ctx.shadowColor = "#ffa500";
-    ctx.fillText(String(this.level).padStart(2, "0"), this.width / 2, 39);
-    ctx.textAlign = "right";
-    ctx.fillStyle = "#00ff7f";
-    ctx.shadowColor = "#00ff7f";
-    ctx.fillText(String(this.lives), this.width - 28, 39);
     ctx.shadowBlur = 0;
     ctx.textAlign = "left";
     ctx.fillStyle = "rgba(248,247,255,.34)";
     ctx.font = '700 10px "Rajdhani", sans-serif';
-    ctx.fillText(`GRID SPEED ${this.speedCellsPerSecond.toFixed(1)} CPS`, 28, this.height - 27);
+    ctx.fillText(`GRID SPEED ${this.speedCellsPerSecond.toFixed(1)} CPS`, 40, this.height - 27);
     ctx.textAlign = "right";
-    ctx.fillText(`ROUND ${String(this.round).padStart(2, "0")}`, this.width - 28, this.height - 27);
-    this.combo.draw(ctx, 302, 68, 196);
+    ctx.fillText(`ROUND ${String(this.round).padStart(2, "0")}`, this.width - 40, this.height - 27);
     ctx.restore();
   }
 
@@ -12335,21 +12454,14 @@ class CyberGalagaGame {
   }
 
   drawHud(ctx) {
-    ctx.save();
-    ctx.fillStyle = "rgba(5,2,10,.78)";
-    ctx.fillRect(0, 0, this.width, 54);
-    ctx.fillStyle = "#00ffff";
-    ctx.font = '800 13px "Orbitron", sans-serif';
-    ctx.textAlign = "left";
-    ctx.fillText(`SCORE ${String(this.score).padStart(6, "0")}`, 24, 34);
-    ctx.textAlign = "center";
-    ctx.fillStyle = this.player.dual ? "#ffe54a" : "rgba(255,255,255,.72)";
-    ctx.fillText(this.player.dual ? "DUAL FIGHTER" : "SINGLE FIGHTER", this.width / 2, 34);
-    ctx.textAlign = "right";
-    ctx.fillStyle = "#ff2bd6";
-    ctx.fillText(`STAGE ${String(this.wave).padStart(2, "0")} · LIVES ${Math.max(0, this.lives)}`, this.width - 24, 34);
-    this.combo.draw(ctx, 300, 62, 200);
-    ctx.restore();
+    drawUniversalArcadeHud(ctx, this, {
+      gameId: "galaga",
+      scoreColor: "#00ffff",
+      metricColor: this.player.dual ? "#ffe54a" : "#168cff",
+      lifeColor: "#ff2bd6",
+      metricLabel: "STAGE · FIGHTER",
+      metricValue: `${String(this.wave).padStart(2, "0")} · ${this.player.dual ? "DUAL" : "SINGLE"}`
+    });
   }
 
   drawWaveTransition(ctx) {
@@ -12703,7 +12815,16 @@ class NeonOutrunGame {
 
   drawParticles(ctx){ctx.save();ctx.globalCompositeOperation="lighter";for(const p of this.particles){ctx.globalAlpha=Math.max(0,p.life/p.maxLife);ctx.fillStyle=p.color;ctx.shadowColor=p.color;ctx.shadowBlur=4;ctx.save();ctx.translate(Math.floor(p.x),Math.floor(p.y));ctx.rotate(p.rotation);ctx.fillRect(-p.size/2,-p.size/2,p.size,p.size);ctx.restore()}ctx.restore()}
 
-  drawHud(ctx){ctx.save();ctx.fillStyle="rgba(2,0,5,.82)";ctx.fillRect(0,0,this.width,54);ctx.font='800 13px "Orbitron",sans-serif';ctx.textBaseline="middle";ctx.fillStyle="#ff007f";ctx.textAlign="left";ctx.fillText(`SCORE ${String(this.score).padStart(6,"0")}`,22,29);ctx.textAlign="center";ctx.fillStyle="#00ffff";ctx.fillText(`${Math.floor(this.speed)} KM/H`,this.width/2,29);ctx.textAlign="right";ctx.fillStyle="#ffe75b";ctx.fillText(`STAGE ${String(this.stage).padStart(2,"0")} · LIVES ${Math.max(0,this.lives)}`,this.width-22,29);this.combo.draw(ctx,305,62,190);ctx.restore()}
+  drawHud(ctx) {
+    drawUniversalArcadeHud(ctx, this, {
+      gameId: "outrun",
+      scoreColor: "#ff007f",
+      metricColor: "#00ffff",
+      lifeColor: "#ffe75b",
+      metricLabel: "STAGE · SPEED",
+      metricValue: `${String(this.stage).padStart(2, "0")} · ${Math.floor(this.speed)} KM/H`
+    });
+  }
 
   drawMenu(ctx){ctx.save();ctx.fillStyle="rgba(2,0,5,.54)";ctx.fillRect(0,0,this.width,this.height);ctx.textAlign="center";ctx.fillStyle="#ff007f";ctx.shadowColor="#ff007f";ctx.shadowBlur=4;ctx.font='900 42px "Orbitron",sans-serif';ctx.fillText("NEON-OUTRUN",400,270);ctx.shadowBlur=0;ctx.fillStyle="#00ffff";ctx.font='800 14px "Orbitron",sans-serif';ctx.fillText("SYNTH HIGHWAY PROTOCOL",400,307);ctx.fillStyle="rgba(255,255,255,.72)";ctx.font='700 14px "Rajdhani",sans-serif';ctx.fillText("PRESS SPACE OR ENTER TO START",400,354);ctx.restore()}
 

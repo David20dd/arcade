@@ -1,0 +1,77 @@
+{
+  "syntax": "passed",
+  "runtime_errors": [],
+  "games": {
+    "space-invaders": {
+      "id": "space-invaders",
+      "state": "PLAYING",
+      "score": 1234,
+      "lives": 3,
+      "width": 800,
+      "height": 600,
+      "usesUniversalHud": true
+    },
+    "pac-man": {
+      "id": "pac-man",
+      "state": "PLAYING",
+      "score": 1234,
+      "lives": 3,
+      "width": 800,
+      "height": 600,
+      "usesUniversalHud": true
+    },
+    "asteroids": {
+      "id": "asteroids",
+      "state": "PLAYING",
+      "score": 1234,
+      "lives": 3,
+      "width": 800,
+      "height": 600,
+      "usesUniversalHud": true
+    },
+    "tron": {
+      "id": "tron",
+      "state": "PLAYING",
+      "score": 1234,
+      "lives": 3,
+      "width": 800,
+      "height": 600,
+      "usesUniversalHud": true
+    },
+    "galaga": {
+      "id": "galaga",
+      "state": "PLAYING",
+      "score": 1234,
+      "lives": 3,
+      "width": 800,
+      "height": 600,
+      "usesUniversalHud": true
+    },
+    "outrun": {
+      "id": "outrun",
+      "state": "PLAYING",
+      "score": 1234,
+      "lives": 3,
+      "width": 800,
+      "height": 600,
+      "usesUniversalHud": true
+    }
+  },
+  "hud": {
+    "paddingLeft": 40,
+    "paddingRight": 40,
+    "height": 60
+  },
+  "crt": {
+    "display": "flex",
+    "alignItems": "center",
+    "justifyContent": "center",
+    "borderWidth": "4px",
+    "borderColor": "rgb(15, 5, 29)",
+    "borderRadius": "16px",
+    "background": "rgb(0, 0, 0)",
+    "boxShadow": "rgba(255, 255, 255, 0.055) 0px 0px 0px 2px inset, rgba(0, 0, 0, 0.96) 0px 0px 54px 0px inset, rgba(0, 255, 255, 0.2) 0px 0px 30px 0px, rgba(66, 245, 255, 0.28) 0px 0px 25.52px 0px",
+    "overlayPointerEvents": "none",
+    "overlayOpacity": "0.965"
+  }
+}
