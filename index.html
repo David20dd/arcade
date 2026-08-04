@@ -1665,6 +1665,183 @@
     }
   }
 }
+
+
+/* Spatial concave orbit + gyroscopic cabinet + analog CRT degauss v18.0 */
+.spatial-cabinet {
+  --cabinet-tilt-x: 0deg;
+  --cabinet-tilt-y: 0deg;
+  position: relative;
+  z-index: 10;
+  transform: perspective(1800px) rotateX(var(--cabinet-tilt-x)) rotateY(var(--cabinet-tilt-y)) translate3d(0,0,0);
+  transform-style: preserve-3d;
+  transform-origin: 50% 42%;
+  will-change: transform;
+  transition: filter 220ms ease;
+}
+body.modal-open .spatial-cabinet,
+body.deep-dive-active .spatial-cabinet,
+html.eco-mode .spatial-cabinet {
+  --cabinet-tilt-x: 0deg !important;
+  --cabinet-tilt-y: 0deg !important;
+}
+.holo-carousel-shell {
+  --orbit-radius: clamp(390px, 43vw, 640px);
+  perspective: 1400px !important;
+  perspective-origin: 50% 47%;
+  transform-style: preserve-3d;
+  isolation: isolate;
+}
+.holo-carousel-track {
+  transform: translate3d(-50%,-50%,calc(var(--orbit-radius) * -1)) !important;
+  transform-style: preserve-3d !important;
+  will-change: transform;
+}
+.holo-carousel-item {
+  transform-style: preserve-3d;
+  will-change: transform, opacity, filter;
+  opacity: .2;
+  filter: blur(2px) saturate(.46) brightness(.5);
+}
+.holo-carousel-item .arcade-card {
+  transform-style: preserve-3d;
+  backface-visibility: hidden;
+}
+.holo-carousel-item.is-active {
+  opacity: 1;
+  filter: none;
+}
+.holo-carousel-item.is-active .arcade-card {
+  animation: activeHoloFlicker 5.4s steps(1,end) infinite, orbitActiveBreath 2.8s ease-in-out infinite;
+}
+.holo-carousel-item.is-active::after {
+  content:"";
+  position:absolute;
+  z-index:12;
+  left:4%;
+  right:4%;
+  top:var(--glitch-y,43%);
+  height:2px;
+  pointer-events:none;
+  opacity:0;
+  background:linear-gradient(90deg,transparent,#00ffff 18%,#fff 50%,#ff007f 82%,transparent);
+  box-shadow:0 0 14px #00ffff,0 0 20px #ff007f;
+  mix-blend-mode:screen;
+  animation:orbitMicroGlitch 5.8s steps(1,end) infinite;
+}
+@keyframes orbitActiveBreath {
+  0%,100% { filter:brightness(1) saturate(1); }
+  50% { filter:brightness(1.09) saturate(1.12); }
+}
+@keyframes orbitMicroGlitch {
+  0%,89%,92%,96%,100% { opacity:0; transform:translate3d(0,0,0) scaleX(.7); }
+  90% { opacity:.8; transform:translate3d(-9px,-5px,0) scaleX(1.04); }
+  91% { opacity:.28; transform:translate3d(12px,8px,0) scaleX(.88); }
+  94% { opacity:.66; transform:translate3d(5px,-2px,0) scaleX(1.08); }
+  95% { opacity:.16; transform:translate3d(-6px,3px,0) scaleX(.92); }
+}
+
+.boot-sequence.degauss-boot {
+  position:fixed;
+  inset:0;
+  z-index:10000;
+  display:grid;
+  place-items:center;
+  overflow:hidden;
+  background:#000;
+  opacity:1;
+  transition:opacity 420ms ease, visibility 420ms ease;
+}
+.boot-sequence.degauss-boot .boot-sequence-grid,
+.boot-sequence.degauss-boot .boot-terminal { display:none !important; }
+.degauss-raster {
+  position:absolute;
+  inset:0;
+  opacity:.28;
+  background:repeating-linear-gradient(0deg,rgba(255,255,255,.025) 0 1px,transparent 1px 4px),radial-gradient(ellipse at center,rgba(255,255,255,.075),transparent 42%);
+  animation:degaussRasterFlicker 110ms steps(2,end) infinite;
+}
+.degauss-beam {
+  position:absolute;
+  left:50%;
+  top:50%;
+  width:0;
+  height:2px;
+  border-radius:999px;
+  background:#fff;
+  box-shadow:0 0 7px #fff,0 0 24px #00ffff,0 0 52px #ff007f;
+  transform:translate3d(-50%,-50%,0);
+  animation:degaussHorizontal 1.64s cubic-bezier(.18,.84,.2,1) both;
+}
+.degauss-bloom {
+  position:absolute;
+  left:50%;
+  top:50%;
+  width:100vw;
+  height:2px;
+  opacity:0;
+  transform:translate3d(-50%,-50%,0) scaleY(.001);
+  background:radial-gradient(ellipse at center,#fff 0 2%,#00ffff 10%,rgba(255,0,127,.72) 24%,rgba(15,5,29,.2) 58%,transparent 76%);
+  filter:blur(.4px);
+  animation:degaussVerticalBloom 1.64s cubic-bezier(.16,.9,.18,1) both;
+}
+.degauss-collapse {
+  position:absolute;
+  inset:0;
+  opacity:0;
+  background:radial-gradient(ellipse at center,rgba(255,255,255,.95),rgba(0,255,255,.18) 16%,rgba(255,0,127,.08) 32%,transparent 68%);
+  animation:degaussFlash 1.64s ease-out both;
+}
+.degauss-label {
+  position:absolute;
+  bottom:8vh;
+  left:50%;
+  transform:translateX(-50%);
+  color:rgba(202,255,255,.68);
+  font:700 7px "Press Start 2P",monospace;
+  letter-spacing:.18em;
+  white-space:nowrap;
+  text-shadow:0 0 12px rgba(0,255,255,.72);
+  animation:degaussLabel 1.64s steps(2,end) both;
+}
+.boot-sequence.degauss-boot.is-complete { opacity:0; visibility:hidden; pointer-events:none; }
+@keyframes degaussHorizontal {
+  0% { width:0; opacity:0; filter:brightness(3); }
+  8% { width:14vw; opacity:1; }
+  34% { width:96vw; opacity:1; }
+  53% { width:100vw; height:3px; filter:brightness(4); }
+  72% { width:100vw; height:1px; opacity:.82; }
+  100% { width:100vw; height:0; opacity:0; }
+}
+@keyframes degaussVerticalBloom {
+  0%,28% { opacity:0; transform:translate3d(-50%,-50%,0) scaleY(.001); }
+  40% { opacity:1; transform:translate3d(-50%,-50%,0) scaleY(.012); }
+  58% { opacity:.94; transform:translate3d(-50%,-50%,0) scaleY(420); }
+  76% { opacity:.28; transform:translate3d(-50%,-50%,0) scaleY(520); }
+  100% { opacity:0; transform:translate3d(-50%,-50%,0) scaleY(600); }
+}
+@keyframes degaussFlash {
+  0%,35% { opacity:0; transform:scale(.7); }
+  48% { opacity:.55; transform:scale(1); }
+  56% { opacity:.14; transform:scale(1.08); }
+  64% { opacity:.35; transform:scale(1.02); }
+  100% { opacity:0; transform:scale(1.12); }
+}
+@keyframes degaussRasterFlicker { 0%{opacity:.2;transform:translateY(0)} 50%{opacity:.32;transform:translateY(1px)} 100%{opacity:.24;transform:translateY(-1px)} }
+@keyframes degaussLabel { 0%,18%{opacity:0} 19%,54%{opacity:.75} 55%,64%{opacity:.2} 65%,84%{opacity:.72} 85%,100%{opacity:0} }
+@media (max-width: 760px) {
+  .holo-carousel-shell { --orbit-radius: clamp(300px, 82vw, 430px); }
+  .spatial-cabinet { transform-origin:50% 36%; }
+}
+@media (prefers-reduced-motion:reduce) {
+  .spatial-cabinet { transform:none !important; will-change:auto; }
+  .holo-carousel-item.is-active .arcade-card { animation:none !important; }
+  .holo-carousel-item.is-active::after { display:none; }
+}
+html.eco-mode .holo-carousel-item.is-active .arcade-card,
+html.eco-mode .holo-carousel-item.is-active::after,
+html.eco-mode .degauss-raster { animation:none !important; }
+
 </style>
   <style id="neonArcadeTheme">    :root {
       color-scheme: dark;
@@ -4224,19 +4401,14 @@ html.monochrome-terminal .neon-text-magenta{color:#8dffa4!important;text-shadow:
 </head>
 
 <body class="antialiased boot-active">
-  <div id="bootSequence" class="boot-sequence" role="status" aria-live="polite" aria-label="Inicializando Neon Nexus">
-    <div class="boot-sequence-grid" aria-hidden="true"></div>
-    <section class="boot-terminal" aria-describedby="bootStatusText">
-      <div class="boot-terminal-header">
-        <span class="boot-terminal-led"></span>
-        <span>NEON NEXUS BIOS // SECURE START</span>
-        <span id="bootCounter">000%</span>
-      </div>
-      <div id="bootLines" class="boot-lines" aria-hidden="true"></div>
-      <div class="boot-progress-track" aria-hidden="true">
-        <span id="bootProgress" class="boot-progress-bar"></span>
-      </div>
-      <p id="bootStatusText" class="boot-status-text">INITIALIZING ARCADE BUS...</p>
+  <div id="bootSequence" class="boot-sequence degauss-boot" role="status" aria-live="polite" aria-label="Encendiendo monitor CRT Neon Nexus">
+    <div class="degauss-raster" aria-hidden="true"></div>
+    <div class="degauss-collapse" aria-hidden="true"></div>
+    <div class="degauss-bloom" aria-hidden="true"></div>
+    <div class="degauss-beam" aria-hidden="true"></div>
+    <p class="degauss-label">CRT DEGAUSS // PHOSPHOR ARRAY ONLINE</p>
+    <section class="boot-terminal" aria-hidden="true">
+      <span id="bootCounter">000%</span><div id="bootLines"></div><span id="bootProgress"></span><p id="bootStatusText">CRT DEGAUSS ACTIVE</p>
     </section>
   </div>
   <canvas id="bg-canvas" aria-hidden="true"></canvas>
@@ -4257,6 +4429,7 @@ html.monochrome-terminal .neon-text-magenta{color:#8dffa4!important;text-shadow:
   <div class="page-orb -left-40 top-8 bg-cyan-400" aria-hidden="true"></div>
   <div class="page-orb -right-36 top-80 bg-fuchsia-500 [animation-delay:-7s]" aria-hidden="true"></div>
 
+  <div id="spatialCabinet" class="spatial-cabinet">
   <header class="relative z-10 border-b border-white/8 bg-[#05020a]/55 backdrop-blur-xl">
     <div class="mx-auto flex max-w-7xl items-center justify-between gap-5 px-5 py-4 sm:px-8 lg:px-10">
       <a href="#top" class="group flex items-center gap-3" aria-label="Ir al inicio">
@@ -4787,9 +4960,10 @@ html.monochrome-terminal .neon-text-magenta{color:#8dffa4!important;text-shadow:
   </main>
 
   <footer class="relative z-10 mx-auto flex max-w-7xl flex-col gap-4 px-5 py-9 text-xs font-semibold tracking-[0.13em] text-white/35 sm:flex-row sm:items-center sm:justify-between sm:px-8 lg:px-10">
-    <p>NEON NEXUS / MATRIX CORE v17.0</p>
+    <p>NEON NEXUS / MATRIX CORE v18.0</p>
     <p>CANVAS 800×600 · KEYBOARD · TOUCH · GAMEPAD · TURBO 1.5X</p>
   </footer>
+  </div>
 
   <div id="gameModal" class="modal-shell fixed inset-0 z-[100] flex items-center justify-center p-3 sm:p-6 lg:p-10" aria-hidden="true">
     <div class="modal-backdrop absolute inset-0 bg-[#020105]/88" data-close-modal></div>
@@ -5690,42 +5864,43 @@ class RetroAudio {
   }
 
   bootChime(detail = {}) {
-    if (!this.canPlay("global:boot-sequence", 1.8)) return false;
+    if (!this.canPlay("global:boot-sequence", 1.25)) return false;
     const context = this.context;
-    const start = context.currentTime + 0.018;
+    const start = context.currentTime + 0.012;
     const output = context.createGain();
-    const filter = context.createBiquadFilter();
-    filter.type = "highpass";
-    filter.frequency.setValueAtTime(420, start);
-    filter.frequency.exponentialRampToValueAtTime(1250, start + 0.48);
-    filter.Q.value = 0.72;
+    const highpass = context.createBiquadFilter();
+    const metallic = context.createBiquadFilter();
+    highpass.type = "highpass";
+    highpass.frequency.setValueAtTime(1350, start);
+    highpass.frequency.exponentialRampToValueAtTime(5200, start + 0.23);
+    metallic.type = "bandpass";
+    metallic.frequency.setValueAtTime(2800, start);
+    metallic.frequency.exponentialRampToValueAtTime(7600, start + 0.24);
+    metallic.Q.setValueAtTime(8.5, start);
     output.gain.setValueAtTime(0.0001, start);
-    output.gain.exponentialRampToValueAtTime(0.42, start + 0.018);
-    output.gain.setValueAtTime(0.34, start + 0.31);
-    output.gain.exponentialRampToValueAtTime(0.0001, start + 0.66);
-    filter.connect(output);
-    output.connect(this.masterGain);
-
-    const notes = [659.25, 987.77, 1318.51, 1760];
-    const nodes = [filter, output];
-    notes.forEach((frequency, index) => {
-      const noteStart = start + index * 0.105;
-      const oscillator = context.createOscillator();
-      const gain = context.createGain();
-      oscillator.type = index < 2 ? "triangle" : "sine";
-      oscillator.frequency.setValueAtTime(frequency, noteStart);
-      oscillator.frequency.exponentialRampToValueAtTime(frequency * 1.045, noteStart + 0.085);
-      gain.gain.setValueAtTime(0.0001, noteStart);
-      gain.gain.exponentialRampToValueAtTime(index === 3 ? 0.24 : 0.18, noteStart + 0.008);
-      gain.gain.exponentialRampToValueAtTime(0.0001, noteStart + (index === 3 ? 0.24 : 0.095));
-      oscillator.connect(gain);
-      gain.connect(filter);
-      oscillator.start(noteStart);
-      oscillator.stop(noteStart + (index === 3 ? 0.26 : 0.11));
-      nodes.push(oscillator, gain);
-    });
-
-    this.trackTransient(nodes, start + 0.72);
+    output.gain.exponentialRampToValueAtTime(0.3, start + 0.008);
+    output.gain.exponentialRampToValueAtTime(0.075, start + 0.12);
+    output.gain.exponentialRampToValueAtTime(0.0001, start + 0.42);
+    highpass.connect(metallic); metallic.connect(output); output.connect(this.masterGain);
+    const carrier = context.createOscillator();
+    const carrierGain = context.createGain();
+    carrier.type = "square";
+    carrier.frequency.setValueAtTime(7800, start);
+    carrier.frequency.exponentialRampToValueAtTime(2100, start + 0.16);
+    carrier.frequency.exponentialRampToValueAtTime(9800, start + 0.235);
+    carrierGain.gain.setValueAtTime(0.0001, start);
+    carrierGain.gain.exponentialRampToValueAtTime(0.18, start + 0.004);
+    carrierGain.gain.exponentialRampToValueAtTime(0.0001, start + 0.27);
+    carrier.connect(carrierGain); carrierGain.connect(highpass);
+    const noise = context.createBufferSource();
+    const noiseGain = context.createGain();
+    noise.buffer = this.createNoiseBuffer(0.35);
+    noiseGain.gain.setValueAtTime(0.0001, start);
+    noiseGain.gain.exponentialRampToValueAtTime(0.13, start + 0.006);
+    noiseGain.gain.exponentialRampToValueAtTime(0.0001, start + 0.31);
+    noise.connect(noiseGain); noiseGain.connect(highpass);
+    carrier.start(start); carrier.stop(start + 0.3); noise.start(start); noise.stop(start + 0.34);
+    this.trackTransient([carrier, carrierGain, noise, noiseGain, highpass, metallic, output], start + 0.48);
     return true;
   }
 
@@ -6336,15 +6511,13 @@ class BootSequenceController {
   constructor(root, audio) {
     this.root = root;
     this.audio = audio;
-    this.linesElement = root?.querySelector("#bootLines");
-    this.progressElement = root?.querySelector("#bootProgress");
     this.counterElement = root?.querySelector("#bootCounter");
+    this.progressElement = root?.querySelector("#bootProgress");
     this.statusElement = root?.querySelector("#bootStatusText");
-    this.duration = 2500;
+    this.duration = 1640;
     this.startTime = performance.now();
     this.animationId = null;
-    this.timeouts = [];
-    this.userActivatedAudio = false;
+    this.finishTimer = 0;
     this.audioPlayed = false;
     this.handleUserActivation = this.handleUserActivation.bind(this);
     this.animate = this.animate.bind(this);
@@ -6352,82 +6525,46 @@ class BootSequenceController {
       document.body.classList.remove("boot-active");
       return;
     }
-    this.lines = [
-      { at: 90, text: "BOOTING MATRIX CORE v17.0...", state: "ok" },
-      { at: 390, text: "VERIFYING INPUT MATRIX... OK", state: "ok" },
-      { at: 700, text: "CONNECTING TO SEED-SERVER... LINKED", state: "ok" },
-      { at: 1030, text: "LOADING RENDER MOTORS... 800x600", state: "ok" },
-      { at: 1380, text: "CALIBRATING PHOSPHOR GRID... STABLE", state: "ok" },
-      { at: 1730, text: "MOUNTING LOCAL ACHIEVEMENT VAULT... READY", state: "ok" },
-      { at: 2070, text: "ARCADE BUS ONLINE // PILOT AUTHORIZED", state: "ready" }
-    ];
     document.body.setAttribute("aria-busy", "true");
     document.addEventListener("pointerdown", this.handleUserActivation, { capture: true, passive: true });
     document.addEventListener("keydown", this.handleUserActivation, { capture: true });
-    this.scheduleLines();
+    this.tryStartSound();
     this.animationId = requestAnimationFrame(this.animate);
-    this.timeouts.push(window.setTimeout(() => this.finish(), this.duration));
+    this.finishTimer = window.setTimeout(() => this.finish(), this.duration);
   }
-
-  handleUserActivation() {
-    this.userActivatedAudio = true;
-    this.audio?.unlock();
+  handleUserActivation() { this.audio?.unlock(); this.tryStartSound(); }
+  tryStartSound() {
+    if (this.audioPlayed) return;
+    const context = this.audio?.unlock?.();
+    if (!context || context.state === "suspended") return;
+    this.audioPlayed = Boolean(this.audio?.playSynthSound("boot_sequence", { degauss: true }));
   }
-
-  scheduleLines() {
-    for (const line of this.lines) {
-      this.timeouts.push(window.setTimeout(() => {
-        if (!this.linesElement || !this.root?.isConnected) return;
-        const row = document.createElement("p");
-        row.className = `boot-line boot-line-${line.state}`;
-        row.textContent = `> ${line.text}`;
-        this.linesElement.appendChild(row);
-        while (this.linesElement.children.length > 6) this.linesElement.firstElementChild?.remove();
-        this.linesElement.scrollTop = this.linesElement.scrollHeight;
-      }, line.at));
-    }
-  }
-
   animate(timestamp) {
     if (!this.root?.isConnected) return;
     const progress = Math.max(0, Math.min(1, (timestamp - this.startTime) / this.duration));
     if (this.progressElement) this.progressElement.style.transform = `scaleX(${progress})`;
     if (this.counterElement) this.counterElement.textContent = `${String(Math.floor(progress * 100)).padStart(3, "0")}%`;
-    if (this.statusElement) {
-      this.statusElement.textContent = progress > 0.86
-        ? "CORE SYNCHRONIZED — OPENING PORTAL"
-        : progress > 0.52
-          ? "CALIBRATING HOLOGRAPHIC INTERFACE..."
-          : "INITIALIZING ARCADE BUS...";
-    }
+    if (this.statusElement) this.statusElement.textContent = progress < .42 ? "CHARGING ELECTRON GUN" : progress < .74 ? "EXPANDING PHOSPHOR FIELD" : "RASTER LOCKED";
     if (progress < 1) this.animationId = requestAnimationFrame(this.animate);
   }
-
-  playCompletionSound() {
-    if (this.audioPlayed) return;
-    this.audioPlayed = true;
-    this.audio?.playSynthSound("boot_sequence");
-  }
-
   finish() {
     if (!this.root?.isConnected) return;
     if (this.animationId !== null) cancelAnimationFrame(this.animationId);
-    if (this.progressElement) this.progressElement.style.transform = "scaleX(1)";
-    if (this.counterElement) this.counterElement.textContent = "100%";
-    if (this.statusElement) this.statusElement.textContent = "NEON NEXUS ONLINE";
-    if (this.userActivatedAudio) {
-      this.playCompletionSound();
-    } else {
-      const deferredAudio = () => this.playCompletionSound();
-      document.addEventListener("pointerdown", deferredAudio, { once: true, capture: true });
-      document.addEventListener("keydown", deferredAudio, { once: true, capture: true });
-    }
+    this.tryStartSound();
     this.root.classList.add("is-complete");
     document.body.classList.remove("boot-active");
     document.body.removeAttribute("aria-busy");
     document.removeEventListener("pointerdown", this.handleUserActivation, { capture: true });
     document.removeEventListener("keydown", this.handleUserActivation, { capture: true });
-    window.setTimeout(() => this.root?.remove(), 620);
+    if (!this.audioPlayed) {
+      const deferredDegaussAudio = () => {
+        this.audio?.unlock();
+        this.tryStartSound();
+      };
+      document.addEventListener("pointerdown", deferredDegaussAudio, { once: true, capture: true, passive: true });
+      document.addEventListener("keydown", deferredDegaussAudio, { once: true, capture: true });
+    }
+    window.setTimeout(() => this.root?.remove(), 460);
   }
 }
 
@@ -15149,6 +15286,55 @@ class AttractModeController {
 
 const attractMode = new AttractModeController();
 
+class SpatialParallaxController {
+  constructor(root) {
+    this.root = root; this.targetX = 0; this.targetY = 0; this.currentX = 0; this.currentY = 0; this.frameId = 0; this.orientationEnabled = false;
+    this.motionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+    this.finePointerQuery = window.matchMedia("(pointer: fine)");
+    this.handlePointerMove = this.handlePointerMove.bind(this); this.handlePointerLeave = this.handlePointerLeave.bind(this); this.handleOrientation = this.handleOrientation.bind(this); this.animate = this.animate.bind(this); this.requestOrientationPermission = this.requestOrientationPermission.bind(this);
+    if (!this.root) return;
+    window.addEventListener("mousemove", this.handlePointerMove, { passive: true });
+    document.addEventListener("mouseleave", this.handlePointerLeave, { passive: true });
+    window.addEventListener("deviceorientation", this.handleOrientation, { passive: true });
+    document.addEventListener("pointerdown", this.requestOrientationPermission, { once: true, passive: true });
+  }
+  isSuspended() { return this.motionQuery.matches || document.hidden || document.body.classList.contains("modal-open") || document.body.classList.contains("deep-dive-active") || document.body.classList.contains("boot-active") || document.documentElement.classList.contains("eco-mode"); }
+  handlePointerMove(event) {
+    if (!this.finePointerQuery.matches || this.isSuspended()) return;
+    const nx = Math.max(-1, Math.min(1, (event.clientX / Math.max(1, window.innerWidth) - .5) * 2));
+    const ny = Math.max(-1, Math.min(1, (event.clientY / Math.max(1, window.innerHeight) - .5) * 2));
+    this.targetX = ny * -2.35; this.targetY = nx * 3.25; this.ensureAnimation();
+  }
+  handlePointerLeave() { this.targetX = 0; this.targetY = 0; this.ensureAnimation(); }
+  async requestOrientationPermission() {
+    const orientation = window.DeviceOrientationEvent; if (!orientation) return;
+    if (typeof orientation.requestPermission === "function") { try { this.orientationEnabled = (await orientation.requestPermission()) === "granted"; } catch (error) { this.orientationEnabled = false; } }
+    else this.orientationEnabled = true;
+  }
+  handleOrientation(event) {
+    if (this.finePointerQuery.matches || this.isSuspended()) return;
+    const orientation = window.DeviceOrientationEvent;
+    if (typeof orientation?.requestPermission === "function" && !this.orientationEnabled) return;
+    const beta = Math.max(-45, Math.min(45, Number(event.beta) || 0));
+    const gamma = Math.max(-45, Math.min(45, Number(event.gamma) || 0));
+    const angle = Number(screen.orientation?.angle ?? window.orientation ?? 0);
+    if (Math.abs(angle) === 90) { const sign = angle < 0 ? -1 : 1; this.targetX = Math.max(-2.5, Math.min(2.5, gamma / 18 * sign)); this.targetY = Math.max(-3.4, Math.min(3.4, beta / 13 * sign)); }
+    else { this.targetX = Math.max(-2.5, Math.min(2.5, beta / -18)); this.targetY = Math.max(-3.4, Math.min(3.4, gamma / 13)); }
+    this.ensureAnimation();
+  }
+  ensureAnimation() { if (!this.frameId) this.frameId = requestAnimationFrame(this.animate); }
+  animate() {
+    this.frameId = 0;
+    if (this.isSuspended()) { this.targetX = 0; this.targetY = 0; }
+    this.currentX += (this.targetX - this.currentX) * .085; this.currentY += (this.targetY - this.currentY) * .085;
+    if (Math.abs(this.currentX) < .002 && Math.abs(this.targetX) < .002) this.currentX = 0;
+    if (Math.abs(this.currentY) < .002 && Math.abs(this.targetY) < .002) this.currentY = 0;
+    this.root.style.setProperty("--cabinet-tilt-x", `${this.currentX.toFixed(3)}deg`); this.root.style.setProperty("--cabinet-tilt-y", `${this.currentY.toFixed(3)}deg`);
+    if (Math.abs(this.targetX - this.currentX) > .004 || Math.abs(this.targetY - this.currentY) > .004) this.ensureAnimation();
+  }
+}
+const spatialParallax = new SpatialParallaxController(document.getElementById("spatialCabinet"));
+
 class SpatialCarouselController {
   constructor() {
     this.shell = document.getElementById("holoCarouselShell");
@@ -15251,39 +15437,33 @@ class SpatialCarouselController {
     this.track.classList.toggle("no-transition", !animate);
     const count = this.items.length;
     const viewportWidth = this.viewport?.clientWidth || window.innerWidth;
-    const horizontalRadius = Math.min(590, Math.max(300, viewportWidth * 0.43));
-    const depthRadius = Math.min(570, Math.max(360, viewportWidth * 0.38));
-    const anglePerSlot = count <= 4 ? 40 : 30;
-
+    const radius = Math.min(640, Math.max(360, viewportWidth * (window.innerWidth < 760 ? .82 : .46)));
+    const anglePerSlot = 180 / Math.max(5, count);
+    this.shell?.style.setProperty("--orbit-radius", `${radius.toFixed(1)}px`);
+    this.track.style.setProperty("--orbit-radius", `${radius.toFixed(1)}px`);
     this.items.forEach((item, index) => {
       let delta = index - this.activeIndex;
       while (delta > count / 2) delta -= count;
       while (delta < -count / 2) delta += count;
-      if (count % 2 === 0 && delta === count / 2) delta = -delta;
-      const angle = Math.max(-88, Math.min(88, delta * anglePerSlot));
-      const radians = angle * Math.PI / 180;
-      const x = Math.sin(radians) * horizontalRadius;
-      const z = (Math.cos(radians) - 1) * depthRadius;
-      const y = Math.abs(delta) * 9;
-      const scale = delta === 0 ? 1 : Math.max(.66, .9 - Math.abs(delta) * .08);
-      const active = delta === 0;
-      item.style.transform = `translate3d(calc(-50% + ${x.toFixed(2)}px),calc(-50% + ${y.toFixed(2)}px),${z.toFixed(2)}px) rotateY(${(-angle * .72).toFixed(2)}deg) scale(${scale.toFixed(3)})`;
-      item.style.opacity = active ? "1" : String(Math.max(.25, .52 - Math.abs(delta) * .09));
-      item.style.zIndex = String(20 - Math.abs(delta));
+      if (count % 2 === 0 && delta === count / 2) delta = -Math.abs(delta);
+      const angle = Math.max(-90, Math.min(90, delta * anglePerSlot));
+      const distance = Math.abs(delta);
+      const y = distance * 10;
+      const scale = distance === 0 ? 1.075 : Math.max(.64, .9 - distance * .085);
+      const faceCorrection = -angle * .78;
+      const active = distance === 0;
+      item.style.transform = `translate3d(-50%,-50%,0) rotateY(${angle.toFixed(2)}deg) translateZ(${radius.toFixed(2)}px) rotateY(${faceCorrection.toFixed(2)}deg) translateY(${y.toFixed(2)}px) scale(${scale.toFixed(3)})`;
+      item.style.opacity = active ? "1" : String(Math.max(.2, .44 - distance * .085));
+      item.style.filter = active ? "none" : `blur(${Math.min(3.4, 1.2 + distance * .62).toFixed(2)}px) saturate(${Math.max(.34, .64 - distance * .09).toFixed(2)}) brightness(${Math.max(.34, .64 - distance * .08).toFixed(2)})`;
+      item.style.zIndex = String(40 - distance);
+      item.style.setProperty("--glitch-y", `${32 + ((index * 17 + this.activeIndex * 11) % 36)}%`);
       item.classList.toggle("is-active", active);
       item.setAttribute("aria-selected", String(active));
       item.setAttribute("aria-hidden", String(!active));
       item.inert = !active;
-      const card = this.cards[index];
-      if (card) card.tabIndex = active ? 0 : -1;
+      const card = this.cards[index]; if (card) card.tabIndex = active ? 0 : -1;
     });
-
-    this.dots.forEach((dot, index) => {
-      const active = index === this.activeIndex;
-      dot.classList.toggle("is-active", active);
-      dot.setAttribute("aria-selected", String(active));
-    });
-
+    this.dots.forEach((dot, index) => { const active = index === this.activeIndex; dot.classList.toggle("is-active", active); dot.setAttribute("aria-selected", String(active)); });
     const card = this.cards[this.activeIndex];
     const gameId = card?.dataset.carouselGame || this.items[this.activeIndex]?.dataset.carouselItem;
     const title = card?.querySelector("h3")?.textContent?.trim() || "ARCADE TERMINAL";
