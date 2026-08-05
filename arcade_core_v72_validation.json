@@ -1,0 +1,85 @@
+{
+  "version": "CORE_V7.2",
+  "checks": {
+    "readyState": "complete",
+    "cards": 6,
+    "attractCanvases": 6,
+    "monoButton": 1,
+    "status": "CORE_V7.2 // AUTONOMOUS FEEDBACK ONLINE",
+    "monochrome": {
+      "active": true,
+      "pressed": "true",
+      "filter": "grayscale(1) brightness(1.1) contrast(1.3) sepia(1) hue-rotate(60deg)"
+    },
+    "vibrations": [
+      10,
+      100
+    ],
+    "throttle": {
+      "beforeThird": false,
+      "afterThird": true,
+      "quality": "reduced",
+      "particles": 12,
+      "shadowBlur": 2
+    },
+    "attractLifecycle": {
+      "before": 488,
+      "active": {
+        "imgHidden": true,
+        "canvasHidden": false,
+        "height": 488
+      },
+      "after": {
+        "imgHidden": false,
+        "canvasHidden": true,
+        "height": 488
+      }
+    }
+  },
+  "games": {
+    "space-invaders": {
+      "active": "space-invaders",
+      "module": "AlienInvadersGame",
+      "width": 800,
+      "height": 600,
+      "modal": true
+    },
+    "pac-man": {
+      "active": "pac-man",
+      "module": "NeonPacmanGame",
+      "width": 800,
+      "height": 600,
+      "modal": true
+    },
+    "asteroids": {
+      "active": "asteroids",
+      "module": "NeonAsteroidsGame",
+      "width": 800,
+      "height": 600,
+      "modal": true
+    },
+    "tron": {
+      "active": "tron",
+      "module": "NeonTronGame",
+      "width": 800,
+      "height": 600,
+      "modal": true
+    },
+    "galaga": {
+      "active": "galaga",
+      "module": "CyberGalagaGame",
+      "width": 800,
+      "height": 600,
+      "modal": true
+    },
+    "outrun": {
+      "active": "outrun",
+      "module": "NeonOutrunGame",
+      "width": 800,
+      "height": 600,
+      "modal": true
+    }
+  },
+  "consoleErrors": [],
+  "pageErrors": []
+}
