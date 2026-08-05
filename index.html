@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
 <meta charset="utf-8"/>
-<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" name="viewport"/>
 <meta content="#05020a" name="theme-color"/>
 <meta content="strict-origin-when-cross-origin" name="referrer"/>
 <meta content="Arcade Virtual local de bajo consumo con Space Invaders, Pac-Man, Asteroids, TRON Lightcycles y Cyber-Galaga Neón." name="description"/>
@@ -4263,6 +4263,164 @@ html.eco-mode .tactical-rail-block{animation-duration:4.5s}
   #gameLayout,#gameSidebar,.telemetry-toggle-button{transition-duration:.01ms!important}
 }
 
+
+
+/* ========================================================================== 
+   CORE_V6.4 — MOBILE IMMERSIVE UX / DYNAMIC TOUCH SURFACE
+   ========================================================================== */
+#gameModal,
+#gameDialog,
+#gameLayout,
+#gameStage,
+#canvasViewport,
+.canvas-frame,
+#gameCanvas {
+  touch-action:none!important;
+  overscroll-behavior:none!important;
+  -webkit-user-select:none!important;
+  user-select:none!important;
+  -webkit-touch-callout:none!important;
+}
+#canvasViewport{
+  position:relative!important;
+  isolation:isolate;
+}
+.mobile-touch-overlay{
+  position:absolute;
+  inset:.5rem;
+  z-index:45;
+  display:none;
+  overflow:visible;
+  pointer-events:none;
+  touch-action:none;
+  overscroll-behavior:none;
+  -webkit-user-select:none;
+  user-select:none;
+  -webkit-touch-callout:none;
+}
+.mobile-touch-overlay.is-visible:not(.is-orientation-locked){display:block}
+.mobile-touch-zone{
+  position:absolute;
+  top:0;
+  bottom:0;
+  pointer-events:auto;
+  touch-action:none;
+  overscroll-behavior:none;
+  background:transparent;
+  -webkit-tap-highlight-color:transparent;
+}
+.mobile-touch-zone-left{left:0;width:50%}
+.mobile-touch-zone-right{right:0;width:50%}
+.mobile-floating-joystick{
+  --joy-x:0px;
+  --joy-y:0px;
+  position:absolute;
+  left:0;
+  top:0;
+  width:108px;
+  height:108px;
+  margin:-54px 0 0 -54px;
+  border:2px solid rgba(66,245,255,.82);
+  border-radius:50%;
+  opacity:0;
+  visibility:hidden;
+  transform:translate3d(var(--joy-x),var(--joy-y),0) scale(.72);
+  background:
+    linear-gradient(90deg,transparent 49.4%,rgba(66,245,255,.18) 50%,transparent 50.6%),
+    linear-gradient(transparent 49.4%,rgba(66,245,255,.18) 50%,transparent 50.6%),
+    radial-gradient(circle,rgba(4,22,30,.52),rgba(0,4,9,.36) 64%,rgba(0,255,255,.05));
+  box-shadow:inset 0 0 28px rgba(66,245,255,.12),0 0 24px rgba(66,245,255,.28);
+  transition:opacity 80ms linear,transform 110ms cubic-bezier(.16,1,.3,1),visibility 0s linear 110ms;
+  will-change:transform,opacity;
+  pointer-events:none;
+}
+.mobile-touch-overlay.is-joystick-active .mobile-floating-joystick{
+  opacity:.92;
+  visibility:visible;
+  transform:translate3d(var(--joy-x),var(--joy-y),0) scale(1);
+  transition:opacity 50ms linear,transform 90ms cubic-bezier(.16,1,.3,1),visibility 0s;
+}
+.mobile-floating-joystick::before{
+  content:"MOVE";
+  position:absolute;
+  left:50%;
+  bottom:-20px;
+  transform:translateX(-50%);
+  color:rgba(172,252,255,.78);
+  font:800 .44rem/1 Orbitron,system-ui,sans-serif;
+  letter-spacing:.15em;
+  text-shadow:0 0 8px rgba(66,245,255,.72);
+}
+.mobile-floating-joystick-knob{
+  position:absolute;
+  left:50%;
+  top:50%;
+  width:46px;
+  height:46px;
+  margin:-23px 0 0 -23px;
+  border:2px solid #42f5ff;
+  border-radius:50%;
+  transform:translate3d(0,0,0);
+  background:radial-gradient(circle at 36% 28%,rgba(255,255,255,.24),rgba(66,245,255,.16) 42%,rgba(2,12,20,.78));
+  box-shadow:inset 0 0 16px rgba(66,245,255,.18),0 0 18px rgba(66,245,255,.42);
+  will-change:transform;
+}
+.mobile-action-pulse{
+  position:absolute;
+  left:0;
+  top:0;
+  width:78px;
+  height:78px;
+  margin:-39px 0 0 -39px;
+  border:2px solid rgba(255,60,247,.82);
+  border-radius:50%;
+  opacity:0;
+  transform:translate3d(var(--action-x,0px),var(--action-y,0px),0) scale(.38);
+  background:radial-gradient(circle,rgba(255,60,247,.22),rgba(255,60,247,.035) 62%,transparent 64%);
+  box-shadow:inset 0 0 18px rgba(255,60,247,.14),0 0 22px rgba(255,60,247,.32);
+  pointer-events:none;
+  will-change:transform,opacity;
+}
+.mobile-touch-overlay.is-action-active .mobile-action-pulse{
+  animation:mobileActionPulse 260ms cubic-bezier(.16,1,.3,1) both;
+}
+@keyframes mobileActionPulse{
+  0%{opacity:.95;transform:translate3d(var(--action-x),var(--action-y),0) scale(.42)}
+  70%{opacity:.48;transform:translate3d(var(--action-x),var(--action-y),0) scale(1)}
+  100%{opacity:0;transform:translate3d(var(--action-x),var(--action-y),0) scale(1.22)}
+}
+html.mobile-game-active,
+html.mobile-game-active body{
+  width:100%;
+  height:100%;
+  overflow:hidden!important;
+  overscroll-behavior:none!important;
+  touch-action:none!important;
+}
+@media (pointer:coarse), (hover:none), (max-width:980px){
+  #gameDialog{
+    width:100vw!important;
+    max-width:100vw!important;
+    height:100dvh!important;
+    max-height:100dvh!important;
+    border-radius:0!important;
+  }
+  #gameDialog > .sticky{min-height:58px!important}
+  #gameLayout{height:calc(100% - 58px)!important;padding:.2rem!important;gap:0!important}
+  #canvasViewport{padding:.15rem!important}
+  .mobile-touch-overlay{inset:.15rem}
+  #gameStage > .game-control-strip{display:none!important}
+}
+@media (pointer:coarse) and (orientation:landscape){
+  #gameLayout.telemetry-collapsed #gameStage{width:100%!important}
+  .mobile-floating-joystick{width:96px;height:96px;margin:-48px 0 0 -48px}
+  .mobile-floating-joystick-knob{width:42px;height:42px;margin:-21px 0 0 -21px}
+}
+@media (prefers-reduced-motion:reduce){
+  .mobile-floating-joystick{transition-duration:.01ms!important}
+  .mobile-touch-overlay.is-action-active .mobile-action-pulse{animation-duration:.01ms!important}
+}
+
 </style><meta content="default-src 'self' data: blob:; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; connect-src 'none'; media-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self'" http-equiv="Content-Security-Policy"/></head>
 <body class="antialiased">
 
@@ -4277,7 +4435,7 @@ html.eco-mode .tactical-rail-block{animation-duration:4.5s}
     </a>
     <section class="matrix-diagnostic" aria-label="Diagnóstico del sistema">
       <span class="matrix-status-led" aria-hidden="true"></span>
-      <div><strong id="systemStatusText">CORE_V6.2 // ONLINE</strong><small>LOCAL RUNTIME · ECO GPU PIPELINE</small></div>
+      <div><strong id="systemStatusText">CORE_V6.4 // MOBILE ONLINE</strong><small>LOCAL RUNTIME · ECO GPU PIPELINE</small></div>
       <time id="systemClock" aria-label="Reloj digital">--:--:--</time>
     </section>
     <div class="tactical-actions">
@@ -4296,7 +4454,7 @@ html.eco-mode .tactical-rail-block{animation-duration:4.5s}
 <div>
 <div class="mb-7 inline-flex items-center gap-3 rounded-full border border-fuchsia-300/20 bg-fuchsia-300/5 px-4 py-2 text-xs font-bold tracking-[0.22em] text-fuchsia-200">
 <span class="size-1.5 animate-pulse rounded-full bg-fuchsia-300 shadow-[0_0_12px_rgba(255,60,247,.8)]"></span>
-          CORE_V6.2 · SIX TERMINALS · ANALOG CRT
+          CORE_V6.4 · SIX TERMINALS · MOBILE IMMERSIVE
         </div>
 <h1 class="font-display max-w-4xl text-4xl font-black leading-[1.02] tracking-[-0.03em] text-white sm:text-6xl lg:text-7xl">
           EL PASADO
@@ -4614,7 +4772,7 @@ html.eco-mode .tactical-rail-block{animation-duration:4.5s}
 </section>
 </main>
 <footer class="relative z-10 mx-auto flex max-w-7xl flex-col gap-4 px-5 py-9 text-xs font-semibold tracking-[0.13em] text-white/35 sm:flex-row sm:items-center sm:justify-between sm:px-8 lg:px-10">
-<p>NEON NEXUS / CORE_V6.2 // ONLINE</p>
+<p>NEON NEXUS / CORE_V6.4 // MOBILE ONLINE</p>
 <p>6 GAMES · CANVAS 800×600 · KEYBOARD · TOUCH · GAMEPAD · TURBO 1.5X</p>
 </footer>
 <div aria-hidden="true" class="modal-shell fixed inset-0 z-[100] flex items-center justify-center p-3 sm:p-6 lg:p-10" id="gameModal">
@@ -7337,19 +7495,25 @@ class TouchArcadeControls {
     this.modalElement = modalElement;
     this.canvas = canvas;
     this.frame = canvas.parentElement;
+    this.viewport = canvas.closest("#canvasViewport") || this.frame.parentElement;
     this.getGameId = typeof options.getGameId === "function" ? options.getGameId : () => "space-invaders";
     this.getGameState = typeof options.getGameState === "function" ? options.getGameState : () => GAME_STATES.MENU;
     this.onPrimaryAction = typeof options.onPrimaryAction === "function" ? options.onPrimaryAction : () => {};
     this.onLayoutChange = typeof options.onLayoutChange === "function" ? options.onLayoutChange : null;
-    this.isTouchDevice = "ontouchstart" in window || Number(navigator.maxTouchPoints || 0) > 0 || window.matchMedia?.("(pointer: coarse)").matches === true;
+    this.onMobileLayout = typeof options.onMobileLayout === "function" ? options.onMobileLayout : null;
+    this.touchMediaQuery = window.matchMedia?.("(pointer: coarse), (hover: none), (max-width: 980px)") || null;
+    this.isTouchDevice = "ontouchstart" in window
+      || Number(navigator.maxTouchPoints || 0) > 0
+      || this.touchMediaQuery?.matches === true;
     this.root = null;
     this.orientationOverlay = null;
     this.activeGameId = "space-invaders";
     this.visible = false;
     this.joystickTouchId = null;
+    this.actionTouchIds = new Set();
     this.joystickCenter = { x: 0, y: 0 };
+    this.joystickRadius = 48;
     this.directionState = Object.seal({ ArrowLeft: false, ArrowRight: false, ArrowUp: false, ArrowDown: false });
-    this.releaseTimers = new Map();
     this.lastHapticAt = 0;
     this.boundReleaseAll = this.releaseAll.bind(this);
     this.boundSyncOrientation = this.syncOrientation.bind(this);
@@ -7361,30 +7525,35 @@ class TouchArcadeControls {
     window.addEventListener("resize", this.boundSyncOrientation, { passive: true });
     window.addEventListener("orientationchange", this.boundSyncOrientation, { passive: true });
     window.visualViewport?.addEventListener("resize", this.boundSyncOrientation, { passive: true });
+    this.touchMediaQuery?.addEventListener?.("change", this.boundSyncOrientation);
     document.addEventListener("visibilitychange", () => { if (document.hidden) this.releaseAll(); });
+  }
+
+  prefersImmersiveLayout() {
+    return this.isTouchDevice
+      || this.touchMediaQuery?.matches === true
+      || window.matchMedia?.("(max-width: 980px)").matches === true;
   }
 
   inject() {
     const root = document.createElement("div");
-    root.id = "touchArcadeControls";
-    root.className = "touch-arcade-controls";
-    root.setAttribute("aria-label", "Controles táctiles arcade");
+    root.id = "mobile-touch-overlay";
+    root.className = "mobile-touch-overlay";
+    root.setAttribute("aria-label", "Superficie táctil arcade");
     root.innerHTML = `
-      <div class="virtual-joystick" data-joystick aria-label="Joystick virtual">
-        <div class="virtual-joystick-grid" aria-hidden="true"></div>
-        <div class="virtual-joystick-knob" data-joystick-knob aria-hidden="true"></div>
-        <small>MOVE</small>
+      <div class="mobile-touch-zone mobile-touch-zone-left" data-mobile-direction-zone aria-label="Zona táctil de dirección"></div>
+      <div class="mobile-touch-zone mobile-touch-zone-right" data-mobile-action-zone aria-label="Zona táctil de acción"></div>
+      <div class="mobile-floating-joystick" data-mobile-joystick aria-hidden="true">
+        <div class="mobile-floating-joystick-knob" data-mobile-joystick-knob></div>
       </div>
-      <div class="virtual-action-cluster">
-        <button class="virtual-action-button virtual-action-a" data-touch-action="Space" type="button" aria-label="Acción principal">A</button>
-        <button class="virtual-action-button virtual-action-b" data-touch-action="Enter" type="button" aria-label="Menú o iniciar">B</button>
-        <small data-action-label>ACTION</small>
-      </div>`;
-    this.modalElement.appendChild(root);
+      <div class="mobile-action-pulse" data-mobile-action-pulse aria-hidden="true"></div>`;
+    this.viewport.appendChild(root);
     this.root = root;
-    this.joystick = root.querySelector("[data-joystick]");
-    this.knob = root.querySelector("[data-joystick-knob]");
-    this.actionLabel = root.querySelector("[data-action-label]");
+    this.directionZone = root.querySelector("[data-mobile-direction-zone]");
+    this.actionZone = root.querySelector("[data-mobile-action-zone]");
+    this.joystick = root.querySelector("[data-mobile-joystick]");
+    this.knob = root.querySelector("[data-mobile-joystick-knob]");
+    this.actionPulse = root.querySelector("[data-mobile-action-pulse]");
 
     const overlay = document.createElement("div");
     overlay.id = "orientationLockOverlay";
@@ -7397,51 +7566,59 @@ class TouchArcadeControls {
 
   bindControls() {
     const options = { passive: false };
+    this.directionZone.addEventListener("touchstart", (event) => this.handleDirectionStart(event), options);
+    this.directionZone.addEventListener("touchmove", (event) => this.handleDirectionMove(event), options);
+    this.directionZone.addEventListener("touchend", (event) => this.handleDirectionEnd(event), options);
+    this.directionZone.addEventListener("touchcancel", (event) => this.handleDirectionEnd(event), options);
+    this.actionZone.addEventListener("touchstart", (event) => this.handleActionStart(event), options);
+    this.actionZone.addEventListener("touchmove", (event) => this.suppressNativeGesture(event), options);
+    this.actionZone.addEventListener("touchend", (event) => this.handleActionEnd(event), options);
+    this.actionZone.addEventListener("touchcancel", (event) => this.handleActionEnd(event), options);
     for (const type of ["touchstart", "touchmove", "touchend", "touchcancel"]) {
-      this.joystick.addEventListener(type, (event) => this.handleJoystick(event), options);
-    }
-    for (const button of this.root.querySelectorAll("[data-touch-action]")) {
-      const code = button.dataset.touchAction;
-      button.addEventListener("touchstart", (event) => {
-        event.preventDefault(); event.stopPropagation(); this.ensurePlaying(); this.input.setVirtualKey(code, true, `touch-button-${code}`); button.classList.add("is-active"); this.haptic();
-      }, options);
-      const release = (event) => { event.preventDefault(); event.stopPropagation(); this.input.setVirtualKey(code, false, `touch-button-${code}`); button.classList.remove("is-active"); };
-      button.addEventListener("touchend", release, options);
-      button.addEventListener("touchcancel", release, options);
+      this.root.addEventListener(type, (event) => this.suppressNativeGesture(event), options);
     }
     this.root.addEventListener("contextmenu", (event) => event.preventDefault());
+    this.root.addEventListener("dblclick", (event) => event.preventDefault());
     document.addEventListener("gesturestart", (event) => { if (this.visible) event.preventDefault(); }, options);
+    document.addEventListener("gesturechange", (event) => { if (this.visible) event.preventDefault(); }, options);
+    document.addEventListener("gestureend", (event) => { if (this.visible) event.preventDefault(); }, options);
   }
 
-  haptic() {
+  suppressNativeGesture(event) {
+    if (!this.visible) return;
+    event.preventDefault();
+    event.stopPropagation();
+  }
+
+  haptic(duration = 12) {
     const now = performance.now();
-    if (now - this.lastHapticAt < 48) return;
+    if (now - this.lastHapticAt < 44) return;
     this.lastHapticAt = now;
-    if (typeof navigator.vibrate === "function") navigator.vibrate(12);
+    if (typeof navigator.vibrate === "function") navigator.vibrate(duration);
   }
 
   setGame(gameId) {
     this.activeGameId = String(gameId || "space-invaders");
     this.releaseAll();
-    if (!this.root) return;
-    this.root.dataset.game = this.activeGameId;
-    if (this.actionLabel) this.actionLabel.textContent = this.activeGameId === "pac-man" || this.activeGameId === "tron" || this.activeGameId === "outrun" ? "START" : "FIRE / START";
+    if (this.root) this.root.dataset.game = this.activeGameId;
   }
 
   getControlDescription(gameId = this.activeGameId) {
     if (!this.isTouchDevice) return "";
-    if (gameId === "pac-man") return "JOYSTICK: DIRECCIÓN · BOTÓN A/B: INICIAR";
-    if (gameId === "tron") return "JOYSTICK: GIRO 90° · BOTÓN A/B: INICIAR";
-    if (gameId === "asteroids") return "JOYSTICK: ROTAR Y EMPUJE · BOTÓN A: DISPARAR · B: INICIAR";
-    if (gameId === "outrun") return "JOYSTICK: CONDUCIR · BOTÓN A/B: INICIAR";
-    return "JOYSTICK: MOVER · BOTÓN A: DISPARAR · B: INICIAR";
+    if (gameId === "pac-man") return "MITAD IZQUIERDA: DIRECCIÓN · MITAD DERECHA: INICIAR";
+    if (gameId === "tron") return "MITAD IZQUIERDA: GIRO 90° · MITAD DERECHA: INICIAR";
+    if (gameId === "asteroids") return "MITAD IZQUIERDA: ROTAR/EMPUJE · MITAD DERECHA: DISPARAR";
+    if (gameId === "outrun") return "MITAD IZQUIERDA: CONDUCIR · MITAD DERECHA: INICIAR";
+    return "MITAD IZQUIERDA: MOVER · MITAD DERECHA: DISPARAR";
   }
 
   setVisible(visible) {
     this.visible = Boolean(visible);
     if (!this.root) return;
     this.root.classList.toggle("is-visible", this.visible);
+    document.documentElement.classList.toggle("mobile-game-active", this.visible && this.prefersImmersiveLayout());
     if (!this.visible) this.releaseAll();
+    else if (this.prefersImmersiveLayout()) this.onMobileLayout?.();
     this.syncOrientation();
     requestAnimationFrame(() => this.onLayoutChange?.());
   }
@@ -7457,8 +7634,10 @@ class TouchArcadeControls {
     const shouldLock = this.visible && this.modalElement.classList.contains("is-open") && this.isPortrait();
     this.orientationOverlay.classList.toggle("is-visible", shouldLock);
     this.orientationOverlay.setAttribute("aria-hidden", shouldLock ? "false" : "true");
+    this.root?.classList.toggle("is-orientation-locked", shouldLock);
     document.body.classList.toggle("orientation-locked", shouldLock);
     if (shouldLock) this.releaseAll();
+    else if (this.visible && this.prefersImmersiveLayout()) this.onMobileLayout?.();
     requestAnimationFrame(() => this.onLayoutChange?.());
   }
 
@@ -7467,60 +7646,125 @@ class TouchArcadeControls {
     if (state === GAME_STATES.MENU || state === GAME_STATES.GAME_OVER) this.onPrimaryAction();
   }
 
-  handleJoystick(event) {
-    event.preventDefault();
-    event.stopPropagation();
-    if (!this.visible || this.isPortrait()) return;
-    if (event.type === "touchstart") {
-      this.ensurePlaying();
-      const touch = event.changedTouches[0];
-      if (!touch) return;
-      this.joystickTouchId = touch.identifier;
-      const rect = this.joystick.getBoundingClientRect();
-      this.joystickCenter.x = rect.left + rect.width / 2;
-      this.joystickCenter.y = rect.top + rect.height / 2;
-      this.updateJoystick(touch.clientX, touch.clientY, rect.width * 0.32);
-      this.haptic();
-      return;
-    }
-    const touch = Array.from(event.changedTouches).find((item) => item.identifier === this.joystickTouchId);
-    if (event.type === "touchmove" && touch) {
-      this.updateJoystick(touch.clientX, touch.clientY, this.joystick.clientWidth * 0.32);
-      return;
-    }
-    if (event.type === "touchend" || event.type === "touchcancel") {
-      if (touch || event.touches.length === 0) {
-        this.joystickTouchId = null;
-        this.clearDirections();
-        if (this.knob) this.knob.style.transform = "translate3d(0,0,0)";
-      }
-    }
+  findChangedTouch(event, identifier) {
+    return Array.from(event.changedTouches || []).find((touch) => touch.identifier === identifier) || null;
   }
 
-  updateJoystick(clientX, clientY, maxDistance) {
+  handleDirectionStart(event) {
+    this.suppressNativeGesture(event);
+    if (!this.visible || this.isPortrait() || this.joystickTouchId !== null) return;
+    const touch = event.changedTouches?.[0];
+    if (!touch) return;
+    this.ensurePlaying();
+    this.joystickTouchId = touch.identifier;
+    const rect = this.root.getBoundingClientRect();
+    this.joystickCenter.x = touch.clientX;
+    this.joystickCenter.y = touch.clientY;
+    this.joystick.style.setProperty("--joy-x", `${(touch.clientX - rect.left).toFixed(2)}px`);
+    this.joystick.style.setProperty("--joy-y", `${(touch.clientY - rect.top).toFixed(2)}px`);
+    this.root.classList.add("is-joystick-active");
+    this.updateJoystick(touch.clientX, touch.clientY);
+    this.haptic(8);
+  }
+
+  handleDirectionMove(event) {
+    this.suppressNativeGesture(event);
+    if (this.joystickTouchId === null) return;
+    const touch = this.findChangedTouch(event, this.joystickTouchId);
+    if (touch) this.updateJoystick(touch.clientX, touch.clientY);
+  }
+
+  handleDirectionEnd(event) {
+    this.suppressNativeGesture(event);
+    if (this.joystickTouchId === null) return;
+    const touch = this.findChangedTouch(event, this.joystickTouchId);
+    if (!touch && event.touches?.length) return;
+    this.joystickTouchId = null;
+    this.clearDirections();
+    this.root.classList.remove("is-joystick-active");
+    if (this.knob) this.knob.style.transform = "translate3d(0,0,0)";
+  }
+
+  updateJoystick(clientX, clientY) {
     let dx = clientX - this.joystickCenter.x;
     let dy = clientY - this.joystickCenter.y;
+    const rawDistance = Math.hypot(dx, dy);
+    const radius = this.joystickRadius;
+    if (rawDistance > radius && rawDistance > 0) {
+      const scale = radius / rawDistance;
+      dx *= scale;
+      dy *= scale;
+    }
+    if (this.knob) this.knob.style.transform = `translate3d(${dx.toFixed(2)}px,${dy.toFixed(2)}px,0)`;
+
     const distance = Math.hypot(dx, dy);
-    if (distance > maxDistance && distance > 0) { dx = dx / distance * maxDistance; dy = dy / distance * maxDistance; }
-    if (this.knob) this.knob.style.transform = `translate3d(${dx.toFixed(1)}px,${dy.toFixed(1)}px,0)`;
-    const dead = maxDistance * 0.28;
-    const gameId = this.activeGameId;
-    if (gameId === "space-invaders" || gameId === "galaga" || gameId === "outrun") {
-      this.setDirection("ArrowLeft", dx < -dead); this.setDirection("ArrowRight", dx > dead); this.setDirection("ArrowUp", false); this.setDirection("ArrowDown", false);
-    } else if (gameId === "asteroids") {
-      this.setDirection("ArrowLeft", dx < -dead); this.setDirection("ArrowRight", dx > dead); this.setDirection("ArrowUp", dy < -dead); this.setDirection("ArrowDown", false);
+    const deadZone = radius * 0.24;
+    if (distance <= deadZone) {
+      this.clearDirections();
+      return;
+    }
+
+    const angle = Math.atan2(dy, dx);
+    const cos = Math.cos(angle);
+    const sin = Math.sin(angle);
+    const horizontalDominant = Math.abs(cos) >= Math.abs(sin);
+    let left = false;
+    let right = false;
+    let up = false;
+    let down = false;
+
+    if (this.activeGameId === "space-invaders" || this.activeGameId === "galaga" || this.activeGameId === "outrun") {
+      left = cos < 0;
+      right = cos >= 0;
+    } else if (this.activeGameId === "asteroids") {
+      left = cos < -0.34;
+      right = cos > 0.34;
+      up = sin < -0.34;
     } else {
-      const horizontal = Math.abs(dx) >= Math.abs(dy);
-      this.setDirection("ArrowLeft", horizontal && dx < -dead); this.setDirection("ArrowRight", horizontal && dx > dead);
-      this.setDirection("ArrowUp", !horizontal && dy < -dead); this.setDirection("ArrowDown", !horizontal && dy > dead);
+      left = horizontalDominant && cos < 0;
+      right = horizontalDominant && cos >= 0;
+      up = !horizontalDominant && sin < 0;
+      down = !horizontalDominant && sin >= 0;
+    }
+
+    this.setDirection("ArrowLeft", left);
+    this.setDirection("ArrowRight", right);
+    this.setDirection("ArrowUp", up);
+    this.setDirection("ArrowDown", down);
+  }
+
+  handleActionStart(event) {
+    this.suppressNativeGesture(event);
+    if (!this.visible || this.isPortrait()) return;
+    this.ensurePlaying();
+    for (const touch of Array.from(event.changedTouches || [])) this.actionTouchIds.add(touch.identifier);
+    const touch = event.changedTouches?.[0];
+    if (touch && this.root) {
+      const rect = this.root.getBoundingClientRect();
+      this.actionPulse.style.setProperty("--action-x", `${(touch.clientX - rect.left).toFixed(2)}px`);
+      this.actionPulse.style.setProperty("--action-y", `${(touch.clientY - rect.top).toFixed(2)}px`);
+      this.root.classList.remove("is-action-active");
+      void this.root.offsetWidth;
+      this.root.classList.add("is-action-active");
+    }
+    this.input.setVirtualKey("Space", true, "mobile-action-zone");
+    this.haptic(12);
+  }
+
+  handleActionEnd(event) {
+    this.suppressNativeGesture(event);
+    for (const touch of Array.from(event.changedTouches || [])) this.actionTouchIds.delete(touch.identifier);
+    if (this.actionTouchIds.size === 0) {
+      this.input.setVirtualKey("Space", false, "mobile-action-zone");
+      this.root?.classList.remove("is-action-active");
     }
   }
 
   setDirection(code, active) {
     if (this.directionState[code] === active) return;
     this.directionState[code] = active;
-    this.input.setVirtualKey(code, active, `touch-stick-${code}`);
-    if (active) this.haptic();
+    this.input.setVirtualKey(code, active, `mobile-stick-${code}`);
+    if (active) this.haptic(7);
   }
 
   clearDirections() {
@@ -7529,12 +7773,11 @@ class TouchArcadeControls {
 
   releaseAll() {
     this.joystickTouchId = null;
+    this.actionTouchIds.clear();
     this.clearDirections();
-    this.input.releaseVirtualSource("touch-button-Space");
-    this.input.releaseVirtualSource("touch-button-Enter");
-    this.input.setVirtualKey("Space", false, "touch-button-Space");
-    this.input.setVirtualKey("Enter", false, "touch-button-Enter");
-    this.root?.querySelectorAll(".is-active").forEach((element) => element.classList.remove("is-active"));
+    this.input.releaseVirtualSource("mobile-action-zone");
+    this.input.setVirtualKey("Space", false, "mobile-action-zone");
+    this.root?.classList.remove("is-joystick-active", "is-action-active");
     if (this.knob) this.knob.style.transform = "translate3d(0,0,0)";
   }
 }
@@ -14186,7 +14429,8 @@ const touchControls = new TouchArcadeControls(input, modal, canvas, {
   getGameId: () => engine.activeGame.id,
   getGameState: () => engine.module.state,
   onPrimaryAction: () => engine.handlePrimaryAction(),
-  onLayoutChange: () => engine.resizeVisualCanvas(true)
+  onLayoutChange: () => engine.resizeVisualCanvas(true),
+  onMobileLayout: () => setTelemetryCollapsed(true, false)
 });
 const comfortModeController = new ComfortModeController(comfortModeButton, engine);
 
@@ -14261,7 +14505,7 @@ function calculatePilotRank() {
 }
 
 function updatePilotHud() {
-  if (systemStatusText) systemStatusText.textContent = "CORE_V6.2 // ONLINE";
+  if (systemStatusText) systemStatusText.textContent = "CORE_V6.4 // MOBILE ONLINE";
   if (pilotRankText) pilotRankText.textContent = `PILOTO RANGO: ${calculatePilotRank()}`;
 }
 
@@ -14355,6 +14599,7 @@ function openGame(gameId) {
   modal.setAttribute("aria-hidden", "false");
   document.body.classList.add("modal-open");
   input.setEnabled(true);
+  if (touchControls.prefersImmersiveLayout()) setTelemetryCollapsed(true, false);
   touchControls.setVisible(true);
   crtVisuals.start();
   engine.startLoop();

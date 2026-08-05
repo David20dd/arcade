@@ -1,0 +1,283 @@
+{
+  "version": "CORE_V6.8 // AUTOMATION CORE ONLINE",
+  "checks": {
+    "catalogCards": 6,
+    "attractCanvases": 6,
+    "cinemaPlaying": {
+      "class": true,
+      "headerOpacity": "0.15",
+      "sidebarOpacity": "0.15"
+    },
+    "cinemaPaused": {
+      "paused": true,
+      "class": false,
+      "headerOpacity": "1",
+      "sidebarOpacity": "1"
+    },
+    "adaptiveThrottle": {
+      "reduced": true,
+      "quality": "adaptive",
+      "shadowBlur": 10,
+      "particles": 15
+    },
+    "automaticMilestones": {
+      "wave": {
+        "version": 1,
+        "gameId": "space-invaders",
+        "score": 777,
+        "lives": 3,
+        "level": 1,
+        "round": 1,
+        "comboMultiplier": 1,
+        "comboCount": 0,
+        "distance": 0,
+        "speed": 0,
+        "reason": "WAVE_COMPLETE",
+        "savedAt": 1785904411123
+      },
+      "commander": {
+        "version": 1,
+        "gameId": "galaga",
+        "score": 888,
+        "lives": 3,
+        "level": 1,
+        "round": 1,
+        "comboMultiplier": 1,
+        "comboCount": 0,
+        "distance": 0,
+        "speed": 0,
+        "reason": "COMMANDER_DESTROYED",
+        "savedAt": 1785904413202
+      }
+    },
+    "hubIsolation": {
+      "className": "InertCartridge",
+      "running": false,
+      "animationId": null,
+      "stars": 0
+    }
+  },
+  "resumeTests": {
+    "space-invaders": {
+      "snapshot": {
+        "version": 1,
+        "gameId": "space-invaders",
+        "score": 1321,
+        "lives": 2,
+        "level": 4,
+        "round": 1,
+        "comboMultiplier": 2,
+        "comboCount": 6,
+        "distance": 0,
+        "speed": 0,
+        "reason": "LEVEL_CHANGE",
+        "savedAt": 1785904398749
+      },
+      "buttonVisible": true,
+      "detail": "001321 PTS · 2 LIVES · LEVEL 4",
+      "restored": {
+        "className": "AlienInvadersGame",
+        "state": "PLAYING",
+        "score": 1321,
+        "lives": 2,
+        "progress": 4,
+        "combo": 2,
+        "cinema": true
+      },
+      "ok": true
+    },
+    "pac-man": {
+      "snapshot": {
+        "version": 1,
+        "gameId": "pac-man",
+        "score": 1642,
+        "lives": 2,
+        "level": 3,
+        "round": 1,
+        "comboMultiplier": 2,
+        "comboCount": 6,
+        "distance": 0,
+        "speed": 0,
+        "reason": "LEVEL_CHANGE",
+        "savedAt": 1785904399685
+      },
+      "buttonVisible": true,
+      "detail": "001642 PTS · 2 LIVES · LEVEL 3",
+      "restored": {
+        "className": "NeonPacmanGame",
+        "state": "PLAYING",
+        "score": 1642,
+        "lives": 2,
+        "progress": 3,
+        "combo": 2,
+        "cinema": true
+      },
+      "ok": true
+    },
+    "asteroids": {
+      "snapshot": {
+        "version": 1,
+        "gameId": "asteroids",
+        "score": 1963,
+        "lives": 2,
+        "level": 5,
+        "round": 1,
+        "comboMultiplier": 2,
+        "comboCount": 6,
+        "distance": 0,
+        "speed": 0,
+        "reason": "LEVEL_CHANGE",
+        "savedAt": 1785904400335
+      },
+      "buttonVisible": true,
+      "detail": "001963 PTS · 2 LIVES · LEVEL 5",
+      "restored": {
+        "className": "NeonAsteroidsGame",
+        "state": "PLAYING",
+        "score": 1963,
+        "lives": 2,
+        "progress": 5,
+        "combo": 2,
+        "cinema": true
+      },
+      "ok": true
+    },
+    "tron": {
+      "snapshot": {
+        "version": 1,
+        "gameId": "tron",
+        "score": 2284,
+        "lives": 2,
+        "level": 4,
+        "round": 3,
+        "comboMultiplier": 2,
+        "comboCount": 6,
+        "distance": 0,
+        "speed": 0,
+        "reason": "LEVEL_CHANGE",
+        "savedAt": 1785904400971
+      },
+      "buttonVisible": true,
+      "detail": "002284 PTS · 2 LIVES · LEVEL 4",
+      "restored": {
+        "className": "NeonTronGame",
+        "state": "PLAYING",
+        "score": 2284,
+        "lives": 2,
+        "progress": 4,
+        "combo": 2,
+        "cinema": true
+      },
+      "ok": true
+    },
+    "galaga": {
+      "snapshot": {
+        "version": 1,
+        "gameId": "galaga",
+        "score": 2605,
+        "lives": 2,
+        "level": 3,
+        "round": 1,
+        "comboMultiplier": 2,
+        "comboCount": 6,
+        "distance": 0,
+        "speed": 0,
+        "reason": "LEVEL_CHANGE",
+        "savedAt": 1785904403735
+      },
+      "buttonVisible": true,
+      "detail": "002605 PTS · 2 LIVES · LEVEL 3",
+      "restored": {
+        "className": "CyberGalagaGame",
+        "state": "PLAYING",
+        "score": 2605,
+        "lives": 2,
+        "progress": 3,
+        "combo": 2,
+        "cinema": true
+      },
+      "ok": true
+    },
+    "outrun": {
+      "snapshot": {
+        "version": 1,
+        "gameId": "outrun",
+        "score": 2926,
+        "lives": 2,
+        "level": 6,
+        "round": 1,
+        "comboMultiplier": 2,
+        "comboCount": 6,
+        "distance": 7920,
+        "speed": 214,
+        "reason": "LEVEL_CHANGE",
+        "savedAt": 1785904410198
+      },
+      "buttonVisible": true,
+      "detail": "002926 PTS · 2 LIVES · LEVEL 6",
+      "restored": {
+        "className": "NeonOutrunGame",
+        "state": "PLAYING",
+        "score": 2929,
+        "lives": 2,
+        "progress": 6,
+        "combo": 2,
+        "cinema": true
+      },
+      "ok": true
+    }
+  },
+  "games": {
+    "space-invaders": {
+      "className": "AlienInvadersGame",
+      "width": 800,
+      "height": 600,
+      "running": true,
+      "state": "MENU",
+      "ok": true
+    },
+    "pac-man": {
+      "className": "NeonPacmanGame",
+      "width": 800,
+      "height": 600,
+      "running": true,
+      "state": "MENU",
+      "ok": true
+    },
+    "asteroids": {
+      "className": "NeonAsteroidsGame",
+      "width": 800,
+      "height": 600,
+      "running": true,
+      "state": "MENU",
+      "ok": true
+    },
+    "tron": {
+      "className": "NeonTronGame",
+      "width": 800,
+      "height": 600,
+      "running": true,
+      "state": "MENU",
+      "ok": true
+    },
+    "galaga": {
+      "className": "CyberGalagaGame",
+      "width": 800,
+      "height": 600,
+      "running": true,
+      "state": "MENU",
+      "ok": true
+    },
+    "outrun": {
+      "className": "NeonOutrunGame",
+      "width": 800,
+      "height": 600,
+      "running": true,
+      "state": "MENU",
+      "ok": true
+    }
+  },
+  "exceptions": [],
+  "consoleErrors": [],
+  "passed": true
+}
