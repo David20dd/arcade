@@ -4693,6 +4693,242 @@ html.monochrome-mode canvas { image-rendering: pixelated; }
 .arcade-card .card-body { display: flex; flex: 1 1 auto; flex-direction: column; width: 100%; }
 .arcade-card .play-button { margin-top: auto !important; }
 #catalog.compact-ui .play-button { margin-top: auto !important; }
+
+
+/* CORE V7.3 · PIXEL-PERFECT CATALOG AXIS LOCK + GENRE FILTER HUD */
+#catalog .catalog-game-grid {
+  display: grid !important;
+  width: 100% !important;
+  max-width: 96% !important;
+  margin-inline: auto !important;
+  padding-inline: .5rem !important;
+  grid-template-columns: minmax(0, 1fr) !important;
+  grid-auto-rows: 1fr;
+  gap: 1rem !important;
+  align-items: stretch !important;
+}
+@media (min-width: 640px) {
+  #catalog .catalog-game-grid { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+}
+@media (min-width: 1280px) {
+  #catalog .catalog-game-grid { grid-template-columns: repeat(6, minmax(0, 1fr)) !important; }
+}
+#catalog .arcade-card {
+  display: flex !important;
+  height: 100% !important;
+  min-width: 0;
+  flex-direction: column !important;
+  justify-content: space-between !important;
+  padding: 1rem !important;
+  overflow: hidden;
+  border: 1px solid rgba(168, 85, 247, .20) !important;
+  border-radius: .75rem !important;
+  background: rgba(15, 5, 29, .40) !important;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+  will-change: transform, opacity;
+  transition: opacity 160ms ease, transform 220ms ease, border-color 220ms ease, box-shadow 220ms ease !important;
+  contain: layout paint style;
+}
+#catalog .arcade-card:hover,
+#catalog .arcade-card:focus-within,
+#catalog .arcade-card.is-catalog-active {
+  transform: translate3d(0, -4px, 0) scale(1.02) !important;
+  border-color: rgba(6, 182, 212, .50) !important;
+}
+#catalog .preview-container {
+  flex: 0 0 8rem !important;
+  width: 100% !important;
+  height: 8rem !important;
+  min-height: 8rem !important;
+  max-height: 8rem !important;
+  border: 1px solid rgba(168, 85, 247, .20);
+  border-radius: .5rem !important;
+}
+#catalog .card-body {
+  display: flex !important;
+  flex: 1 1 auto !important;
+  flex-direction: column !important;
+  width: 100%;
+  min-width: 0;
+  padding: 1rem 0 0 !important;
+}
+#catalog .card-heading-row {
+  flex: 0 0 auto;
+  min-height: 5.8rem !important;
+}
+#catalog .card-description {
+  display: -webkit-box !important;
+  flex: 0 0 2.5rem;
+  width: 100%;
+  min-height: 2.5rem !important;
+  height: 2.5rem !important;
+  max-height: 2.5rem !important;
+  margin-top: .75rem !important;
+  overflow: hidden !important;
+  color: rgba(216, 180, 254, .70) !important;
+  font-size: .75rem !important;
+  line-height: 1.25rem !important;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+}
+#catalog .card-footer-stack {
+  display: flex !important;
+  flex: 0 0 auto;
+  flex-direction: column !important;
+  gap: .5rem !important;
+  width: 100%;
+  margin-top: auto !important;
+  padding-top: .9rem;
+}
+#catalog .card-footer-stack .high-score-strip,
+#catalog .card-footer-stack .play-button {
+  width: 100%;
+  margin-top: 0 !important;
+}
+#catalog .card-footer-stack .high-score-strip {
+  min-height: 3.15rem !important;
+}
+#catalog .card-footer-stack .play-button {
+  min-height: 3rem !important;
+}
+.genre-filter-hud {
+  width: 100%;
+  max-width: 96%;
+  margin: 0 auto 1rem;
+  padding-inline: .5rem;
+}
+.genre-filter-frame {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 1rem;
+  min-height: 3.7rem;
+  padding: .65rem .8rem;
+  border: 1px solid rgba(168, 85, 247, .24);
+  border-radius: .85rem;
+  background: linear-gradient(90deg, rgba(15, 5, 29, .78), rgba(4, 9, 20, .72));
+  box-shadow: inset 0 0 24px rgba(168, 85, 247, .035), 0 10px 28px rgba(0, 0, 0, .18);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+.genre-filter-heading {
+  display: flex;
+  align-items: center;
+  gap: .65rem;
+  min-width: max-content;
+}
+.genre-filter-heading div { display: grid; gap: .12rem; }
+.genre-filter-heading small {
+  color: rgba(255, 255, 255, .34);
+  font-family: "Rajdhani", sans-serif;
+  font-size: .58rem;
+  font-weight: 800;
+  letter-spacing: .17em;
+}
+.genre-filter-heading strong {
+  color: #d8b4fe;
+  font-family: "Orbitron", sans-serif;
+  font-size: .68rem;
+  font-weight: 900;
+  letter-spacing: .12em;
+}
+.genre-filter-led {
+  width: .48rem;
+  height: .48rem;
+  flex: 0 0 auto;
+  border-radius: 999px;
+  background: #42f5ff;
+  box-shadow: 0 0 10px rgba(66, 245, 255, .88);
+  animation: genreFilterLedPulse 1.4s steps(2, end) infinite;
+}
+.genre-filter-tabs {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: .45rem;
+  min-width: 0;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+.genre-filter-tabs::-webkit-scrollbar { display: none; }
+.genre-filter-button {
+  position: relative;
+  min-height: 2.15rem;
+  flex: 0 0 auto;
+  padding: .52rem .72rem;
+  border: 1px solid rgba(168, 85, 247, .28);
+  border-radius: .55rem;
+  color: rgba(216, 180, 254, .66);
+  background: rgba(168, 85, 247, .035);
+  font-family: "Orbitron", sans-serif;
+  font-size: .62rem;
+  font-weight: 900;
+  letter-spacing: .105em;
+  line-height: 1;
+  cursor: pointer;
+  touch-action: manipulation;
+  transform: translateZ(0);
+  transition: color 160ms ease, border-color 160ms ease, background 160ms ease, box-shadow 160ms ease, transform 160ms ease;
+}
+.genre-filter-button:hover,
+.genre-filter-button:focus-visible {
+  color: #67e8f9;
+  border-color: rgba(34, 211, 238, .55);
+  background: rgba(34, 211, 238, .075);
+  box-shadow: 0 0 14px rgba(34, 211, 238, .10);
+  outline: none;
+}
+.genre-filter-button:active { transform: translate3d(0, 1px, 0) scale(.985); }
+.genre-filter-button.is-active,
+.genre-filter-button[aria-selected="true"] {
+  color: #020617;
+  border-color: rgba(103, 232, 249, .92);
+  background: linear-gradient(135deg, #67e8f9, #c084fc);
+  box-shadow: 0 0 16px rgba(34, 211, 238, .24), inset 0 1px 0 rgba(255, 255, 255, .42);
+  text-shadow: none;
+}
+.genre-filter-status {
+  min-width: max-content;
+  color: rgba(183, 255, 96, .72);
+  font-family: "Press Start 2P", monospace;
+  font-size: .48rem;
+  letter-spacing: .06em;
+  text-align: right;
+}
+.arcade-card.catalog-filtering-out {
+  opacity: 0 !important;
+  pointer-events: none;
+  transform: translate3d(0, .6rem, 0) scale(.975) !important;
+}
+.arcade-card.catalog-filter-reveal {
+  animation: catalogFilterReveal 180ms cubic-bezier(.2, .75, .25, 1) both;
+}
+@keyframes genreFilterLedPulse { 50% { opacity: .32; } }
+@keyframes catalogFilterReveal {
+  from { opacity: 0; transform: translate3d(0, .6rem, 0) scale(.975); }
+  to { opacity: 1; transform: translate3d(0, 0, 0) scale(1); }
+}
+@media (max-width: 900px) {
+  .genre-filter-frame { grid-template-columns: 1fr auto; }
+  .genre-filter-heading { display: none; }
+  .genre-filter-tabs { justify-content: flex-start; }
+}
+@media (max-width: 560px) {
+  .genre-filter-frame { grid-template-columns: minmax(0, 1fr); gap: .55rem; }
+  .genre-filter-status { display: none; }
+  .genre-filter-button { min-height: 2.35rem; padding-inline: .68rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .genre-filter-led,
+  .arcade-card.catalog-filter-reveal { animation: none !important; }
+  .arcade-card.catalog-filtering-out { transition: none !important; }
+}
+
 </style><meta content="default-src 'self' data: blob:; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; connect-src 'none'; media-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self'" http-equiv="Content-Security-Policy"/></head>
 <body class="antialiased">
 
@@ -4859,9 +5095,24 @@ html.monochrome-mode canvas { image-rendering: pixelated; }
 <button class="controls-reset-button" data-remap-reset="" type="button">RESTAURAR PREDETERMINADOS</button>
 </div>
 </section>
-<div class="catalog-game-grid grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-6 gap-4 max-w-[95%] mx-auto">
-<article class="arcade-card flex flex-col justify-between h-full bg-[#0f051d]/60 backdrop-blur-md border border-cyan-500/30 rounded-xl p-5 text-center transition-all duration-300 hover:scale-[1.02] hover:border-cyan-400" style="--card-accent:#42f5ff;--card-accent-rgb:66,245,255">
-<div class="preview-container relative w-full h-36 bg-black/40 rounded-t-lg overflow-hidden border-b border-purple-500/20">
+<nav aria-label="Filtrar terminales por género" class="genre-filter-hud w-full max-w-[96%] mx-auto px-2" id="genreFilterHud">
+<div class="genre-filter-frame">
+<div class="genre-filter-heading">
+<span aria-hidden="true" class="genre-filter-led"></span>
+<div><small>TACTICAL SORTING BUS</small><strong>GENRE FILTER HUD</strong></div>
+</div>
+<div aria-label="Géneros arcade" class="genre-filter-tabs" role="tablist">
+<button aria-controls="catalogGameGrid" aria-selected="true" class="genre-filter-button is-active" data-genre-filter="all" role="tab" tabindex="0" type="button">[ALL]</button>
+<button aria-controls="catalogGameGrid" aria-selected="false" class="genre-filter-button" data-genre-filter="shooter" role="tab" tabindex="-1" type="button">[SHOOTER]</button>
+<button aria-controls="catalogGameGrid" aria-selected="false" class="genre-filter-button" data-genre-filter="classic" role="tab" tabindex="-1" type="button">[CLASSIC]</button>
+<button aria-controls="catalogGameGrid" aria-selected="false" class="genre-filter-button" data-genre-filter="speed" role="tab" tabindex="-1" type="button">[SPEED]</button>
+</div>
+<output aria-live="polite" class="genre-filter-status" id="genreFilterStatus">06 TERMINALS ONLINE</output>
+</div>
+</nav>
+<div class="catalog-game-grid grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-6 gap-4 w-full max-w-[96%] mx-auto px-2" id="catalogGameGrid">
+<article class="arcade-card flex flex-col justify-between h-full bg-[#0f051d]/40 backdrop-blur-md border border-purple-500/20 rounded-xl p-4 text-center transition-all duration-300 hover:scale-[1.02] hover:border-cyan-500/50" data-genre="shooter" style="--card-accent:#42f5ff;--card-accent-rgb:66,245,255">
+<div class="preview-container relative w-full h-32 bg-black/40 rounded-lg overflow-hidden border border-purple-500/20">
 <svg aria-label="Ilustración de Space Invaders" class="game-thumb absolute inset-0 block h-full w-full object-cover h-full w-full" fill="none" role="img" viewbox="0 0 640 400">
 <defs>
 <filter id="invaderGlow"><fegaussianblur result="b" stddeviation="6"></fegaussianblur><femerge><femergenode in="b"></femergenode><femergenode in="SourceGraphic"></femergenode></femerge></filter>
@@ -4878,7 +5129,7 @@ html.monochrome-mode canvas { image-rendering: pixelated; }
 </svg>
 <canvas aria-hidden="true" class="attract-canvas absolute top-0 left-0 w-full h-full hidden"></canvas>
 </div>
-<div class="card-body p-4 sm:p-5">
+<div class="card-body flex flex-1 flex-col pt-4">
 <div class="card-heading-row flex items-start justify-between gap-4">
 <div>
 <p class="font-display text-[10px] font-bold tracking-[0.22em] text-cyan-300/70">TERMINAL 01</p>
@@ -4886,21 +5137,23 @@ html.monochrome-mode canvas { image-rendering: pixelated; }
 </div>
 <span class="rounded-full border border-cyan-300/20 bg-cyan-300/5 px-3 py-1 text-[10px] font-bold tracking-[0.14em] text-cyan-200">SHOOTER</span>
 </div>
-<p class="card-description line-clamp-2 mt-4 min-h-14 text-sm font-medium leading-relaxed text-white/50">
+<p class="card-description line-clamp-2 min-h-[2.5rem] text-xs text-purple-300/70 mt-4 font-medium leading-5">
               Defensa orbital, escuadrones alienígenas y proyectiles de energía sobre una rejilla de combate.
             </p>
+<div class="card-footer-stack mt-auto flex flex-col gap-2">
 <div aria-label="Récord local de Space Invaders" class="high-score-strip">
 <span class="font-display text-[9px] font-bold tracking-[0.18em] text-white/38">LOCAL HIGH SCORE</span>
 <span class="high-score-value" data-high-score="space-invaders">000000</span>
 </div>
-<button class="play-button font-display mt-6 flex w-full items-center justify-between rounded-xl px-4 py-3 text-xs font-bold tracking-[0.18em]" data-open-game="space-invaders" type="button">
+<button class="play-button font-display mt-0 flex w-full items-center justify-between rounded-xl px-4 py-3 text-xs font-bold tracking-[0.18em]" data-open-game="space-invaders" type="button">
               START
               <span aria-hidden="true">↗</span>
 </button>
 </div>
+</div>
 </article>
-<article class="arcade-card flex flex-col justify-between h-full bg-[#0f051d]/60 backdrop-blur-md border border-cyan-500/30 rounded-xl p-5 text-center transition-all duration-300 hover:scale-[1.02] hover:border-cyan-400" style="--card-accent:#ffbd3c;--card-accent-rgb:255,189,60">
-<div class="preview-container relative w-full h-36 bg-black/40 rounded-t-lg overflow-hidden border-b border-purple-500/20">
+<article class="arcade-card flex flex-col justify-between h-full bg-[#0f051d]/40 backdrop-blur-md border border-purple-500/20 rounded-xl p-4 text-center transition-all duration-300 hover:scale-[1.02] hover:border-cyan-500/50" data-genre="classic" style="--card-accent:#ffbd3c;--card-accent-rgb:255,189,60">
+<div class="preview-container relative w-full h-32 bg-black/40 rounded-lg overflow-hidden border border-purple-500/20">
 <svg aria-label="Ilustración de Pac-Man" class="game-thumb absolute inset-0 block h-full w-full object-cover h-full w-full" fill="none" role="img" viewbox="0 0 640 400">
 <defs>
 <filter id="pacGlow"><fegaussianblur result="b" stddeviation="7"></fegaussianblur><femerge><femergenode in="b"></femergenode><femergenode in="SourceGraphic"></femergenode></femerge></filter>
@@ -4920,7 +5173,7 @@ html.monochrome-mode canvas { image-rendering: pixelated; }
 </svg>
 <canvas aria-hidden="true" class="attract-canvas absolute top-0 left-0 w-full h-full hidden"></canvas>
 </div>
-<div class="card-body p-4 sm:p-5">
+<div class="card-body flex flex-1 flex-col pt-4">
 <div class="card-heading-row flex items-start justify-between gap-4">
 <div>
 <p class="font-display text-[10px] font-bold tracking-[0.22em] text-amber-300/70">TERMINAL 02</p>
@@ -4928,21 +5181,23 @@ html.monochrome-mode canvas { image-rendering: pixelated; }
 </div>
 <span class="rounded-full border border-amber-300/20 bg-amber-300/5 px-3 py-1 text-[10px] font-bold tracking-[0.14em] text-amber-200">MAZE</span>
 </div>
-<p class="card-description line-clamp-2 mt-4 min-h-14 text-sm font-medium leading-relaxed text-white/50">
+<p class="card-description line-clamp-2 min-h-[2.5rem] text-xs text-purple-300/70 mt-4 font-medium leading-5">
               Laberintos luminosos, rutas de puntos y persecuciones tácticas contra fantasmas digitales.
             </p>
+<div class="card-footer-stack mt-auto flex flex-col gap-2">
 <div aria-label="Récord local de Neon Pac-Man" class="high-score-strip">
 <span class="font-display text-[9px] font-bold tracking-[0.18em] text-white/38">LOCAL HIGH SCORE</span>
 <span class="high-score-value" data-high-score="pac-man">000000</span>
 </div>
-<button class="play-button font-display mt-6 flex w-full items-center justify-between rounded-xl px-4 py-3 text-xs font-bold tracking-[0.18em]" data-open-game="pac-man" type="button">
+<button class="play-button font-display mt-0 flex w-full items-center justify-between rounded-xl px-4 py-3 text-xs font-bold tracking-[0.18em]" data-open-game="pac-man" type="button">
               START
               <span aria-hidden="true">↗</span>
 </button>
 </div>
+</div>
 </article>
-<article class="arcade-card flex flex-col justify-between h-full bg-[#0f051d]/60 backdrop-blur-md border border-cyan-500/30 rounded-xl p-5 text-center transition-all duration-300 hover:scale-[1.02] hover:border-cyan-400" style="--card-accent:#00ff7f;--card-accent-rgb:0,255,127">
-<div class="preview-container relative w-full h-36 bg-black/40 rounded-t-lg overflow-hidden border-b border-purple-500/20">
+<article class="arcade-card flex flex-col justify-between h-full bg-[#0f051d]/40 backdrop-blur-md border border-purple-500/20 rounded-xl p-4 text-center transition-all duration-300 hover:scale-[1.02] hover:border-cyan-500/50" data-genre="speed" style="--card-accent:#00ff7f;--card-accent-rgb:0,255,127">
+<div class="preview-container relative w-full h-32 bg-black/40 rounded-lg overflow-hidden border border-purple-500/20">
 <svg aria-label="Ilustración de Asteroids" class="game-thumb absolute inset-0 block h-full w-full object-cover h-full w-full" fill="none" role="img" viewbox="0 0 640 400">
 <defs>
 <filter id="asteroidGlow"><fegaussianblur result="b" stddeviation="6"></fegaussianblur><femerge><femergenode in="b"></femergenode><femergenode in="SourceGraphic"></femergenode></femerge></filter>
@@ -4961,7 +5216,7 @@ html.monochrome-mode canvas { image-rendering: pixelated; }
 </svg>
 <canvas aria-hidden="true" class="attract-canvas absolute top-0 left-0 w-full h-full hidden"></canvas>
 </div>
-<div class="card-body p-4 sm:p-5">
+<div class="card-body flex flex-1 flex-col pt-4">
 <div class="card-heading-row flex items-start justify-between gap-4">
 <div>
 <p class="font-display text-[10px] font-bold tracking-[0.22em] text-emerald-300/70">TERMINAL 03</p>
@@ -4969,21 +5224,23 @@ html.monochrome-mode canvas { image-rendering: pixelated; }
 </div>
 <span class="rounded-full border border-emerald-300/20 bg-emerald-300/5 px-3 py-1 text-[10px] font-bold tracking-[0.14em] text-emerald-200">VECTOR</span>
 </div>
-<p class="card-description line-clamp-2 mt-4 min-h-14 text-sm font-medium leading-relaxed text-white/50">
+<p class="card-description line-clamp-2 min-h-[2.5rem] text-xs text-purple-300/70 mt-4 font-medium leading-5">
               Navegación vectorial, inercia espacial y campos de roca en una arena sin límites visibles.
             </p>
+<div class="card-footer-stack mt-auto flex flex-col gap-2">
 <div aria-label="Récord local de Asteroids" class="high-score-strip">
 <span class="font-display text-[9px] font-bold tracking-[0.18em] text-white/38">LOCAL HIGH SCORE</span>
 <span class="high-score-value" data-high-score="asteroids">000000</span>
 </div>
-<button class="play-button font-display mt-6 flex w-full items-center justify-between rounded-xl px-4 py-3 text-xs font-bold tracking-[0.18em]" data-open-game="asteroids" type="button">
+<button class="play-button font-display mt-0 flex w-full items-center justify-between rounded-xl px-4 py-3 text-xs font-bold tracking-[0.18em]" data-open-game="asteroids" type="button">
               START
               <span aria-hidden="true">↗</span>
 </button>
 </div>
+</div>
 </article>
-<article class="arcade-card flex flex-col justify-between h-full bg-[#0f051d]/60 backdrop-blur-md border border-cyan-500/30 rounded-xl p-5 text-center transition-all duration-300 hover:scale-[1.02] hover:border-cyan-400" style="--card-accent:#00ffff;--card-accent-rgb:0,255,255">
-<div class="preview-container relative w-full h-36 bg-black/40 rounded-t-lg overflow-hidden border-b border-purple-500/20">
+<article class="arcade-card flex flex-col justify-between h-full bg-[#0f051d]/40 backdrop-blur-md border border-purple-500/20 rounded-xl p-4 text-center transition-all duration-300 hover:scale-[1.02] hover:border-cyan-500/50" data-genre="classic" style="--card-accent:#00ffff;--card-accent-rgb:0,255,255">
+<div class="preview-container relative w-full h-32 bg-black/40 rounded-lg overflow-hidden border border-purple-500/20">
 <svg aria-label="Ilustración de TRON Lightcycles" class="game-thumb absolute inset-0 block h-full w-full object-cover h-full w-full" fill="none" role="img" viewbox="0 0 640 400">
 <defs>
 <filter id="tronGlow"><fegaussianblur result="b" stddeviation="6"></fegaussianblur><femerge><femergenode in="b"></femergenode><femergenode in="SourceGraphic"></femergenode></femerge></filter>
@@ -5004,7 +5261,7 @@ html.monochrome-mode canvas { image-rendering: pixelated; }
 </svg>
 <canvas aria-hidden="true" class="attract-canvas absolute top-0 left-0 w-full h-full hidden"></canvas>
 </div>
-<div class="card-body p-4 sm:p-5">
+<div class="card-body flex flex-1 flex-col pt-4">
 <div class="card-heading-row flex items-start justify-between gap-4">
 <div>
 <p class="font-display text-[10px] font-bold tracking-[0.22em] text-cyan-300/70">TERMINAL 04</p>
@@ -5012,17 +5269,19 @@ html.monochrome-mode canvas { image-rendering: pixelated; }
 </div>
 <span class="rounded-full border px-3 py-1 text-[10px] font-bold tracking-[0.14em]" style="border-color:rgba(255,165,0,.28);background:rgba(255,165,0,.06);color:#ffd08a">GRID DUEL</span>
 </div>
-<p class="card-description line-clamp-2 mt-4 min-h-14 text-sm font-medium leading-relaxed text-white/50">
+<p class="card-description line-clamp-2 min-h-[2.5rem] text-xs text-purple-300/70 mt-4 font-medium leading-5">
               Combate de motos de luz sobre una rejilla infinita: gira a 90°, encierra a la CPU y evita todas las estelas.
             </p>
+<div class="card-footer-stack mt-auto flex flex-col gap-2">
 <div aria-label="Récord local de TRON Lightcycles" class="high-score-strip">
 <span class="font-display text-[9px] font-bold tracking-[0.18em] text-white/38">LOCAL HIGH SCORE</span>
 <span class="high-score-value" data-high-score="tron">000000</span>
 </div>
-<button class="play-button font-display mt-6 flex w-full items-center justify-between rounded-xl px-4 py-3 text-xs font-bold tracking-[0.18em]" data-open-game="tron" type="button">
+<button class="play-button font-display mt-0 flex w-full items-center justify-between rounded-xl px-4 py-3 text-xs font-bold tracking-[0.18em]" data-open-game="tron" type="button">
               START
               <span aria-hidden="true">↗</span>
 </button>
+</div>
 </div>
 </article>
 </div><aside aria-label="Vitrina de logros locales" class="achievement-showcase" id="achievementShowcase">
@@ -15378,11 +15637,12 @@ function injectGalagaCatalogCard() {
   const grid = document.querySelector(".catalog-game-grid");
   if (!grid || grid.querySelector('[data-dynamic-game-card="galaga"]')) return;
   const article = document.createElement("article");
-  article.className = "arcade-card galaga-card flex flex-col justify-between h-full bg-[#0f051d]/60 backdrop-blur-md border border-cyan-500/30 rounded-xl p-5 text-center transition-all duration-300 hover:scale-[1.02] hover:border-cyan-400";
+  article.className = "arcade-card galaga-card flex flex-col justify-between h-full bg-[#0f051d]/40 backdrop-blur-md border border-purple-500/20 rounded-xl p-4 text-center transition-all duration-300 hover:scale-[1.02] hover:border-cyan-500/50";
   article.dataset.dynamicGameCard = "galaga";
+  article.dataset.genre = "shooter";
   article.style.cssText = "--card-accent:#168cff;--card-accent-rgb:22,140,255";
   article.innerHTML = `
-    <div class="preview-container relative w-full h-36 bg-black/40 rounded-t-lg overflow-hidden border-b border-purple-500/20">
+    <div class="preview-container relative w-full h-32 bg-black/40 rounded-lg overflow-hidden border border-purple-500/20">
 <svg aria-label="Ilustración de Cyber-Galaga Neón" class="game-thumb absolute inset-0 block h-full w-full object-cover h-full w-full" fill="none" role="img" viewBox="0 0 640 400">
         <defs>
           <filter id="galagaCardGlow"><feGaussianBlur result="b" stdDeviation="6"></feGaussianBlur><feMerge><feMergeNode in="b"></feMergeNode><feMergeNode in="SourceGraphic"></feMergeNode></feMerge></filter>
@@ -15402,11 +15662,13 @@ function injectGalagaCatalogCard() {
       </svg>
 <canvas aria-hidden="true" class="attract-canvas absolute top-0 left-0 w-full h-full hidden"></canvas>
 </div>
-    <div class="card-body p-4 sm:p-5">
+    <div class="card-body flex flex-1 flex-col pt-4">
       <div class="card-heading-row flex items-start justify-between gap-4"><div><p class="font-display text-[10px] font-bold tracking-[0.22em] text-cyan-300/70">TERMINAL 05</p><h3 class="card-glitch-title font-display mt-2 text-xl font-black text-white" data-glitch-text="CYBER-GALAGA NEÓN">CYBER-GALAGA NEÓN</h3></div><span class="rounded-full border border-cyan-300/20 bg-cyan-300/5 px-3 py-1 text-[10px] font-bold tracking-[0.14em] text-cyan-200">DIVE SHOOTER</span></div>
-      <p class="card-description line-clamp-2 mt-4 min-h-14 text-sm font-medium leading-relaxed text-white/50">Formaciones curvas, ataques de inmersión, comandantes de dos impactos y rescate táctico Dual Fighter.</p>
-      <div aria-label="Récord local de Cyber-Galaga Neón" class="high-score-strip"><span class="font-display text-[9px] font-bold tracking-[0.18em] text-white/38">LOCAL HIGH SCORE</span><span class="high-score-value" data-high-score="galaga">000000</span></div>
-      <button class="play-button font-display mt-6 flex w-full items-center justify-between rounded-xl px-4 py-3 text-xs font-bold tracking-[0.18em]" data-open-game="galaga" type="button">START<span aria-hidden="true">↗</span></button>
+      <p class="card-description line-clamp-2 min-h-[2.5rem] text-xs text-purple-300/70 mt-4 font-medium leading-5">Formaciones curvas, ataques de inmersión, comandantes de dos impactos y rescate táctico Dual Fighter.</p>
+      <div class="card-footer-stack mt-auto flex flex-col gap-2">
+<div aria-label="Récord local de Cyber-Galaga Neón" class="high-score-strip"><span class="font-display text-[9px] font-bold tracking-[0.18em] text-white/38">LOCAL HIGH SCORE</span><span class="high-score-value" data-high-score="galaga">000000</span></div>
+<button class="play-button font-display mt-0 flex w-full items-center justify-between rounded-xl px-4 py-3 text-xs font-bold tracking-[0.18em]" data-open-game="galaga" type="button">START<span aria-hidden="true">↗</span></button>
+</div>
     </div>`;
   grid.appendChild(article);
 }
@@ -15418,11 +15680,12 @@ function injectOutrunCatalogCard() {
   const grid = document.querySelector(".catalog-game-grid");
   if (!grid || grid.querySelector('[data-dynamic-game-card="outrun"]')) return;
   const article = document.createElement("article");
-  article.className = "arcade-card outrun-card flex flex-col justify-between h-full bg-[#0f051d]/60 backdrop-blur-md border border-cyan-500/30 rounded-xl p-5 text-center transition-all duration-300 hover:scale-[1.02] hover:border-cyan-400";
+  article.className = "arcade-card outrun-card flex flex-col justify-between h-full bg-[#0f051d]/40 backdrop-blur-md border border-purple-500/20 rounded-xl p-4 text-center transition-all duration-300 hover:scale-[1.02] hover:border-cyan-500/50";
   article.dataset.dynamicGameCard = "outrun";
+  article.dataset.genre = "speed";
   article.style.cssText = "--card-accent:#ff007f;--card-accent-rgb:255,0,127";
   article.innerHTML = `
-    <div class="preview-container relative w-full h-36 bg-black/40 rounded-t-lg overflow-hidden border-b border-purple-500/20">
+    <div class="preview-container relative w-full h-32 bg-black/40 rounded-lg overflow-hidden border border-purple-500/20">
 <svg aria-label="Ilustración de Neon-Outrun" class="game-thumb absolute inset-0 block h-full w-full object-cover h-full w-full" fill="none" role="img" viewBox="0 0 640 400">
         <defs><filter id="outrunGlow"><feGaussianBlur result="b" stdDeviation="5"></feGaussianBlur><feMerge><feMergeNode in="b"></feMergeNode><feMergeNode in="SourceGraphic"></feMergeNode></feMerge></filter><linearGradient id="outrunSky" x1="0" x2="0" y1="0" y2="1"><stop stop-color="#160026"></stop><stop offset="1" stop-color="#ff356d"></stop></linearGradient></defs>
         <rect width="640" height="400" fill="url(#outrunSky)"></rect><path d="M0 212 72 142l62 58 75-91 62 91 72-73 82 83 77-59 138 61v188H0Z" fill="#0a0314"></path>
@@ -15430,15 +15693,137 @@ function injectOutrunCatalogCard() {
       </svg>
 <canvas aria-hidden="true" class="attract-canvas absolute top-0 left-0 w-full h-full hidden"></canvas>
 </div>
-    <div class="card-body p-4 sm:p-5"><div class="card-heading-row flex items-start justify-between gap-4"><div><p class="font-display text-[10px] font-bold tracking-[0.22em] text-fuchsia-300/70">TERMINAL 06</p><h3 class="card-glitch-title font-display mt-2 text-xl font-black text-white" data-glitch-text="NEON-OUTRUN">NEON-OUTRUN</h3></div><span class="rounded-full border border-fuchsia-300/20 bg-fuchsia-300/5 px-3 py-1 text-[10px] font-bold tracking-[0.14em] text-fuchsia-200">SYNTH RACING</span></div>
-      <p class="card-description line-clamp-2 mt-4 min-h-14 text-sm font-medium leading-relaxed text-white/50">Carretera pseudo-3D, curvas sinusoidales, velocidad progresiva y tráfico de neón emergiendo del horizonte.</p>
-      <div aria-label="Récord local de Neon-Outrun" class="high-score-strip"><span class="font-display text-[9px] font-bold tracking-[0.18em] text-white/38">LOCAL HIGH SCORE</span><span class="high-score-value" data-high-score="outrun">000000</span></div>
-      <button class="play-button font-display mt-6 flex w-full items-center justify-between rounded-xl px-4 py-3 text-xs font-bold tracking-[0.18em]" data-open-game="outrun" type="button">START<span aria-hidden="true">↗</span></button>
+    <div class="card-body flex flex-1 flex-col pt-4"><div class="card-heading-row flex items-start justify-between gap-4"><div><p class="font-display text-[10px] font-bold tracking-[0.22em] text-fuchsia-300/70">TERMINAL 06</p><h3 class="card-glitch-title font-display mt-2 text-xl font-black text-white" data-glitch-text="NEON-OUTRUN">NEON-OUTRUN</h3></div><span class="rounded-full border border-fuchsia-300/20 bg-fuchsia-300/5 px-3 py-1 text-[10px] font-bold tracking-[0.14em] text-fuchsia-200">SYNTH RACING</span></div>
+      <p class="card-description line-clamp-2 min-h-[2.5rem] text-xs text-purple-300/70 mt-4 font-medium leading-5">Carretera pseudo-3D, curvas sinusoidales, velocidad progresiva y tráfico de neón emergiendo del horizonte.</p>
+      <div class="card-footer-stack mt-auto flex flex-col gap-2">
+<div aria-label="Récord local de Neon-Outrun" class="high-score-strip"><span class="font-display text-[9px] font-bold tracking-[0.18em] text-white/38">LOCAL HIGH SCORE</span><span class="high-score-value" data-high-score="outrun">000000</span></div>
+<button class="play-button font-display mt-0 flex w-full items-center justify-between rounded-xl px-4 py-3 text-xs font-bold tracking-[0.18em]" data-open-game="outrun" type="button">START<span aria-hidden="true">↗</span></button>
+</div>
     </div>`;
   grid.appendChild(article);
 }
 
 injectOutrunCatalogCard();
+
+class GenreFilterHUD {
+  constructor(root, grid, statusNode) {
+    this.root = root;
+    this.grid = grid;
+    this.statusNode = statusNode;
+    this.buttons = Array.from(root?.querySelectorAll("[data-genre-filter]") || []);
+    this.hideTimers = new WeakMap();
+    this.activeFilter = "all";
+    this.reducedMotionQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
+    this.handleClick = this.handleClick.bind(this);
+    this.handleKeydown = this.handleKeydown.bind(this);
+    this.buttons.forEach((button) => {
+      button.addEventListener("click", this.handleClick);
+      button.addEventListener("keydown", this.handleKeydown);
+    });
+    this.applyFilter("all", false);
+  }
+
+  get cards() {
+    return Array.from(this.grid?.querySelectorAll(".arcade-card[data-genre]") || []);
+  }
+
+  handleClick(event) {
+    const button = event.currentTarget;
+    this.applyFilter(button.dataset.genreFilter || "all", true);
+  }
+
+  handleKeydown(event) {
+    if (!["ArrowLeft", "ArrowRight", "Home", "End"].includes(event.key)) return;
+    event.preventDefault();
+    const currentIndex = Math.max(0, this.buttons.indexOf(event.currentTarget));
+    let nextIndex = currentIndex;
+    if (event.key === "ArrowLeft") nextIndex = (currentIndex - 1 + this.buttons.length) % this.buttons.length;
+    if (event.key === "ArrowRight") nextIndex = (currentIndex + 1) % this.buttons.length;
+    if (event.key === "Home") nextIndex = 0;
+    if (event.key === "End") nextIndex = this.buttons.length - 1;
+    const nextButton = this.buttons[nextIndex];
+    nextButton.focus({ preventScroll: true });
+    this.applyFilter(nextButton.dataset.genreFilter || "all", true);
+  }
+
+  setButtonState(filter) {
+    this.buttons.forEach((button) => {
+      const selected = button.dataset.genreFilter === filter;
+      button.classList.toggle("is-active", selected);
+      button.setAttribute("aria-selected", selected ? "true" : "false");
+      button.tabIndex = selected ? 0 : -1;
+    });
+  }
+
+  revealCard(card, animate) {
+    const timer = this.hideTimers.get(card);
+    if (timer) window.clearTimeout(timer);
+    this.hideTimers.delete(card);
+    card.classList.remove("catalog-filtering-out");
+    card.classList.remove("hidden");
+    card.removeAttribute("aria-hidden");
+    if (!animate || this.reducedMotionQuery.matches) return;
+    card.classList.remove("catalog-filter-reveal");
+    void card.offsetWidth;
+    card.classList.add("catalog-filter-reveal");
+    window.setTimeout(() => card.classList.remove("catalog-filter-reveal"), 190);
+  }
+
+  concealCard(card, animate) {
+    const currentTimer = this.hideTimers.get(card);
+    if (currentTimer) window.clearTimeout(currentTimer);
+    card.classList.remove("catalog-filter-reveal");
+    card.setAttribute("aria-hidden", "true");
+    if (window.catalogAttractMode?.activeCard === card) window.catalogAttractMode.stopAll(true);
+    if (!animate || this.reducedMotionQuery.matches) {
+      card.classList.add("hidden");
+      card.classList.remove("catalog-filtering-out");
+      return;
+    }
+    card.classList.add("catalog-filtering-out");
+    const timer = window.setTimeout(() => {
+      card.classList.add("hidden");
+      card.classList.remove("catalog-filtering-out");
+      this.hideTimers.delete(card);
+    }, 165);
+    this.hideTimers.set(card, timer);
+  }
+
+  updateStatus(visibleCount, totalCount) {
+    if (!this.statusNode) return;
+    const visible = String(visibleCount).padStart(2, "0");
+    const total = String(totalCount).padStart(2, "0");
+    this.statusNode.textContent = this.activeFilter === "all"
+      ? `${total} TERMINALS ONLINE`
+      : `${visible} / ${total} VISIBLE`;
+  }
+
+  applyFilter(filter, animate = true) {
+    const allowedFilters = new Set(["all", "shooter", "classic", "speed"]);
+    this.activeFilter = allowedFilters.has(filter) ? filter : "all";
+    this.setButtonState(this.activeFilter);
+    const cards = this.cards;
+    let visibleCount = 0;
+    cards.forEach((card) => {
+      const isVisible = this.activeFilter === "all" || card.dataset.genre === this.activeFilter;
+      if (isVisible) {
+        visibleCount += 1;
+        this.revealCard(card, animate);
+      } else {
+        this.concealCard(card, animate);
+      }
+    });
+    this.updateStatus(visibleCount, cards.length);
+  }
+}
+
+const genreFilterHUD = new GenreFilterHUD(
+  document.getElementById("genreFilterHud"),
+  document.getElementById("catalogGameGrid"),
+  document.getElementById("genreFilterStatus")
+);
+window.genreFilterHUD = genreFilterHUD;
+
 
 const modal = document.getElementById("gameModal");
 const dialog = document.getElementById("gameDialog");

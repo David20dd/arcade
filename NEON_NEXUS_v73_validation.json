@@ -1,0 +1,151 @@
+{
+  "build": "NEON NEXUS CORE V7.3",
+  "generated_at": "2026-08-05T14:57:00-06:00",
+  "artifact": "index.html",
+  "source_sha256": "34f38f97cf090ec982dca44057eef288680b13ba7e9a8028bb4b761c40787faa",
+  "final_sha256": "ed9073943a0a6e222bf6906fdac0f1901d8202ee9d47ad5368756af49fbcbf0e",
+  "changes": [
+    "Responsive 1/2/6-column catalog grid with 96% width axis lock",
+    "Uniform flex-column cards with fixed 128px previews",
+    "Two-line fixed-height descriptions and bottom-anchored score/start stack",
+    "Accessible ALL/SHOOTER/CLASSIC/SPEED tactical genre filter HUD",
+    "GPU-friendly reveal/conceal transitions with hidden-class filtering",
+    "Keyboard tab navigation and ARIA state synchronization"
+  ],
+  "runtime_validation": {
+    "base": {
+      "cards": 6,
+      "genres": [
+        "shooter",
+        "classic",
+        "speed",
+        "classic",
+        "shooter",
+        "speed"
+      ],
+      "footers": 6,
+      "previews": [
+        "128px",
+        "128px",
+        "128px",
+        "128px",
+        "128px",
+        "128px"
+      ],
+      "heights": [
+        488,
+        488,
+        488,
+        488,
+        488,
+        488
+      ],
+      "equalHeights": true,
+      "cardGameButtons": 6,
+      "filterButtons": 4,
+      "status": "06 TERMINALS ONLINE",
+      "engine": true,
+      "attract": true,
+      "filterController": true
+    },
+    "filters": {
+      "all": {
+        "visible": 6,
+        "hidden": 0,
+        "selected": "all",
+        "status": "06 TERMINALS ONLINE"
+      },
+      "shooter": {
+        "visible": 2,
+        "hidden": 4,
+        "selected": "shooter",
+        "status": "02 / 06 VISIBLE"
+      },
+      "classic": {
+        "visible": 2,
+        "hidden": 4,
+        "selected": "classic",
+        "status": "02 / 06 VISIBLE"
+      },
+      "speed": {
+        "visible": 2,
+        "hidden": 4,
+        "selected": "speed",
+        "status": "02 / 06 VISIBLE"
+      }
+    },
+    "games": [
+      {
+        "id": "space-invaders",
+        "modalAria": "false",
+        "active": "space-invaders",
+        "title": "SPACE INVADERS"
+      },
+      {
+        "id": "pac-man",
+        "modalAria": "false",
+        "active": "pac-man",
+        "title": "NEON PAC-MAN"
+      },
+      {
+        "id": "asteroids",
+        "modalAria": "false",
+        "active": "asteroids",
+        "title": "NEON ASTEROIDS"
+      },
+      {
+        "id": "tron",
+        "modalAria": "false",
+        "active": "tron",
+        "title": "TRON LIGHTCYCLES"
+      },
+      {
+        "id": "galaga",
+        "modalAria": "false",
+        "active": "galaga",
+        "title": "CYBER-GALAGA NEÓN"
+      },
+      {
+        "id": "outrun",
+        "modalAria": "false",
+        "active": "outrun",
+        "title": "NEON-OUTRUN"
+      }
+    ],
+    "windowErrors": [],
+    "runtimeExceptions": []
+  },
+  "game_engine_integrity": {
+    "AlienInvadersGame": {
+      "unchanged": true,
+      "sha256": "f9a4872313decf8dc9bb1ba827c5b319ff29c2784c85d7c2bf6c74b2c9791d8e",
+      "bytes": 30919
+    },
+    "NeonPacmanGame": {
+      "unchanged": true,
+      "sha256": "85c1562dd94e259963240ea16d78ee2901b945bd8928072cb92666536b7f206a",
+      "bytes": 40891
+    },
+    "NeonAsteroidsGame": {
+      "unchanged": true,
+      "sha256": "64612d9417df372ce99494ac2b1e169e8ac44bde27f30ae9d40556650e52a6b4",
+      "bytes": 28811
+    },
+    "NeonTronGame": {
+      "unchanged": true,
+      "sha256": "27f1811e73e3a15dd466d9f9767c972dd7cd00b5079ba83406dc72034abfa891",
+      "bytes": 21426
+    },
+    "CyberGalagaGame": {
+      "unchanged": true,
+      "sha256": "5e4864cafe07e72de248ef8d12f284d3f0d4b22f718800f27cd818aec2d69be8",
+      "bytes": 32559
+    },
+    "NeonOutrunGame": {
+      "unchanged": true,
+      "sha256": "0d99ea81346fbe7a079e3c63f73c8810a10e1714198ecb4575ec8b740f481272",
+      "bytes": 49689
+    }
+  },
+  "result": "PASS"
+}
