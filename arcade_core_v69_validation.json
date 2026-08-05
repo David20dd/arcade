@@ -1,0 +1,230 @@
+{
+  "url": "set_content:/mnt/data/index.html",
+  "desktop": {
+    "cardCount": 6,
+    "canvasCount": 6,
+    "shellCount": 6,
+    "icons": [
+      "👾",
+      "💊",
+      "🚀",
+      "🌐",
+      "🐝",
+      "🏎️"
+    ],
+    "cards": [
+      {
+        "game": "space-invaders",
+        "box": {
+          "x": 193,
+          "y": 497.0625,
+          "width": 160.65625,
+          "height": 128
+        },
+        "before": {
+          "w": 161,
+          "h": 128,
+          "cssW": "161px",
+          "cssH": "128px",
+          "hash": 1711381670
+        },
+        "active": true,
+        "running": {
+          "animationId": 21,
+          "state": true,
+          "bullets": 2,
+          "particles": 0
+        },
+        "after": {
+          "w": 161,
+          "h": 128,
+          "hash": 2925831127
+        },
+        "stopped": {
+          "animationId": 0,
+          "state": null,
+          "active": false
+        }
+      },
+      {
+        "game": "pac-man",
+        "box": {
+          "x": 403.65625,
+          "y": 497.0625,
+          "width": 160.671875,
+          "height": 128
+        },
+        "before": {
+          "w": 161,
+          "h": 128,
+          "cssW": "161px",
+          "cssH": "128px",
+          "hash": 2096247175
+        },
+        "active": true,
+        "running": {
+          "animationId": 34,
+          "state": true,
+          "bullets": 0,
+          "particles": 0
+        },
+        "after": {
+          "w": 161,
+          "h": 128,
+          "hash": 1018086648
+        },
+        "stopped": {
+          "animationId": 0,
+          "state": null,
+          "active": false
+        }
+      },
+      {
+        "game": "asteroids",
+        "box": {
+          "x": 614.328125,
+          "y": 497.0625,
+          "width": 160.671875,
+          "height": 128
+        },
+        "before": {
+          "w": 161,
+          "h": 128,
+          "cssW": "161px",
+          "cssH": "128px",
+          "hash": 2523215176
+        },
+        "active": true,
+        "running": {
+          "animationId": 46,
+          "state": true,
+          "bullets": 2,
+          "particles": 0
+        },
+        "after": {
+          "w": 161,
+          "h": 128,
+          "hash": 3989055821
+        },
+        "stopped": {
+          "animationId": 0,
+          "state": null,
+          "active": false
+        }
+      },
+      {
+        "game": "tron",
+        "box": {
+          "x": 825,
+          "y": 497.0625,
+          "width": 160.65625,
+          "height": 128
+        },
+        "before": {
+          "w": 161,
+          "h": 128,
+          "cssW": "161px",
+          "cssH": "128px",
+          "hash": 3603599147
+        },
+        "active": true,
+        "running": {
+          "animationId": 59,
+          "state": true,
+          "bullets": 0,
+          "particles": 0
+        },
+        "after": {
+          "w": 161,
+          "h": 128,
+          "hash": 1083840401
+        },
+        "stopped": {
+          "animationId": 0,
+          "state": null,
+          "active": false
+        }
+      },
+      {
+        "game": "galaga",
+        "box": {
+          "x": 1035.65625,
+          "y": 497.0625,
+          "width": 160.671875,
+          "height": 128
+        },
+        "before": {
+          "w": 161,
+          "h": 128,
+          "cssW": "161px",
+          "cssH": "128px",
+          "hash": 3148253211
+        },
+        "active": true,
+        "running": {
+          "animationId": 71,
+          "state": true,
+          "bullets": 2,
+          "particles": 0
+        },
+        "after": {
+          "w": 161,
+          "h": 128,
+          "hash": 1018086648
+        },
+        "stopped": {
+          "animationId": 0,
+          "state": null,
+          "active": false
+        }
+      },
+      {
+        "game": "outrun",
+        "box": {
+          "x": 1246.328125,
+          "y": 497.0625,
+          "width": 160.671875,
+          "height": 128
+        },
+        "before": {
+          "w": 161,
+          "h": 128,
+          "cssW": "161px",
+          "cssH": "128px",
+          "hash": 1062308361
+        },
+        "active": true,
+        "running": {
+          "animationId": 83,
+          "state": true,
+          "bullets": 0,
+          "particles": 0
+        },
+        "after": {
+          "w": 161,
+          "h": 128,
+          "hash": 127541722
+        },
+        "stopped": {
+          "animationId": 0,
+          "state": null,
+          "active": false
+        }
+      }
+    ]
+  },
+  "mobile": {
+    "activeAfterHold": {
+      "active": true,
+      "running": true,
+      "state": true
+    },
+    "afterEnd": {
+      "active": false,
+      "animationId": 0,
+      "state": null
+    }
+  },
+  "errors": [],
+  "consoleErrors": []
+}

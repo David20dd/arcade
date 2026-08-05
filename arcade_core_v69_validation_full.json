@@ -1,0 +1,104 @@
+{
+  "games": [
+    {
+      "id": "space-invaders",
+      "modal": true,
+      "canvas": [
+        800,
+        600
+      ],
+      "active": "space-invaders",
+      "module": "AlienInvadersGame",
+      "visual": {
+        "w": 1039.395751953125,
+        "h": 779.5468139648438,
+        "ratio": 1.3333333333333333
+      },
+      "previewsRunning": 0
+    },
+    {
+      "id": "pac-man",
+      "modal": true,
+      "canvas": [
+        800,
+        600
+      ],
+      "active": "pac-man",
+      "module": "NeonPacmanGame",
+      "visual": {
+        "w": 1070,
+        "h": 802.5,
+        "ratio": 1.3333333333333333
+      },
+      "previewsRunning": 0
+    },
+    {
+      "id": "asteroids",
+      "modal": true,
+      "canvas": [
+        800,
+        600
+      ],
+      "active": "asteroids",
+      "module": "NeonAsteroidsGame",
+      "visual": {
+        "w": 848.7550659179688,
+        "h": 636.5663452148438,
+        "ratio": 1.3333332374514875
+      },
+      "previewsRunning": 0
+    },
+    {
+      "id": "tron",
+      "modal": true,
+      "canvas": [
+        800,
+        600
+      ],
+      "active": "tron",
+      "module": "NeonTronGame",
+      "visual": {
+        "w": 955.1920776367188,
+        "h": 716.39404296875,
+        "ratio": 1.3333333617325813
+      },
+      "previewsRunning": 0
+    },
+    {
+      "id": "galaga",
+      "modal": true,
+      "canvas": [
+        800,
+        600
+      ],
+      "active": "galaga",
+      "module": "CyberGalagaGame",
+      "visual": {
+        "w": 677.1914672851562,
+        "h": 507.89361572265625,
+        "ratio": 1.3333332932756294
+      },
+      "previewsRunning": 0
+    },
+    {
+      "id": "outrun",
+      "modal": true,
+      "canvas": [
+        800,
+        600
+      ],
+      "active": "outrun",
+      "module": "NeonOutrunGame",
+      "visual": {
+        "w": 796.546630859375,
+        "h": 597.4099731445312,
+        "ratio": 1.3333333333333333
+      },
+      "previewsRunning": 0
+    }
+  ],
+  "errors": [],
+  "consoleErrors": [],
+  "showcaseCount": 1,
+  "attractActiveForScreenshot": true
+}

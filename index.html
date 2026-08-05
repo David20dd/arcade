@@ -4421,6 +4421,131 @@ html.mobile-game-active body{
   .mobile-touch-overlay.is-action-active .mobile-action-pulse{animation-duration:.01ms!important}
 }
 
+
+
+/* CORE V6.9 · ATTRACT MODE RENDER RECOVERY */
+.attract-preview-shell.w-full.h-32.bg-black\/40.rounded-lg.overflow-hidden.border.border-purple-500\/20.relative.mb-3,
+.attract-preview-shell {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 8rem;
+  min-height: 128px;
+  margin: 0 0 .75rem;
+  overflow: hidden;
+  border: 1px solid rgba(168,85,247,.24);
+  border-radius: .625rem;
+  background:
+    radial-gradient(circle at 50% 45%, rgba(var(--card-accent-rgb),.09), transparent 62%),
+    rgba(0,0,0,.72);
+  box-shadow:
+    inset 0 0 22px rgba(0,0,0,.9),
+    inset 0 0 14px rgba(var(--card-accent-rgb),.08),
+    0 0 0 1px rgba(255,255,255,.018);
+  isolation: isolate;
+  contain: layout paint size;
+  touch-action: pan-y;
+}
+.attract-preview-shell::before {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+  content: "";
+  background: repeating-linear-gradient(to bottom, transparent 0 2px, rgba(0,0,0,.22) 2px 3px);
+  opacity: .58;
+  mix-blend-mode: multiply;
+}
+.attract-preview-shell::after {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  pointer-events: none;
+  content: "";
+  background: radial-gradient(ellipse at center, transparent 54%, rgba(0,0,0,.68) 118%);
+}
+.attract-canvas.w-full.h-full.block,
+.attract-canvas {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: block;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  opacity: .72;
+  background: #020105;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+  transform: translateZ(0);
+  transition: opacity .18s ease, filter .18s ease;
+  filter: saturate(.76) brightness(.72);
+  touch-action: none;
+}
+.attract-status-badge {
+  position: absolute;
+  top: .42rem;
+  left: .48rem;
+  z-index: 5;
+  display: inline-flex;
+  align-items: center;
+  gap: .35rem;
+  padding: .22rem .42rem;
+  border: 1px solid rgba(var(--card-accent-rgb),.3);
+  border-radius: 999px;
+  color: rgba(255,255,255,.58);
+  background: rgba(2,1,5,.7);
+  box-shadow: inset 0 0 10px rgba(var(--card-accent-rgb),.07);
+  font-family: "Orbitron",sans-serif;
+  font-size: .42rem;
+  font-weight: 800;
+  letter-spacing: .12em;
+  opacity: .62;
+  pointer-events: none;
+  transition: opacity .18s ease,color .18s ease,border-color .18s ease;
+}
+.attract-status-led {
+  width: 5px;
+  height: 5px;
+  border-radius: 999px;
+  background: rgba(255,255,255,.3);
+}
+.arcade-card.is-attracting .attract-canvas {
+  opacity: 1;
+  filter: saturate(1.18) brightness(1.08);
+}
+.arcade-card.is-attracting .attract-preview-shell {
+  border-color: rgba(var(--card-accent-rgb),.7);
+  box-shadow:
+    inset 0 0 28px rgba(0,0,0,.85),
+    inset 0 0 20px rgba(var(--card-accent-rgb),.14),
+    0 0 18px rgba(var(--card-accent-rgb),.18);
+}
+.arcade-card.is-attracting .attract-status-badge {
+  color: var(--card-accent);
+  border-color: rgba(var(--card-accent-rgb),.62);
+  opacity: 1;
+  text-shadow: 0 0 7px var(--card-accent);
+}
+.arcade-card.is-attracting .attract-status-led {
+  background: var(--card-accent);
+  box-shadow: 0 0 8px var(--card-accent);
+  animation: attractLedV69 .62s steps(2,end) infinite;
+}
+.catalog-title-icon {
+  display: inline-block;
+  margin-right: .38rem;
+  filter: drop-shadow(0 0 5px var(--card-accent));
+  transform: translateY(-.04em);
+}
+@keyframes attractLedV69 { 50% { opacity: .28; } }
+@media (max-width: 640px) {
+  .attract-preview-shell { height: 8rem; min-height: 128px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .attract-status-led { animation: none !important; }
+}
+
 </style><meta content="default-src 'self' data: blob:; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; connect-src 'none'; media-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self'" http-equiv="Content-Security-Policy"/></head>
 <body class="antialiased">
 
@@ -4435,7 +4560,7 @@ html.mobile-game-active body{
     </a>
     <section class="matrix-diagnostic" aria-label="Diagnóstico del sistema">
       <span class="matrix-status-led" aria-hidden="true"></span>
-      <div><strong id="systemStatusText">CORE_V6.4 // MOBILE ONLINE</strong><small>LOCAL RUNTIME · ECO GPU PIPELINE</small></div>
+      <div><strong id="systemStatusText">CORE_V6.9 // ATTRACT RENDER ONLINE</strong><small>LOCAL RUNTIME · ECO GPU PIPELINE</small></div>
       <time id="systemClock" aria-label="Reloj digital">--:--:--</time>
     </section>
     <div class="tactical-actions">
@@ -4772,7 +4897,7 @@ html.mobile-game-active body{
 </section>
 </main>
 <footer class="relative z-10 mx-auto flex max-w-7xl flex-col gap-4 px-5 py-9 text-xs font-semibold tracking-[0.13em] text-white/35 sm:flex-row sm:items-center sm:justify-between sm:px-8 lg:px-10">
-<p>NEON NEXUS / CORE_V6.4 // MOBILE ONLINE</p>
+<p>NEON NEXUS / CORE_V6.9 // ATTRACT RENDER ONLINE</p>
 <p>6 GAMES · CANVAS 800×600 · KEYBOARD · TOUCH · GAMEPAD · TURBO 1.5X</p>
 </footer>
 <div aria-hidden="true" class="modal-shell fixed inset-0 z-[100] flex items-center justify-center p-3 sm:p-6 lg:p-10" id="gameModal">
@@ -14479,6 +14604,521 @@ function bindPremiumCatalogCards() {
 bindPremiumCatalogCards();
 new MutationObserver(bindPremiumCatalogCards).observe(document.querySelector(".catalog-game-grid"), { childList: true });
 
+
+
+class CatalogAttractMode {
+  constructor(grid) {
+    this.grid = grid;
+    this.previews = new Map();
+    this.activeCard = null;
+    this.fixedStep = 1 / 60;
+    this.maxDelta = 0.08;
+    this.longPressDelay = 320;
+    this.iconMap = {
+      "space-invaders": "👾",
+      "pac-man": "💊",
+      "asteroids": "🚀",
+      "tron": "🌐",
+      "galaga": "🐝",
+      "outrun": "🏎️"
+    };
+    if (!this.grid) return;
+    this.registerCards();
+    this.mutationObserver = new MutationObserver(() => this.registerCards());
+    this.mutationObserver.observe(this.grid, { childList: true, subtree: false });
+    this.handleVisibility = () => { if (document.hidden) this.stopAll(true); };
+    this.handleResize = () => {
+      if (!this.activeCard) return;
+      const preview = this.previews.get(this.activeCard);
+      if (!preview) return;
+      this.sizeCanvas(preview, true);
+      this.renderPreview(preview);
+    };
+    document.addEventListener("visibilitychange", this.handleVisibility);
+    window.addEventListener("resize", this.handleResize, { passive: true });
+    window.visualViewport?.addEventListener("resize", this.handleResize, { passive: true });
+    document.addEventListener("click", (event) => {
+      if (event.target.closest("[data-open-game]")) this.stopAll(true);
+    }, true);
+  }
+
+  registerCards() {
+    if (!this.grid) return;
+    for (const card of this.grid.querySelectorAll(".arcade-card")) this.registerCard(card);
+  }
+
+  registerCard(card) {
+    if (this.previews.has(card)) return;
+    const trigger = card.querySelector("[data-open-game]");
+    const body = card.querySelector(".card-body");
+    const heading = card.querySelector(".card-heading-row");
+    const gameId = trigger?.dataset.openGame;
+    if (!trigger || !body || !heading || !gameId) return;
+
+    card.dataset.gameId = gameId;
+    const title = card.querySelector(".card-glitch-title");
+    if (title && !title.querySelector(".catalog-title-icon")) {
+      const icon = document.createElement("span");
+      icon.className = "catalog-title-icon";
+      icon.setAttribute("aria-hidden", "true");
+      icon.textContent = this.iconMap[gameId] || "🎮";
+      title.prepend(icon);
+    }
+
+    let shell = card.querySelector(".attract-preview-shell");
+    if (!shell) {
+      shell = document.createElement("div");
+      shell.className = "attract-preview-shell w-full h-32 bg-black/40 rounded-lg overflow-hidden border border-purple-500/20 relative mb-3";
+      shell.dataset.attractGame = gameId;
+      shell.setAttribute("aria-label", `${gameId} autonomous attract preview`);
+      shell.innerHTML = '<canvas class="attract-canvas w-full h-full block" aria-hidden="true"></canvas><span class="attract-status-badge"><span class="attract-status-led" aria-hidden="true"></span><span>ATTRACT STANDBY</span></span>';
+      body.insertBefore(shell, heading);
+    }
+
+    const canvas = shell.querySelector(".attract-canvas");
+    const badgeText = shell.querySelector(".attract-status-badge span:last-child");
+    const context = canvas?.getContext("2d", { alpha: false, desynchronized: true });
+    if (!canvas || !context) return;
+    context.imageSmoothingEnabled = false;
+
+    const preview = {
+      card,
+      shell,
+      canvas,
+      context,
+      badgeText,
+      gameId,
+      state: null,
+      animationId: 0,
+      lastFrameAt: 0,
+      accumulator: 0,
+      touchTimer: 0,
+      touchStartX: 0,
+      touchStartY: 0,
+      touchActive: false,
+      suppressClickUntil: 0,
+      cssWidth: 180,
+      cssHeight: 128,
+      pixelRatio: 1,
+      resizeObserver: null
+    };
+    this.previews.set(card, preview);
+    this.sizeCanvas(preview, true);
+    this.paintStandby(preview);
+
+    if (typeof ResizeObserver === "function") {
+      preview.resizeObserver = new ResizeObserver(() => {
+        this.sizeCanvas(preview, false);
+        if (preview.state) this.renderPreview(preview); else this.paintStandby(preview);
+      });
+      preview.resizeObserver.observe(shell);
+    }
+
+    card.addEventListener("mouseenter", () => this.activate(card), { passive: true });
+    card.addEventListener("mouseleave", () => this.deactivate(card), { passive: true });
+    card.addEventListener("focusin", () => this.activate(card));
+    card.addEventListener("focusout", (event) => {
+      if (!card.contains(event.relatedTarget)) this.deactivate(card);
+    });
+
+    card.addEventListener("touchstart", (event) => {
+      if (event.touches.length !== 1 || document.body.classList.contains("modal-open")) return;
+      const touch = event.touches[0];
+      preview.touchStartX = touch.clientX;
+      preview.touchStartY = touch.clientY;
+      preview.touchActive = false;
+      window.clearTimeout(preview.touchTimer);
+      preview.touchTimer = window.setTimeout(() => {
+        preview.touchActive = true;
+        preview.suppressClickUntil = performance.now() + 700;
+        this.activate(card);
+        navigator.vibrate?.(8);
+      }, this.longPressDelay);
+    }, { passive: true });
+
+    card.addEventListener("touchmove", (event) => {
+      const touch = event.touches[0];
+      if (!touch) return;
+      const distance = Math.hypot(touch.clientX - preview.touchStartX, touch.clientY - preview.touchStartY);
+      if (!preview.touchActive && distance > 12) {
+        window.clearTimeout(preview.touchTimer);
+        preview.touchTimer = 0;
+      }
+      if (preview.touchActive) event.preventDefault();
+    }, { passive: false });
+
+    const finishTouch = (event) => {
+      window.clearTimeout(preview.touchTimer);
+      preview.touchTimer = 0;
+      if (preview.touchActive) {
+        event.preventDefault();
+        preview.suppressClickUntil = performance.now() + 700;
+        this.deactivate(card);
+      }
+      preview.touchActive = false;
+    };
+    card.addEventListener("touchend", finishTouch, { passive: false });
+    card.addEventListener("touchcancel", finishTouch, { passive: false });
+    card.addEventListener("contextmenu", (event) => {
+      if (preview.touchActive) event.preventDefault();
+    });
+    trigger.addEventListener("click", (event) => {
+      if (performance.now() < preview.suppressClickUntil) {
+        event.preventDefault();
+        event.stopImmediatePropagation();
+      }
+    }, true);
+  }
+
+  sizeCanvas(preview, force = false) {
+    const rect = preview.shell.getBoundingClientRect();
+    const cssWidth = Math.max(1, Math.round(rect.width || preview.shell.clientWidth || 180));
+    const cssHeight = Math.max(1, Math.round(rect.height || preview.shell.clientHeight || 128));
+    const pixelRatio = Math.min(2, Math.max(1, window.devicePixelRatio || 1));
+    const pixelWidth = Math.max(1, Math.round(cssWidth * pixelRatio));
+    const pixelHeight = Math.max(1, Math.round(cssHeight * pixelRatio));
+    if (force || preview.canvas.width !== pixelWidth || preview.canvas.height !== pixelHeight) {
+      preview.canvas.width = pixelWidth;
+      preview.canvas.height = pixelHeight;
+      preview.canvas.style.width = `${cssWidth}px`;
+      preview.canvas.style.height = `${cssHeight}px`;
+      preview.context.imageSmoothingEnabled = false;
+    }
+    preview.cssWidth = cssWidth;
+    preview.cssHeight = cssHeight;
+    preview.pixelRatio = pixelRatio;
+  }
+
+  activate(card) {
+    if (document.body.classList.contains("modal-open")) return;
+    const preview = this.previews.get(card);
+    if (!preview?.context) return;
+    if (this.activeCard && this.activeCard !== card) this.deactivate(this.activeCard);
+    if (preview.animationId) return;
+
+    this.activeCard = card;
+    this.sizeCanvas(preview, true);
+    preview.state = this.createState(preview.gameId);
+    preview.lastFrameAt = 0;
+    preview.accumulator = 0;
+    preview.card.classList.add("is-attracting", "is-catalog-active");
+    preview.badgeText.textContent = "AI ATTRACT // 60 FPS";
+    this.grid.classList.add("has-active-card");
+    for (const item of this.grid.querySelectorAll(".arcade-card")) item.classList.toggle("is-catalog-active", item === card);
+    this.renderPreview(preview);
+    preview.animationId = requestAnimationFrame((timestamp) => this.frame(preview, timestamp));
+  }
+
+  deactivate(card) {
+    const preview = this.previews.get(card);
+    if (!preview) return;
+    if (preview.animationId) cancelAnimationFrame(preview.animationId);
+    preview.animationId = 0;
+    preview.lastFrameAt = 0;
+    preview.accumulator = 0;
+    preview.card.classList.remove("is-attracting", "is-catalog-active");
+    preview.badgeText.textContent = "ATTRACT STANDBY";
+    this.destroyState(preview);
+    this.paintStandby(preview);
+    if (this.activeCard === card) this.activeCard = null;
+    if (!this.activeCard) {
+      this.grid.classList.remove("has-active-card");
+      for (const item of this.grid.querySelectorAll(".arcade-card")) item.classList.remove("is-catalog-active");
+    }
+  }
+
+  stopAll(force = false) {
+    for (const preview of this.previews.values()) {
+      window.clearTimeout(preview.touchTimer);
+      preview.touchTimer = 0;
+      preview.touchActive = false;
+      if (preview.animationId || force) this.deactivate(preview.card);
+    }
+    this.activeCard = null;
+  }
+
+  frame(preview, timestamp) {
+    if (!preview.state || document.hidden || this.activeCard !== preview.card) {
+      preview.animationId = 0;
+      return;
+    }
+    if (!preview.lastFrameAt) preview.lastFrameAt = timestamp;
+    const elapsed = Math.min(this.maxDelta, Math.max(0, (timestamp - preview.lastFrameAt) / 1000));
+    preview.lastFrameAt = timestamp;
+    preview.accumulator += elapsed;
+    let steps = 0;
+    while (preview.accumulator >= this.fixedStep && steps < 5) {
+      this.updateState(preview.state, this.fixedStep);
+      preview.accumulator -= this.fixedStep;
+      steps += 1;
+    }
+    this.renderPreview(preview);
+    preview.animationId = requestAnimationFrame((nextTimestamp) => this.frame(preview, nextTimestamp));
+  }
+
+  createState(gameId) {
+    const state = {
+      gameId, width: 180, height: 120, time: 0,
+      bullets: [], particles: [], enemies: [], asteroids: [], pellets: [],
+      trailsA: [], trailsB: [], roadLines: [], stars: [], shotTimer: 0, respawnTimer: 0
+    };
+    for (let index = 0; index < 24; index += 1) {
+      state.stars.push({ x: (index * 47 + 11) % 180, y: (index * 29 + 7) % 120, size: index % 7 === 0 ? 2 : 1, speed: 2 + (index % 4) });
+    }
+    if (gameId === "space-invaders") {
+      state.formationX = 32; state.formationY = 17; state.formationDirection = 1; state.shipX = 90;
+      for (let row = 0; row < 2; row += 1) for (let column = 0; column < 3; column += 1) state.enemies.push({ baseX: column * 28, baseY: row * 17, alive: true });
+    } else if (gameId === "pac-man") {
+      state.pacX = 20; state.ghostX = -18;
+      for (let index = 0; index < 9; index += 1) state.pellets.push({ x: 26 + index * 16, eaten: false });
+    } else if (gameId === "asteroids") {
+      state.shipAngle = -Math.PI / 2;
+      state.asteroids.push(this.makeAsteroid(30, 26, 14, 15, 10, 0), this.makeAsteroid(146, 30, 12, -12, 14, 1), this.makeAsteroid(144, 91, 16, -15, -9, 2));
+    } else if (gameId === "tron") {
+      state.riderA = { x: 28, y: 84, dx: 1, dy: 0, timer: .54, index: 0 };
+      state.riderB = { x: 152, y: 28, dx: -1, dy: 0, timer: .43, index: 0 };
+      state.trailsA.push({ x: state.riderA.x, y: state.riderA.y });
+      state.trailsB.push({ x: state.riderB.x, y: state.riderB.y });
+    } else if (gameId === "galaga") {
+      for (let index = 0; index < 4; index += 1) state.enemies.push({ phase: index * Math.PI * .5, x: 90, y: -12 });
+    } else {
+      state.carPhase = 0; state.roadOffset = 0;
+      for (let index = 0; index < 10; index += 1) state.roadLines.push({ progress: index / 10 });
+    }
+    return state;
+  }
+
+  makeAsteroid(x, y, radius, vx, vy, seed) {
+    const shape = [];
+    for (let index = 0; index < 8; index += 1) shape.push(.72 + ((index * 17 + seed * 11) % 7) * .055);
+    return { x, y, radius, vx, vy, rotation: seed * .7, spin: (seed % 2 ? -1 : 1) * (.34 + seed * .08), shape };
+  }
+
+  destroyState(preview) {
+    const state = preview.state;
+    if (state) {
+      for (const key of ["bullets", "particles", "enemies", "asteroids", "pellets", "trailsA", "trailsB", "roadLines", "stars"]) {
+        if (Array.isArray(state[key])) state[key].length = 0;
+      }
+      state.riderA = null;
+      state.riderB = null;
+    }
+    preview.state = null;
+  }
+
+  paintStandby(preview) {
+    const ctx = preview.context;
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.globalAlpha = 1;
+    ctx.shadowBlur = 0;
+    ctx.fillStyle = "#020105";
+    ctx.fillRect(0, 0, preview.canvas.width, preview.canvas.height);
+    const sx = preview.canvas.width / 180;
+    const sy = preview.canvas.height / 120;
+    ctx.setTransform(sx, 0, 0, sy, 0, 0);
+    ctx.globalAlpha = .24;
+    ctx.strokeStyle = preview.card.style.getPropertyValue("--card-accent") || "#42f5ff";
+    ctx.lineWidth = 1;
+    for (let x = 0; x <= 180; x += 18) { ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, 120); ctx.stroke(); }
+    for (let y = 0; y <= 120; y += 15) { ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(180, y); ctx.stroke(); }
+    ctx.globalAlpha = 1;
+  }
+
+  updateState(state, dt) {
+    state.time += dt;
+    if (state.gameId === "space-invaders") this.updateInvaders(state, dt);
+    else if (state.gameId === "pac-man") this.updatePacMan(state, dt);
+    else if (state.gameId === "asteroids") this.updateAsteroids(state, dt);
+    else if (state.gameId === "tron") this.updateTron(state, dt);
+    else if (state.gameId === "galaga") this.updateGalaga(state, dt);
+    else this.updateOutrun(state, dt);
+    this.updateParticles(state, dt);
+  }
+
+  updateInvaders(state, dt) {
+    state.formationX += state.formationDirection * 25 * dt;
+    if (state.formationX < 20 || state.formationX > 92) { state.formationX = Math.max(20, Math.min(92, state.formationX)); state.formationDirection *= -1; }
+    let targetX = 90, bestDistance = Infinity;
+    for (const enemy of state.enemies) if (enemy.alive) {
+      const enemyX = state.formationX + enemy.baseX;
+      const distance = Math.abs(enemyX - state.shipX);
+      if (distance < bestDistance) { bestDistance = distance; targetX = enemyX; }
+    }
+    const delta = targetX - state.shipX;
+    state.shipX += Math.sign(delta) * Math.min(Math.abs(delta), 72 * dt);
+    state.shotTimer -= dt;
+    if (state.shotTimer <= 0 && state.bullets.length < 4) { state.bullets.push({ x: state.shipX, y: 103, vy: -98 }); state.shotTimer = .42; }
+    for (let i = state.bullets.length - 1; i >= 0; i -= 1) {
+      const bullet = state.bullets[i]; bullet.y += bullet.vy * dt; let hit = false;
+      for (const enemy of state.enemies) if (enemy.alive) {
+        const ex = state.formationX + enemy.baseX, ey = state.formationY + enemy.baseY;
+        if (Math.abs(bullet.x - ex) < 8 && Math.abs(bullet.y - ey) < 7) { enemy.alive = false; hit = true; this.spawnParticles(state, ex, ey, "#42f5ff", 9); break; }
+      }
+      if (hit || bullet.y < -8) state.bullets.splice(i, 1);
+    }
+    if (!state.enemies.some((enemy) => enemy.alive)) {
+      state.respawnTimer += dt;
+      if (state.respawnTimer > .72) { for (const enemy of state.enemies) enemy.alive = true; state.respawnTimer = 0; state.formationX = 32; }
+    }
+  }
+
+  updatePacMan(state, dt) {
+    state.pacX += 50 * dt;
+    if (state.pacX > 170) { state.pacX = 10; state.ghostX = -18; for (const pellet of state.pellets) pellet.eaten = false; }
+    for (const pellet of state.pellets) if (!pellet.eaten && Math.abs(pellet.x - state.pacX) < 7) pellet.eaten = true;
+    state.ghostX += (state.pacX - 34 - state.ghostX) * Math.min(1, dt * 4.4);
+  }
+
+  updateAsteroids(state, dt) {
+    state.shipAngle += 1.18 * dt;
+    for (const asteroid of state.asteroids) {
+      asteroid.x += asteroid.vx * dt; asteroid.y += asteroid.vy * dt; asteroid.rotation += asteroid.spin * dt;
+      if (asteroid.x < -asteroid.radius) asteroid.x = 180 + asteroid.radius;
+      if (asteroid.x > 180 + asteroid.radius) asteroid.x = -asteroid.radius;
+      if (asteroid.y < -asteroid.radius) asteroid.y = 120 + asteroid.radius;
+      if (asteroid.y > 120 + asteroid.radius) asteroid.y = -asteroid.radius;
+    }
+    state.shotTimer -= dt;
+    if (state.shotTimer <= 0 && state.bullets.length < 7) {
+      const angle = state.shipAngle;
+      state.bullets.push({ x: 90 + Math.cos(angle) * 12, y: 60 + Math.sin(angle) * 12, vx: Math.cos(angle) * 116, vy: Math.sin(angle) * 116 });
+      state.shotTimer = .19;
+    }
+    for (let i = state.bullets.length - 1; i >= 0; i -= 1) {
+      const bullet = state.bullets[i]; bullet.x += bullet.vx * dt; bullet.y += bullet.vy * dt; let hit = false;
+      for (const asteroid of state.asteroids) if (Math.hypot(bullet.x - asteroid.x, bullet.y - asteroid.y) < asteroid.radius) {
+        hit = true; this.spawnParticles(state, asteroid.x, asteroid.y, "#00ff7f", 8);
+        asteroid.x = bullet.x < 90 ? 170 : 10; asteroid.y = 18 + ((asteroid.y * 1.7 + state.time * 21) % 84); asteroid.vx *= -1; break;
+      }
+      if (hit || bullet.x < -8 || bullet.x > 188 || bullet.y < -8 || bullet.y > 128) state.bullets.splice(i, 1);
+    }
+  }
+
+  updateTron(state, dt) {
+    this.updateTronRider(state.riderA, state.trailsA, dt, 46, true);
+    this.updateTronRider(state.riderB, state.trailsB, dt, 43, false);
+    if (state.trailsA.length > 78 || state.trailsB.length > 78 || state.time > 8.5) {
+      state.time = 0; state.trailsA.length = 0; state.trailsB.length = 0;
+      Object.assign(state.riderA, { x: 28, y: 84, dx: 1, dy: 0, timer: .54, index: 0 });
+      Object.assign(state.riderB, { x: 152, y: 28, dx: -1, dy: 0, timer: .43, index: 0 });
+      state.trailsA.push({ x: state.riderA.x, y: state.riderA.y }); state.trailsB.push({ x: state.riderB.x, y: state.riderB.y });
+    }
+  }
+
+  updateTronRider(rider, trail, dt, speed, clockwise) {
+    rider.timer -= dt;
+    if (rider.timer <= 0) {
+      const oldDx = rider.dx; rider.dx = clockwise ? -rider.dy : rider.dy; rider.dy = clockwise ? oldDx : -oldDx;
+      rider.index += 1; rider.timer = .42 + ((rider.index * 7) % 5) * .075;
+    }
+    rider.x += rider.dx * speed * dt; rider.y += rider.dy * speed * dt;
+    if (rider.x < 10 || rider.x > 170 || rider.y < 12 || rider.y > 108) rider.timer = 0;
+    rider.x = Math.max(9, Math.min(171, rider.x)); rider.y = Math.max(11, Math.min(109, rider.y));
+    const last = trail[trail.length - 1];
+    if (!last || Math.hypot(last.x - rider.x, last.y - rider.y) > 2.2) trail.push({ x: rider.x, y: rider.y });
+    if (trail.length > 82) trail.shift();
+  }
+
+  updateGalaga(state, dt) {
+    for (let index = 0; index < state.enemies.length; index += 1) {
+      const enemy = state.enemies[index], cycle = (state.time * .62 + index * .17) % 1, descent = Math.sin(cycle * Math.PI), angle = enemy.phase + cycle * Math.PI * 2.5;
+      enemy.x = 90 + Math.cos(angle) * (22 + descent * 35); enemy.y = -8 + descent * 88;
+    }
+    state.shotTimer -= dt;
+    if (state.shotTimer <= 0 && state.bullets.length < 8) {
+      const shooter = state.enemies[Math.floor(state.time * 3.2) % state.enemies.length];
+      state.bullets.push({ x: shooter.x, y: shooter.y + 6, vy: 82 }); state.shotTimer = .24;
+    }
+    for (let i = state.bullets.length - 1; i >= 0; i -= 1) { state.bullets[i].y += state.bullets[i].vy * dt; if (state.bullets[i].y > 126) state.bullets.splice(i, 1); }
+  }
+
+  updateOutrun(state, dt) {
+    state.carPhase += dt * 2.35;
+    state.roadOffset = (state.roadOffset + dt * 1.5) % 1;
+    for (const line of state.roadLines) line.progress = (line.progress + dt * .68) % 1;
+  }
+
+  updateParticles(state, dt) {
+    for (let i = state.particles.length - 1; i >= 0; i -= 1) {
+      const particle = state.particles[i]; particle.life -= dt; particle.x += particle.vx * dt; particle.y += particle.vy * dt; particle.vy += 14 * dt;
+      if (particle.life <= 0) state.particles.splice(i, 1);
+    }
+  }
+
+  spawnParticles(state, x, y, color, count) {
+    const amount = Math.min(count, Math.max(0, 36 - state.particles.length));
+    for (let index = 0; index < amount; index += 1) {
+      const angle = index / Math.max(1, amount) * Math.PI * 2 + state.time, speed = 22 + (index % 4) * 8;
+      state.particles.push({ x, y, vx: Math.cos(angle) * speed, vy: Math.sin(angle) * speed, life: .34 + (index % 3) * .08, color });
+    }
+  }
+
+  renderPreview(preview) {
+    const ctx = preview.context, state = preview.state;
+    if (!ctx || !state) return;
+    const sx = preview.canvas.width / 180, sy = preview.canvas.height / 120;
+    ctx.setTransform(sx, 0, 0, sy, 0, 0);
+    ctx.globalAlpha = 1; ctx.shadowBlur = 0; ctx.fillStyle = "#020105"; ctx.fillRect(0, 0, 180, 120);
+    this.drawStars(ctx, state);
+    if (state.gameId === "space-invaders") this.drawInvaders(ctx, state);
+    else if (state.gameId === "pac-man") this.drawPacMan(ctx, state);
+    else if (state.gameId === "asteroids") this.drawAsteroids(ctx, state);
+    else if (state.gameId === "tron") this.drawTron(ctx, state);
+    else if (state.gameId === "galaga") this.drawGalaga(ctx, state);
+    else this.drawOutrun(ctx, state);
+    this.drawParticles(ctx, state);
+    ctx.globalAlpha = .12; ctx.fillStyle = "#fff";
+    for (let y = 0; y < 120; y += 3) ctx.fillRect(0, y, 180, 1);
+    ctx.globalAlpha = 1;
+  }
+
+  drawStars(ctx, state) {
+    for (let index = 0; index < state.stars.length; index += 1) {
+      const star = state.stars[index], x = (star.x + state.time * star.speed) % 180;
+      ctx.globalAlpha = .2 + index % 5 * .12; ctx.fillStyle = index % 7 === 0 ? "#ff3cf7" : "#dffcff"; ctx.fillRect(Math.floor(x), star.y, star.size, star.size);
+    }
+    ctx.globalAlpha = 1;
+  }
+
+  drawInvaders(ctx, state) {
+    ctx.save(); ctx.shadowColor = "#42f5ff"; ctx.shadowBlur = 6;
+    for (const enemy of state.enemies) if (enemy.alive) {
+      const x = Math.round(state.formationX + enemy.baseX), y = Math.round(state.formationY + enemy.baseY);
+      ctx.fillStyle = "#42f5ff"; ctx.fillRect(x-5,y-3,10,3); ctx.fillRect(x-7,y,14,4); ctx.fillRect(x-5,y+4,3,2); ctx.fillRect(x+2,y+4,3,2);
+      ctx.fillStyle = "#020105"; ctx.fillRect(x-3,y,2,2); ctx.fillRect(x+2,y,2,2);
+    }
+    const shipX = Math.round(state.shipX); ctx.shadowColor = "#ff3cf7"; ctx.fillStyle = "#ff3cf7"; ctx.fillRect(shipX-8,106,16,4); ctx.fillRect(shipX-4,102,8,4); ctx.fillRect(shipX-1,99,2,3);
+    ctx.shadowColor = "#ffbd3c"; ctx.fillStyle = "#ffbd3c"; for (const bullet of state.bullets) ctx.fillRect(Math.round(bullet.x),Math.round(bullet.y),2,5); ctx.restore();
+  }
+
+  drawPacMan(ctx, state) {
+    ctx.save(); ctx.strokeStyle = "#2d75ff"; ctx.lineWidth = 3; ctx.shadowColor = "#2d75ff"; ctx.shadowBlur = 6; ctx.strokeRect(5,38,170,44);
+    ctx.beginPath(); ctx.moveTo(5,57); ctx.lineTo(31,57); ctx.moveTo(149,57); ctx.lineTo(175,57); ctx.stroke();
+    ctx.fillStyle = "#f8f7ff"; ctx.shadowColor = "#f8f7ff";
+    for (const pellet of state.pellets) if (!pellet.eaten) { ctx.beginPath(); ctx.arc(pellet.x,60,1.5,0,Math.PI*2); ctx.fill(); }
+    const mouth = .16 + Math.abs(Math.sin(state.time*10))*.46;
+    ctx.fillStyle="#ffbd3c"; ctx.shadowColor="#ffbd3c"; ctx.beginPath(); ctx.moveTo(state.pacX,60); ctx.arc(state.pacX,60,8,mouth,Math.PI*2-mouth); ctx.closePath(); ctx.fill();
+    const gx=state.ghostX, gy=60; ctx.fillStyle="#ff304f"; ctx.shadowColor="#ff304f"; ctx.beginPath(); ctx.arc(gx,gy-2,7,Math.PI,0); ctx.lineTo(gx+7,gy+7); ctx.lineTo(gx+3.5,gy+4); ctx.lineTo(gx,gy+7); ctx.lineTo(gx-3.5,gy+4); ctx.lineTo(gx-7,gy+7); ctx.closePath(); ctx.fill();
+    const eyeOffset=state.pacX>=gx?1.4:-1.4; ctx.fillStyle="#fff"; ctx.shadowBlur=0; ctx.fillRect(Math.round(gx-4),56,3,4); ctx.fillRect(Math.round(gx+2),56,3,4); ctx.fillStyle="#1338a8"; ctx.fillRect(Math.round(gx-3+eyeOffset),57,1,2); ctx.fillRect(Math.round(gx+3+eyeOffset),57,1,2); ctx.restore();
+  }
+
+  drawAsteroids(ctx,state) {
+    ctx.save(); ctx.lineWidth=2; ctx.strokeStyle="#00ff7f"; ctx.shadowColor="#00ff7f"; ctx.shadowBlur=6;
+    for(const asteroid of state.asteroids){ctx.beginPath();for(let i=0;i<=asteroid.shape.length;i+=1){const si=i%asteroid.shape.length,a=asteroid.rotation+si*Math.PI*2/asteroid.shape.length,r=asteroid.radius*asteroid.shape[si],x=asteroid.x+Math.cos(a)*r,y=asteroid.y+Math.sin(a)*r;if(i===0)ctx.moveTo(x,y);else ctx.lineTo(x,y);}ctx.stroke();}
+    const a=state.shipAngle;ctx.strokeStyle="#42f5ff";ctx.shadowColor="#42f5ff";ctx.beginPath();ctx.moveTo(90+Math.cos(a)*12,60+Math.sin(a)*12);ctx.lineTo(90+Math.cos(a+2.5)*9,60+Math.sin(a+2.5)*9);ctx.lineTo(90+Math.cos(a+Math.PI)*4,60+Math.sin(a+Math.PI)*4);ctx.lineTo(90+Math.cos(a-2.5)*9,60+Math.sin(a-2.5)*9);ctx.closePath();ctx.stroke();ctx.fillStyle="#ffbd3c";ctx.shadowColor="#ffbd3c";for(const bullet of state.bullets)ctx.fillRect(Math.round(bullet.x),Math.round(bullet.y),2,2);ctx.restore();
+  }
+
+  drawTron(ctx,state){ctx.save();ctx.strokeStyle="rgba(112,85,255,.35)";ctx.lineWidth=1;for(let x=0;x<=180;x+=15){ctx.beginPath();ctx.moveTo(x,0);ctx.lineTo(x,120);ctx.stroke();}for(let y=0;y<=120;y+=15){ctx.beginPath();ctx.moveTo(0,y);ctx.lineTo(180,y);ctx.stroke();}this.drawTronTrail(ctx,state.trailsA,"#00ffff");this.drawTronTrail(ctx,state.trailsB,"#ff9d00");ctx.fillStyle="#00ffff";ctx.shadowColor="#00ffff";ctx.shadowBlur=8;ctx.fillRect(Math.round(state.riderA.x)-3,Math.round(state.riderA.y)-3,6,6);ctx.fillStyle="#ff9d00";ctx.shadowColor="#ff9d00";ctx.fillRect(Math.round(state.riderB.x)-3,Math.round(state.riderB.y)-3,6,6);ctx.restore();}
+  drawTronTrail(ctx,trail,color){if(trail.length<2)return;ctx.strokeStyle=color;ctx.shadowColor=color;ctx.shadowBlur=7;ctx.lineWidth=3;ctx.lineJoin="miter";ctx.beginPath();ctx.moveTo(trail[0].x,trail[0].y);for(let i=1;i<trail.length;i+=1)ctx.lineTo(trail[i].x,trail[i].y);ctx.stroke();}
+  drawGalaga(ctx,state){ctx.save();for(let i=0;i<state.enemies.length;i+=1){const enemy=state.enemies[i],color=i%2===0?"#ff2bd6":"#42f5ff";ctx.fillStyle=color;ctx.shadowColor=color;ctx.shadowBlur=7;ctx.save();ctx.translate(Math.round(enemy.x),Math.round(enemy.y));ctx.rotate(Math.sin(state.time*4+enemy.phase)*.55);ctx.fillRect(-6,-3,12,4);ctx.fillRect(-9,1,18,3);ctx.fillRect(-3,4,6,3);ctx.restore();}ctx.fillStyle="#ffe75b";ctx.shadowColor="#ffe75b";for(const bullet of state.bullets)ctx.fillRect(Math.round(bullet.x),Math.round(bullet.y),2,5);ctx.restore();}
+  drawOutrun(ctx,state){ctx.save();const gradient=ctx.createLinearGradient(0,0,0,120);gradient.addColorStop(0,"#130022");gradient.addColorStop(.5,"#ff356d");gradient.addColorStop(.51,"#09020d");gradient.addColorStop(1,"#020105");ctx.fillStyle=gradient;ctx.fillRect(0,0,180,120);ctx.fillStyle="#ffe75b";ctx.shadowColor="#ff007f";ctx.shadowBlur=11;ctx.beginPath();ctx.arc(90,42,17,0,Math.PI*2);ctx.fill();ctx.fillStyle="#09020d";ctx.beginPath();ctx.moveTo(90,49);ctx.lineTo(28,120);ctx.lineTo(152,120);ctx.closePath();ctx.fill();ctx.strokeStyle="#ff007f";ctx.lineWidth=2;ctx.stroke();ctx.strokeStyle="#00ffff";ctx.shadowColor="#00ffff";ctx.shadowBlur=5;for(const line of state.roadLines){const p=line.progress,y=52+p*68,spread=p*48,length=2+p*12;ctx.beginPath();ctx.moveTo(90-spread,y);ctx.lineTo(90-spread-length,y+length*.7);ctx.moveTo(90+spread,y);ctx.lineTo(90+spread+length,y+length*.7);ctx.stroke();}const carX=90+Math.sin(state.carPhase)*20,lean=Math.cos(state.carPhase)*2;ctx.fillStyle="#ff007f";ctx.shadowColor="#ff007f";ctx.shadowBlur=8;ctx.fillRect(Math.round(carX-12+lean),96,24,11);ctx.fillRect(Math.round(carX-7+lean),90,14,7);ctx.fillStyle="#00ffff";ctx.fillRect(Math.round(carX-5+lean),92,10,4);ctx.fillStyle="#ffe75b";ctx.fillRect(Math.round(carX-10+lean),105,4,2);ctx.fillRect(Math.round(carX+6+lean),105,4,2);ctx.restore();}
+  drawParticles(ctx,state){for(const particle of state.particles){ctx.globalAlpha=Math.max(0,particle.life/.5);ctx.fillStyle=particle.color;ctx.shadowColor=particle.color;ctx.shadowBlur=5;ctx.fillRect(Math.round(particle.x),Math.round(particle.y),2,2);}ctx.globalAlpha=1;ctx.shadowBlur=0;}
+}
+
+const catalogAttractMode = new CatalogAttractMode(document.querySelector(".catalog-game-grid"));
+window.catalogAttractMode = catalogAttractMode;
+
+
 const controlsRemappingPanel = new InputRemappingPanel(input, controlsConfigPanel, controlsConfigButton, (message) => showToast(message));
 const focusPauseController = new FocusPauseController(engine, input, simulationPauseOverlay, modal, () => focusGameInput());
 let lastFocusedElement = null;
@@ -14505,7 +15145,7 @@ function calculatePilotRank() {
 }
 
 function updatePilotHud() {
-  if (systemStatusText) systemStatusText.textContent = "CORE_V6.4 // MOBILE ONLINE";
+  if (systemStatusText) systemStatusText.textContent = "CORE_V6.9 // ATTRACT RENDER ONLINE";
   if (pilotRankText) pilotRankText.textContent = `PILOTO RANGO: ${calculatePilotRank()}`;
 }
 
