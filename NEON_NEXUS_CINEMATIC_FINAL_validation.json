@@ -1,0 +1,35 @@
+{
+  "artifact": "NEON NEXUS cinematic unified index.html",
+  "generated_file": "/mnt/data/NEON_NEXUS_index_CINEMATIC_FINAL.html",
+  "index_alias": "/mnt/data/index.html",
+  "bytes": 680896,
+  "lines": 17673,
+  "sha256": "3e6baa584c882968f0b255123528c72901c226e57d1a027cc03c3880ab084df6",
+  "master_engine_sha256": "7fd9ca932edcbcabf871028d68b83d75921bc68b82990b3a750c0ecaa79c8335",
+  "master_engine_preserved": true,
+  "desktop_runtime_passed": true,
+  "mobile_landscape_runtime_passed": true,
+  "console_errors_desktop": [],
+  "page_errors_desktop": [],
+  "console_errors_mobile": [],
+  "page_errors_mobile": [],
+  "key_checks": {
+    "six_cards": true,
+    "uniform_cards": true,
+    "preview_height_px": 96,
+    "six_attract_canvases": true,
+    "attract_stops_and_cleans": true,
+    "ambilight_palette_matches": true,
+    "deep_dive_duration": "0.4s",
+    "deep_dive_timing": "cubic-bezier(0.25, 1, 0.5, 1)",
+    "filter_classic_visible": 2,
+    "canvas_dimensions": {
+      "width": 800,
+      "height": 600
+    },
+    "mobile_no_horizontal_overflow": true,
+    "mobile_touch_ambilight": "#00ffff",
+    "mobile_touch_attract_active": true,
+    "mobile_touch_controls_present": true
+  }
+}
