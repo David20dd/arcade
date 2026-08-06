@@ -5675,6 +5675,82 @@ html.eco-mode .chassis-root::after { display: none; }
 html.eco-mode .micro-glitch-title { animation-duration: 15s; }
 </style>
 
+
+<style id="supreme-microdetail-v77">
+/* NEON NEXUS V7.7: saturated frosted acrylic and asynchronous reactive telemetry LEDs. */
+#achievementShowcase.backdrop-saturate-150,
+#system > div > div.backdrop-saturate-150 {
+  border-color: rgba(139, 92, 246, .20) !important;
+  background:
+    linear-gradient(145deg, rgba(15, 5, 29, .58), rgba(4, 1, 9, .76)),
+    rgba(15, 5, 29, .50) !important;
+  -webkit-backdrop-filter: blur(12px) saturate(150%) !important;
+  backdrop-filter: blur(12px) saturate(150%) !important;
+}
+#achievementShowcase.backdrop-saturate-150 {
+  box-shadow:
+    0 0 18px rgba(var(--neon-accent-rgb), .13),
+    0 18px 42px rgba(0, 0, 0, .30),
+    inset 0 0 12px rgba(var(--neon-accent-rgb), .065),
+    inset 0 0 0 1px rgba(255, 255, 255, .045) !important;
+}
+#system > div > div.backdrop-saturate-150 {
+  box-shadow:
+    0 0 16px rgba(var(--neon-accent-rgb), .10),
+    0 14px 30px rgba(0, 0, 0, .28),
+    inset 0 0 11px rgba(var(--neon-accent-rgb), .055),
+    inset 0 0 0 1px rgba(255, 255, 255, .04) !important;
+}
+.tactical-hud-heading {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  min-height: 2.7em;
+}
+.tactical-rail-right .tactical-hud-heading {
+  flex-direction: row-reverse;
+}
+.tactical-hud-heading .tactical-hud-label {
+  min-height: 0;
+  flex: 1 1 auto;
+}
+.heartbeat-led {
+  display: inline-block;
+  flex: 0 0 auto;
+  width: 3px;
+  height: 3px;
+  margin-top: .42em;
+  border-radius: 999px;
+  background: var(--neon-accent);
+  box-shadow:
+    0 0 4px rgba(var(--neon-accent-rgb), .9),
+    0 0 8px rgba(var(--neon-accent-rgb), .42);
+  opacity: .2;
+  transform: scale(.82);
+  animation: telemetryHeartbeat var(--beat, 2.5s) ease-in-out var(--beat-delay, 0s) infinite;
+  will-change: opacity, transform;
+}
+@keyframes telemetryHeartbeat {
+  0%, 100% { opacity: .20; transform: scale(.82); }
+  6% { opacity: 1; transform: scale(1.34); }
+  12% { opacity: .24; transform: scale(.88); }
+  18% { opacity: .92; transform: scale(1.16); }
+  27%, 72% { opacity: .20; transform: scale(.82); }
+  78% { opacity: .34; transform: scale(.94); }
+}
+html.eco-mode .heartbeat-led {
+  animation-duration: calc(var(--beat, 2.5s) * 1.45);
+  box-shadow: 0 0 4px rgba(var(--neon-accent-rgb), .55);
+}
+@media (prefers-reduced-motion: reduce) {
+  .heartbeat-led {
+    animation: none !important;
+    opacity: .62;
+    transform: none;
+  }
+}
+</style>
+
 </head>
 <body class="antialiased">
 <div aria-hidden="true" class="global-crt-overlay pointer-events-none fixed inset-0 z-50 bg-[radial-gradient(circle,_transparent_70%,_rgba(0,0,0,0.5)_100%)]"></div>
@@ -5682,16 +5758,16 @@ html.eco-mode .micro-glitch-title { animation-duration: 15s; }
 
 <aside aria-hidden="true" class="tactical-rail tactical-rail-left">
   <div class="tactical-rail-stack">
-    <span class="tactical-hud-widget" style="--load:.96;--pulse:4.4s;--delay:-.7s"><span class="tactical-hud-label">[VOLTAGE: 5.2V // STABLE]</span><span class="tactical-data-bar"><i></i></span></span>
-    <span class="tactical-hud-widget" style="--load:1;--pulse:5.1s;--delay:-2.2s"><span class="tactical-hud-label">[BUFFER_STREAM: 100%]</span><span class="tactical-data-bar"><i></i></span></span>
-    <span class="tactical-hud-widget" style="--load:.84;--pulse:4.7s;--delay:-1.3s"><span class="tactical-hud-label">[INPUT_BUS: SYNCHRONIZED]</span><span class="tactical-data-bar"><i></i></span></span>
+    <span class="tactical-hud-widget" style="--load:.96;--pulse:4.4s;--delay:-.7s"><span class="tactical-hud-heading"><span aria-hidden="true" class="heartbeat-led" style="--beat:2.28s;--beat-delay:-.31s"></span><span class="tactical-hud-label">[VOLTAGE: 5.2V // STABLE]</span></span><span class="tactical-data-bar"><i></i></span></span>
+    <span class="tactical-hud-widget" style="--load:1;--pulse:5.1s;--delay:-2.2s"><span class="tactical-hud-heading"><span aria-hidden="true" class="heartbeat-led" style="--beat:2.63s;--beat-delay:-1.17s"></span><span class="tactical-hud-label">[BUFFER_STREAM: 100%]</span></span><span class="tactical-data-bar"><i></i></span></span>
+    <span class="tactical-hud-widget" style="--load:.84;--pulse:4.7s;--delay:-1.3s"><span class="tactical-hud-heading"><span aria-hidden="true" class="heartbeat-led" style="--beat:2.41s;--beat-delay:-.82s"></span><span class="tactical-hud-label">[INPUT_BUS: SYNCHRONIZED]</span></span><span class="tactical-data-bar"><i></i></span></span>
   </div>
 </aside>
 <aside aria-hidden="true" class="tactical-rail tactical-rail-right">
   <div class="tactical-rail-stack">
-    <span class="tactical-hud-widget" style="--load:.92;--pulse:5.5s;--delay:-1.8s"><span class="tactical-hud-label">[LINK_SECURITY: COGNITIVE_ENCRYPTED]</span><span class="tactical-data-bar"><i></i></span></span>
-    <span class="tactical-hud-widget" style="--load:.88;--pulse:4.9s;--delay:-3.1s"><span class="tactical-hud-label">[PHOSPHOR: CALIBRATED]</span><span class="tactical-data-bar"><i></i></span></span>
-    <span class="tactical-hud-widget" style="--load:1;--pulse:5.8s;--delay:-.4s"><span class="tactical-hud-label">[PERFORMANCE: 60FPS_LOCKED]</span><span class="tactical-data-bar"><i></i></span></span>
+    <span class="tactical-hud-widget" style="--load:.92;--pulse:5.5s;--delay:-1.8s"><span class="tactical-hud-heading"><span aria-hidden="true" class="heartbeat-led" style="--beat:2.77s;--beat-delay:-1.93s"></span><span class="tactical-hud-label">[LINK_SECURITY: COGNITIVE_ENCRYPTED]</span></span><span class="tactical-data-bar"><i></i></span></span>
+    <span class="tactical-hud-widget" style="--load:.88;--pulse:4.9s;--delay:-3.1s"><span class="tactical-hud-heading"><span aria-hidden="true" class="heartbeat-led" style="--beat:2.36s;--beat-delay:-1.42s"></span><span class="tactical-hud-label">[PHOSPHOR: CALIBRATED]</span></span><span class="tactical-data-bar"><i></i></span></span>
+    <span class="tactical-hud-widget" style="--load:1;--pulse:5.8s;--delay:-.4s"><span class="tactical-hud-heading"><span aria-hidden="true" class="heartbeat-led" style="--beat:2.91s;--beat-delay:-.54s"></span><span class="tactical-hud-label">[PERFORMANCE: 60FPS_LOCKED]</span></span><span class="tactical-data-bar"><i></i></span></span>
   </div>
 </aside>
 
@@ -6045,7 +6121,7 @@ html.eco-mode .micro-glitch-title { animation-duration: 15s; }
 </div>
 </div>
 </article>
-</div><aside aria-label="Vitrina de logros locales" class="achievement-showcase my-8" id="achievementShowcase">
+</div><aside aria-label="Vitrina de logros locales" class="achievement-showcase my-8 backdrop-blur-md backdrop-saturate-150 bg-[#0f051d]/50 border border-purple-500/20" id="achievementShowcase">
 <div class="achievement-showcase-header"><div><span>LOCAL MILESTONES</span><h3 class="micro-glitch-title" id="achievementTitle">VITRINA DE LOGROS</h3></div><strong data-achievement-progress="">00 / 04</strong></div>
 <div class="achievement-medal-grid">
 <article class="achievement-medal" data-achievement-id="untouchable-pilot" data-title="Piloto Intocable"><span class="achievement-medal-icon">◇</span><div><strong>PILOTO INTOCABLE</strong><small data-medal-state="">LOCKED</small></div></article>
@@ -6058,15 +6134,15 @@ html.eco-mode .micro-glitch-title { animation-duration: 15s; }
 </section>
 <section class="border-y border-white/7 bg-white/[0.018]" id="system">
 <div class="mx-auto grid max-w-7xl gap-8 px-5 py-16 sm:px-8 md:grid-cols-3 lg:px-10">
-<div>
+<div class="backdrop-blur-md backdrop-saturate-150 bg-[#0f051d]/50 border border-purple-500/20">
 <p class="font-display text-sm font-black tracking-[0.18em] text-cyan-300">MODAL RUNTIME</p>
 <p class="mt-3 text-sm leading-relaxed text-white/48">Carga cada módulo sin recargar la página, conserva el contexto y administra el foco del teclado.</p>
 </div>
-<div>
+<div class="backdrop-blur-md backdrop-saturate-150 bg-[#0f051d]/50 border border-purple-500/20">
 <p class="font-display text-sm font-black tracking-[0.18em] text-fuchsia-300">STATE MACHINE</p>
 <p class="mt-3 text-sm leading-relaxed text-white/48">Transiciones operativas entre Menu, Playing y GameOver, con reinicio seguro del ciclo.</p>
 </div>
-<div>
+<div class="backdrop-blur-md backdrop-saturate-150 bg-[#0f051d]/50 border border-purple-500/20">
 <p class="font-display text-sm font-black tracking-[0.18em] text-lime-300">INPUT MATRIX</p>
 <p class="mt-3 text-sm leading-relaxed text-white/48">Flechas y barra espaciadora normalizadas mediante un controlador de entrada reutilizable.</p>
 </div>
@@ -9882,10 +9958,23 @@ function drawLayeredNeonHudText(ctx, text, x, y, options = {}) {
   const px = Math.floor(Number(x) || 0);
   const py = Math.floor(Number(y) || 0);
   ctx.save();
-  ctx.textAlign = align; ctx.font = font; ctx.fillStyle = color;
-  ctx.globalAlpha = alpha * .34; ctx.shadowColor = glow; ctx.shadowBlur = 8; ctx.fillText(text, px, py);
-  ctx.globalAlpha = alpha * .62; ctx.shadowBlur = 4; ctx.fillText(text, px, py);
-  ctx.globalAlpha = alpha; ctx.shadowBlur = 0; ctx.fillText(text, px, py);
+  ctx.textAlign = align;
+  ctx.font = font;
+  ctx.globalAlpha = alpha * .88;
+  ctx.fillStyle = "rgba(34, 10, 62, .94)";
+  ctx.shadowBlur = 0;
+  ctx.fillText(text, px + 1, py + 1);
+  ctx.fillStyle = color;
+  ctx.globalAlpha = alpha * .34;
+  ctx.shadowColor = glow;
+  ctx.shadowBlur = 8;
+  ctx.fillText(text, px, py);
+  ctx.globalAlpha = alpha * .62;
+  ctx.shadowBlur = 4;
+  ctx.fillText(text, px, py);
+  ctx.globalAlpha = alpha;
+  ctx.shadowBlur = 0;
+  ctx.fillText(text, px, py);
   ctx.restore();
 }
 
@@ -9926,18 +10015,25 @@ function drawUniversalArcadeHud(ctx, game, options) {
   drawLayeredNeonHudText(ctx, `HI-SCORE: ${String(displayedHighScore).padStart(6, "0")}`, highScoreX, 40, {color:settingRecord?"#ffd700":"rgba(238,255,255,.92)",glow:settingRecord?"#ffd700":"#00ffff",font:'900 11px "Orbitron", sans-serif',align:"center",alpha:recordAlpha});
 
   ctx.textAlign = "right";
+  ctx.font = '700 9px "Orbitron", sans-serif';
+  ctx.fillStyle = "rgba(34, 10, 62, .94)";
+  ctx.shadowBlur = 0;
+  ctx.fillText("LIVES", rightEdge + 1, 20);
   ctx.fillStyle = "rgba(255,255,255,.48)";
   ctx.shadowColor = options.lifeColor;
-  ctx.font = '700 9px "Orbitron", sans-serif';
+  ctx.shadowBlur = 4;
   ctx.fillText("LIVES", rightEdge, 19);
   const visibleLives = Math.min(5, lives);
   for (let index = 0; index < visibleLives; index += 1) {
     drawUniversalLifeIcon(ctx, gameId, rightEdge - 7 - index * 20, 40, options.lifeColor);
   }
   if (lives > visibleLives) {
-    ctx.fillStyle = options.lifeColor;
     ctx.font = '900 9px "Orbitron", sans-serif';
-    ctx.fillText(`×${lives}`, rightEdge - visibleLives * 20 - 5, 40);
+    const lifeCountX = rightEdge - visibleLives * 20 - 5;
+    ctx.fillStyle = "rgba(34, 10, 62, .94)";
+    ctx.fillText(`×${lives}`, lifeCountX + 1, 41);
+    ctx.fillStyle = options.lifeColor;
+    ctx.fillText(`×${lives}`, lifeCountX, 40);
   }
 
   const comboActive = combo && combo.timer > 0 && combo.count >= 2;
@@ -9946,9 +10042,13 @@ function drawUniversalArcadeHud(ctx, game, options) {
   const comboWidth = 142;
   const comboStart = rightEdge - comboWidth;
   ctx.textAlign = "right";
+  ctx.font = '800 8px "Orbitron", sans-serif';
+  ctx.fillStyle = "rgba(34, 10, 62, .94)";
+  ctx.shadowBlur = 0;
+  ctx.fillText(comboText, rightEdge + 1, 58);
   ctx.fillStyle = comboActive ? combo.accent : "rgba(255,255,255,.24)";
   ctx.shadowColor = comboActive ? combo.accent : options.lifeColor;
-  ctx.font = '800 8px "Orbitron", sans-serif';
+  ctx.shadowBlur = 4;
   ctx.fillText(comboText, rightEdge, 57);
   ctx.shadowBlur = 0;
   ctx.fillStyle = "rgba(255,255,255,.1)";
@@ -10717,7 +10817,7 @@ class AlienInvadersGame {
 
   drawParticles(ctx) {
     ctx.save();
-    ctx.globalCompositeOperation = "lighter";
+    ctx.globalCompositeOperation = "screen";
     for (const particle of this.particles) {
       const alpha = Math.max(0, particle.life / particle.maxLife);
       ctx.globalAlpha = alpha;
@@ -10728,6 +10828,7 @@ class AlienInvadersGame {
       ctx.arc(particle.x, particle.y, Math.max(0.25, particle.radius * alpha), 0, Math.PI * 2);
       ctx.fill();
     }
+    ctx.globalCompositeOperation = "source-over";
     ctx.restore();
   }
 
@@ -12841,6 +12942,7 @@ class NeonAsteroidsGame {
   drawParticles() {
     const ctx = this.ctx;
     ctx.save();
+    ctx.globalCompositeOperation = "screen";
     for (const particle of this.particles) {
       const alpha = Math.max(0, particle.life / particle.maxLife);
       ctx.globalAlpha = alpha;
@@ -12851,6 +12953,7 @@ class NeonAsteroidsGame {
       ctx.arc(particle.x, particle.y, particle.radius * (0.45 + alpha * 0.55), 0, Math.PI * 2);
       ctx.fill();
     }
+    ctx.globalCompositeOperation = "source-over";
     ctx.restore();
   }
 
@@ -13388,7 +13491,7 @@ class NeonTronGame {
     const left = this.minColumn * this.cellSize;
     const arenaWidth = (this.maxColumn - this.minColumn + 1) * this.cellSize;
     const arenaHeight = (this.maxRow - this.minRow + 1) * this.cellSize;
-    ctx.fillStyle = "rgba(3,6,14,.72)";
+    ctx.fillStyle = "rgba(5, 2, 10, 0.18)";
     ctx.fillRect(left, top, arenaWidth, arenaHeight);
 
     ctx.strokeStyle = "rgba(0,255,255,.10)";
@@ -14334,7 +14437,7 @@ class CyberGalagaGame {
 
   drawParticles(ctx) {
     ctx.save();
-    ctx.globalCompositeOperation = "lighter";
+    ctx.globalCompositeOperation = "screen";
     for (const particle of this.particles) {
       const alpha = Math.max(0, particle.life / particle.maxLife);
       ctx.globalAlpha = alpha;
@@ -14347,6 +14450,7 @@ class CyberGalagaGame {
       ctx.fillRect(-particle.size / 2, -particle.size / 2, particle.size, particle.size);
       ctx.restore();
     }
+    ctx.globalCompositeOperation = "source-over";
     ctx.restore();
   }
 
@@ -14710,7 +14814,23 @@ class NeonOutrunGame {
     ctx.fillStyle="#ffffff";ctx.fillRect(-4,-34,8,8);ctx.restore();
   }
 
-  drawParticles(ctx){ctx.save();ctx.globalCompositeOperation="lighter";for(const p of this.particles){ctx.globalAlpha=Math.max(0,p.life/p.maxLife);ctx.fillStyle=p.color;ctx.shadowColor=p.color;ctx.shadowBlur=4;ctx.save();ctx.translate(Math.floor(p.x),Math.floor(p.y));ctx.rotate(p.rotation);ctx.fillRect(-p.size/2,-p.size/2,p.size,p.size);ctx.restore()}ctx.restore()}
+  drawParticles(ctx) {
+    ctx.save();
+    ctx.globalCompositeOperation = "screen";
+    for (const particle of this.particles) {
+      ctx.globalAlpha = Math.max(0, particle.life / particle.maxLife);
+      ctx.fillStyle = particle.color;
+      ctx.shadowColor = particle.color;
+      ctx.shadowBlur = 4;
+      ctx.save();
+      ctx.translate(Math.floor(particle.x), Math.floor(particle.y));
+      ctx.rotate(particle.rotation);
+      ctx.fillRect(-particle.size / 2, -particle.size / 2, particle.size, particle.size);
+      ctx.restore();
+    }
+    ctx.globalCompositeOperation = "source-over";
+    ctx.restore();
+  }
 
   drawHud(ctx) {
     drawUniversalArcadeHud(ctx, this, {
@@ -14884,7 +15004,7 @@ AlienInvadersGame.prototype.drawEnemyBullets = function drawEnemyBulletsV71(ctx)
 
 AlienInvadersGame.prototype.drawParticles = function drawInvaderParticlesV71(ctx) {
   ctx.save();
-  ctx.globalCompositeOperation = "lighter";
+  ctx.globalCompositeOperation = "screen";
   for (const particle of this.particles) {
     const alpha = Math.max(0, particle.life / particle.maxLife);
     const size = Math.max(1, Math.round(particle.radius * alpha));
@@ -14894,6 +15014,7 @@ AlienInvadersGame.prototype.drawParticles = function drawInvaderParticlesV71(ctx
     ctx.shadowBlur = 4;
     ctx.fillRect(Math.round(particle.x - size / 2), Math.round(particle.y - size / 2), size, size);
   }
+  ctx.globalCompositeOperation = "source-over";
   ctx.restore();
 };
 
@@ -15871,8 +15992,13 @@ class ArcadeEngine {
     if (this.visualEffects.consumeHardClear()) {
       ctx.fillStyle = "#05020a";
     } else {
-      const trailAlpha = this.lowPowerMode ? 0.86 : this.module.state === GAME_STATES.MENU ? 0.68 : 0.82;
-      ctx.fillStyle = `rgba(5, 2, 10, ${trailAlpha})`;
+      const vectorPhosphorTrail = this.activeGame?.id === "asteroids" || this.activeGame?.id === "tron";
+      if (vectorPhosphorTrail) {
+        ctx.fillStyle = "rgba(5, 2, 10, 0.18)";
+      } else {
+        const trailAlpha = this.lowPowerMode ? 0.86 : this.module.state === GAME_STATES.MENU ? 0.68 : 0.82;
+        ctx.fillStyle = `rgba(5, 2, 10, ${trailAlpha})`;
+      }
     }
     ctx.fillRect(0, 0, this.width, this.height);
 

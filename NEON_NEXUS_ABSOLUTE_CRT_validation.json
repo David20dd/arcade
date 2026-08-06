@@ -1,0 +1,32 @@
+{
+  "version": "NEON NEXUS V7.8 ABSOLUTE ANALOG CRT",
+  "output": "index.html",
+  "bytes": 692805,
+  "lines": 17978,
+  "sha256": "cba6bb13860ccf0978bd3390a5499bd0182717083215a986bb61c5b5c2241da8",
+  "inline_javascript_sha256": "c26527ba573f52bb9502dfcd52d988137e3da7651f65221581a3f6d90c9b7b5d",
+  "baseline_inline_javascript_sha256": "c26527ba573f52bb9502dfcd52d988137e3da7651f65221581a3f6d90c9b7b5d",
+  "game_javascript_preserved": true,
+  "counts": {
+    "arcade_cards": 4,
+    "preview_canvases": 4,
+    "game_canvas": 1,
+    "noise_layers": 1,
+    "inline_scripts": 2
+  },
+  "checks": {
+    "crt_glass_transform": true,
+    "crt_inner_corner_shadow": true,
+    "noise_texture_opacity_1_5_percent": true,
+    "noise_animation_steps": true,
+    "idle_breath_4_seconds": true,
+    "idle_breath_menu_guard": true,
+    "eco_mode_reduced_frequency": true,
+    "reduced_motion_supported": true,
+    "deep_dive_400ms_preserved": true,
+    "attract_cleanup_preserved": true,
+    "canvas_800x600": true,
+    "runtime_all_checks_passed": true
+  },
+  "runtime_validation": "NEON_NEXUS_ABSOLUTE_CRT_runtime_validation.json"
+}
